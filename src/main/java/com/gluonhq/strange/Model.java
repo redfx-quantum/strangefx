@@ -5,6 +5,9 @@
  */
 package com.gluonhq.strange;
 
+import com.gluonhq.strange.ui.Gate;
+import java.util.List;
+
 /**
  *
  * @author johan
@@ -19,7 +22,13 @@ public class Model {
     private double[] beginState;
     private int[][] gates = new int[0][0];
     
-    public Model() {        
+    private static Model instance = new Model();
+    
+    private Model() {        
+    }
+    
+    public static Model getInstance() {
+        return instance;
     }
     
     public void setNQubits(int n) {
@@ -34,6 +43,13 @@ public class Model {
     
     public void setGates(int[][] g) {
         this.gates = g;
+    }
+    
+    public void setGatesForQubit(int n, List<Gate> gates) {
+        this.gates[n] = new int[gates.size()];
+        for (int i = 0; i < gates.size(); i++) {
+            this.gates[n][i] = gates.get(i).getType();
+        }
     }
     
     public int getNumberOfSteps() {

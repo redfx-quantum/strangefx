@@ -20,11 +20,11 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         BorderPane borderPane = new BorderPane();
-        Gate gateNot = new Gate("NOT");
-        Gate gateH = new Gate("H");
+        Gate gateNot = new Gate("NOT", 1);
+        Gate gateH = new Gate("H", 2);
         ToolBar gatesPane = new ToolBar(gateNot, gateH);
 
-        VBox circuits = new VBox(new Circuit(), new Circuit(), new Circuit());
+        VBox circuits = new VBox(new Circuit(0), new Circuit(1), new Circuit(2));
         ScrollPane scroller = new ScrollPane(circuits);
         scroller.setFitToWidth(true);
 

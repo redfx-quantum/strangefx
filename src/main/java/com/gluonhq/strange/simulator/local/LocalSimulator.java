@@ -84,7 +84,7 @@ public class LocalSimulator implements Simulator {
     }
     
     public static void main(String[] args) {
-        Model model = new Model();
+        Model model = Model.getInstance();
         LocalSimulator sim = new LocalSimulator();
         simple1();
         not1();
@@ -111,7 +111,7 @@ public class LocalSimulator implements Simulator {
     private static void simple1() {
         System.out.println("1 qubit, no gate");
         LocalSimulator sim = new LocalSimulator();
-        Model model = new Model();
+        Model model = Model.getInstance();
         model.setNQubits(1);
         int[][] gates = new int[1][1];
         model.setGates(gates);
@@ -122,7 +122,7 @@ public class LocalSimulator implements Simulator {
     
     private static void not1() {
         LocalSimulator sim = new LocalSimulator();
-        Model model = new Model();
+        Model model = Model.getInstance();
         model.setNQubits(1);
         int[][] gates = new int[1][1];
         gates[0][0] = Model.GATE_NOT;
@@ -135,7 +135,7 @@ public class LocalSimulator implements Simulator {
     private static void hadamard1() {
         System.out.println("Hadamard");
         LocalSimulator sim = new LocalSimulator();
-        Model model = new Model();
+        Model model = Model.getInstance();
         model.setNQubits(1);
         int[][] gates = new int[1][1];
         gates[0][0] = Model.GATE_HADAMARD;
@@ -148,7 +148,7 @@ public class LocalSimulator implements Simulator {
     private static void notnot1() {
         System.out.println("notnot");
         LocalSimulator sim = new LocalSimulator();
-        Model model = new Model();
+        Model model = Model.getInstance();
         model.setNQubits(1);
         int[][] gates = new int[2][1];
         gates[0][0] = Model.GATE_NOT;
@@ -162,7 +162,7 @@ public class LocalSimulator implements Simulator {
     private static void hhnot1() {
         System.out.println("hhnot");
         LocalSimulator sim = new LocalSimulator();
-        Model model = new Model();
+        Model model = Model.getInstance();
         model.setNQubits(1);
         int[][] gates = new int[3][1];
         gates[0][0] = Model.GATE_HADAMARD;
@@ -177,7 +177,7 @@ public class LocalSimulator implements Simulator {
     private static void simple2() {
         System.out.println("2 qubits, no gate");
         LocalSimulator sim = new LocalSimulator();
-        Model model = new Model();
+        Model model = Model.getInstance();
         model.setNQubits(2);
         int[][] gates = new int[1][2];
         model.setGates(gates);
@@ -189,7 +189,7 @@ public class LocalSimulator implements Simulator {
     private static void not2() {
         System.out.println("2 qubits, not-I gate");
         LocalSimulator sim = new LocalSimulator();
-        Model model = new Model();
+        Model model = Model.getInstance();
         model.setNQubits(2);
         int[][] gates = new int[1][2];
         gates[0][0] = Model.GATE_NOT;

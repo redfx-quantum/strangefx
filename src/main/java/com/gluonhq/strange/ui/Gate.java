@@ -11,7 +11,10 @@ public class Gate extends Label {
 
     private static final DataFormat DRAGGABLE_GATE = new DataFormat("draggable-gate");
 
-    public Gate(String caption) {
+    private final int type;
+    
+    public Gate(String caption, int type) {
+        this.type = type;
         setText(caption);
         setMinWidth(40);
         setAlignment(Pos.CENTER);
@@ -27,10 +30,21 @@ public class Gate extends Label {
             db.setContent(content);
 
             content.put(DRAGGABLE_GATE, "");
-
             e.consume();
         });
+        
+        this.setOnDragDone(e -> {
+            System.out.println("Drag Done");
+        });
+        
+        this.setOnDragDropped(e -> {
+            System.out.println("Drag dropped");
+        });
 
+    }
+    
+    public int getType() {
+        return this.type;
     }
 
 
