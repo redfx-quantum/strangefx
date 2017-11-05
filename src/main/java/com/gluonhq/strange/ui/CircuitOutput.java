@@ -11,8 +11,6 @@ public class CircuitOutput extends Control {
     public CircuitOutput() {
         getStyleClass().add("circuit-output");
         setPrefWidth(45);
-//        prefWidthProperty().bind(prefHeightProperty());
-//        setStyle("-fx-background-color: white; -fx-border-color: darkgrey; -fx-border-width: 1;");
     }
 
     @Override

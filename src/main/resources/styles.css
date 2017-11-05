@@ -29,7 +29,7 @@
 }
 
 .circuit-output {
-    -fx-background-color: white;
+    -fx-background-color: #f0f9f0;
     -fx-border-color: rootColor;
     -fx-border-width: 1;
 }

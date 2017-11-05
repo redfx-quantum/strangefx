@@ -19,7 +19,7 @@ public class CircuitOutputSkin extends SkinBase<CircuitOutput> {
         });
         label.setText( outputValue2String( getSkinnable().getState()) );
 
-        percentageRect.setStyle("-fx-fill: lightgreen; -fx-stroke-width: 0;");
+        percentageRect.setStyle("-fx-fill: springgreen; -fx-stroke-width: 0;");
         getChildren().addAll(percentageRect, label);
     }
 

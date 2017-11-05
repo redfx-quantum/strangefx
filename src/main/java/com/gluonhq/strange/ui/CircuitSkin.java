@@ -12,7 +12,7 @@ public class CircuitSkin extends SkinBase<Circuit> {
     private Line line = new Line();
     private HBox hbox = new HBox();
     private Label label = new Label("IO>");
-    private CircuitOutput output = new CircuitOutput();
+
 
     private HBox dragableArea = new HBox();
 
@@ -21,14 +21,11 @@ public class CircuitSkin extends SkinBase<Circuit> {
         getChildren().addAll(line, hbox);
 
         line.getStyleClass().add("center-line");
-//        line.setStyle("-fx-stroke: darkgrey;");
-//        label.setStyle("-fx-padding: 10; -fx-background-color: white; -fx-text-fill: darkgrey;");
         label.getStyleClass().add("line-label");
         hbox.getStyleClass().add("draggable-area");
 
-//        hbox.setStyle("-fx-background-color: transparent; -fx-padding: 15 5 15 0;");
         hbox.setAlignment(Pos.CENTER_LEFT);
-        hbox.getChildren().addAll(label, dragableArea, output);
+        hbox.getChildren().addAll(label, dragableArea, getSkinnable().getOutput());
         HBox.setHgrow(label, Priority.NEVER);
         HBox.setHgrow(dragableArea, Priority.ALWAYS);
 
