@@ -18,23 +18,26 @@ public class CircuitOutput extends Control {
         return new CircuitOutputSkin(this);
     }
 
-    // stateProperty
-    private final DoubleProperty stateProperty = new SimpleDoubleProperty(this, "state", .5) {
+    // measuredChanceProperty
+    private final DoubleProperty measuredChanceProperty = new SimpleDoubleProperty(this, "measured chance", .5) {
         @Override
         public void set(double newValue) {
-            if ( newValue >= 0 && newValue <= 1) {
+            if (newValue >= 0 && newValue <= 1) {
                 super.set(newValue);
             }
         }
     };
-    public final DoubleProperty stateProperty() {
-       return stateProperty;
+
+    public final DoubleProperty measuredChanceProperty() {
+        return measuredChanceProperty;
     }
-    public final double getState() {
-       return stateProperty.get();
+
+    public final double getMeasuredChance() {
+        return measuredChanceProperty.get();
     }
-    public final void setState(double value) {
-        stateProperty.set(value);
+
+    public final void setMeasuredChance(double value) {
+        measuredChanceProperty.set(value);
     }
 
 

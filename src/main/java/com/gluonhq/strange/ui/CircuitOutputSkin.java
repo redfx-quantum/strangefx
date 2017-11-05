@@ -12,20 +12,19 @@ public class CircuitOutputSkin extends SkinBase<CircuitOutput> {
 
     protected CircuitOutputSkin(CircuitOutput control) {
         super(control);
-        label.setStyle("-fx-text-fill: black; -fx-alignment: center; -fx-font-size: .8em");
 
-        getSkinnable().stateProperty().addListener( (o, ov, value) -> {
-            label.setText( outputValue2String(value.doubleValue()) );
+        getSkinnable().measuredChanceProperty().addListener((o, ov, value) -> {
+            label.setText(outputValue2String(value.doubleValue()));
         });
-        label.setText( outputValue2String( getSkinnable().getState()) );
+        label.setText(outputValue2String(getSkinnable().getMeasuredChance()));
 
-        percentageRect.setStyle("-fx-fill: springgreen; -fx-stroke-width: 0;");
+        percentageRect.getStyleClass().add("percentage");
         getChildren().addAll(percentageRect, label);
     }
 
-    private String outputValue2String( double value) {
-        if ( value == 0 ) return "Off";
-        if ( value == 1 ) return "On";
+    private String outputValue2String(double value) {
+        if (value == 0) return "Off";
+        if (value == 1) return "On";
         return String.format("%.2f%%", value * 100);
     }
 
@@ -34,11 +33,11 @@ public class CircuitOutputSkin extends SkinBase<CircuitOutput> {
 
         percentageRect.setX(1);
         percentageRect.setWidth(contentWidth);
-        double height = contentHeight - contentHeight * getSkinnable().getState() ;
-        percentageRect.setY(height+1);
+        double height = contentHeight - contentHeight * getSkinnable().getMeasuredChance();
+        percentageRect.setY(height + 1);
         percentageRect.setHeight(height);
 
-        label.resize(contentWidth,contentHeight);
+        label.resize(contentWidth, contentHeight);
 
     }
 }

@@ -13,7 +13,6 @@ public class CircuitSkin extends SkinBase<Circuit> {
     private HBox hbox = new HBox();
     private Label label = new Label("IO>");
 
-
     private HBox dragableArea = new HBox();
 
     CircuitSkin(Circuit control) {
@@ -29,7 +28,6 @@ public class CircuitSkin extends SkinBase<Circuit> {
         HBox.setHgrow(label, Priority.NEVER);
         HBox.setHgrow(dragableArea, Priority.ALWAYS);
 
-
     }
 
 
@@ -37,8 +35,8 @@ public class CircuitSkin extends SkinBase<Circuit> {
     protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
         line.setStartX(0);
         line.setEndX(contentWidth);
-        line.setStartY(contentHeight/2);
-        line.setEndY(contentHeight/2);
-        hbox.resizeRelocate(0,0,contentWidth,contentHeight);
+        line.setStartY(contentHeight / 2);
+        line.setEndY(contentHeight / 2);
+        hbox.resizeRelocate(0, 0, contentWidth, contentHeight);
     }
 }

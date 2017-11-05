@@ -1,26 +1,47 @@
 .root {
+    rootColor: #7b7d7b;
+    circuitColor: white;
+    circuitSelectionColor: #f4faff;
+}
 
-   rootColor: darkgrey;
+.scroll-pane {
+    -fx-background-color: transparent;
+}
 
+.scroll-pane > .viewport {
+    -fx-background-color: circuitColor;
 }
 
 .circuit {
-    -fx-background-color: white;
+    -fx-background-color: circuitColor;
     -fx-padding: 5 0 5 0;
+}
+
+.circuit:hover {
+    -fx-background-color: circuitSelectionColor;
 }
 
 .circuit > .center-line {
     -fx-stroke: rootColor;
 }
 
+/*.circuit:hover > .center-line {
+    -fx-stroke-dash-array: 3;
+}*/
+
 .circuit .line-label {
     -fx-padding: 10;
-    -fx-background-color: white;
+    -fx-background-color: circuitColor;
     -fx-text-fill: rootColor;
 }
 
+.circuit:hover .line-label {
+    -fx-background-color: circuitSelectionColor;
+}
+
 .circuit .draggable-area {
-    -fx-background-color: transparent; -fx-padding: 7 5 7 0;
+    -fx-background-color: transparent;
+    -fx-padding: 7 5 7 0;
 }
 
 .circuit > .circuit-output {
@@ -32,4 +53,16 @@
     -fx-background-color: #f0f9f0;
     -fx-border-color: rootColor;
     -fx-border-width: 1;
+    /*-fx-effect: dropshadow(three-pass-box, rgba(7,7,7,0.5), 7, 0, 2, 2);*/
+}
+
+.circuit-output > .label {
+    -fx-text-fill: black;
+    -fx-alignment: center;
+    -fx-font-size: .8em;
+}
+
+.circuit-output > .percentage {
+    -fx-fill: springgreen;
+    -fx-stroke-width: 0;
 }
