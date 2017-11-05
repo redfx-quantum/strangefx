@@ -1,0 +1,35 @@
+.root {
+
+   rootColor: darkgrey;
+
+}
+
+.circuit {
+    -fx-background-color: white;
+    -fx-padding: 5 0 5 0;
+}
+
+.circuit > .center-line {
+    -fx-stroke: rootColor;
+}
+
+.circuit .line-label {
+    -fx-padding: 10;
+    -fx-background-color: white;
+    -fx-text-fill: rootColor;
+}
+
+.circuit .draggable-area {
+    -fx-background-color: transparent; -fx-padding: 7 5 7 0;
+}
+
+.circuit > .circuit-output {
+    -fx-background-color: transparent;
+    /*-fx-padding: 15 5 15 0;*/
+}
+
+.circuit-output {
+    -fx-background-color: white;
+    -fx-border-color: rootColor;
+    -fx-border-width: 1;
+}
