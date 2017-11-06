@@ -1,4 +1,12 @@
 apply plugin: 'java'
 apply plugin: 'application'
 mainClassName = 'com.gluonhq.strange.ui.Main'
-// mainClassName = 'com.gluonhq.strange.simulator.local.LocalSimulator'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile 'de.jensd:fontawesomefx-materialicons:2.2.0-9'
+}
