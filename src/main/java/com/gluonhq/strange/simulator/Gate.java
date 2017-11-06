@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public enum Gate {
 
-    NOGATE  ( "XXX", new double[][]{{1,0}, {0,1}} ),
+    IDENTITY( "I", new double[][]{{1,0}, {0,1}} ),
     NOT     ( "NOT", new double[][]{{0,1}, {1,0}} ),
     HADAMARD( "H"  , new double[][]{{ Const.HV, Const.HV }, { Const.HV, -Const.HV }} );
 

@@ -34,8 +34,9 @@ public class Circuit extends Control {
             output.setMeasuredChance(mv);
         });
         gates.addListener( (Observable o) -> {
-            model.setGatesForQubit(
+            model.setGatesForCircuit(
                     idx, gates.stream().map(GateSymbol::getGate).collect(Collectors.toList()));
+            output.setMeasuredChance(Math.random());
         });
 
     }

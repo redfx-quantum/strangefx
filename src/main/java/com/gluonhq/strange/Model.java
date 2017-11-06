@@ -7,6 +7,7 @@ package com.gluonhq.strange;
 
 import com.gluonhq.strange.simulator.Gate;
 import com.gluonhq.strange.simulator.GateConfig;
+import java.util.ArrayList;
 
 import java.util.List;
 import javafx.collections.FXCollections;
@@ -24,7 +25,7 @@ public class Model {
     private int nqubits;
     
     private double[] beginState;
-    private GateConfig gates = GateConfig.of(Gate.NOGATE);
+    private GateConfig gates = GateConfig.initial(0);
 
     private ObservableList<Double> endStates = FXCollections.observableArrayList();
     
@@ -45,6 +46,7 @@ public class Model {
     public void setNQubits(int n) {
         this.nqubits = n;
         this.beginState = new double[n];
+        this.gates = GateConfig.initial(n);
     }
     
     public int getNQubits() {
@@ -56,15 +58,27 @@ public class Model {
         this.gates = gates;
     }
     
-    public void setGatesForQubit(int n, List<Gate> gates) {
-        this.gates.set(0, gates);
+    public void setGatesForCircuit(int n, List<Gate> gates) {
+        System.out.println("BEFORE, size = "+this.gates.get(n).size());
+        System.out.println("gates was "+this.gates.get(n)+" and this = "+this);
+        this.gates.set(n, gates);
+        System.out.println("AFTER, size = "+this.gates.get(n).size());
     }
     
     public int getNumberOfSteps() {
-        return this.gates.size();
+        return this.gates.get(0).size();
     }
     
-    public List<Gate> getStep(int i) {
-        return this.gates.get(i);
+    public List<Gate> getStepsByCircuit(int idx) {
+        return this.gates.get(idx);
+    }
+    
+    public List<Gate> getGatesByStep(int idx) {
+        int nq = this.gates.size();
+        ArrayList<Gate> answer = new ArrayList<>();
+        for (int i = 0; i < nq; i++) {
+            answer.add(this.gates.get(i).get(idx));
+        }
+        return answer;
     }
 }

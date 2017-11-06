@@ -26,7 +26,7 @@ public class LocalSimulator implements Simulator {
         result[0] = 1;
         System.out.println("result has size "+v);
         for (int i = 0; i < m.getNumberOfSteps(); i++) {
-            result = applyStep(m.getStep(i), result);
+            result = applyStep(m.getGatesByStep(i), result);
         }
         return result;
     }
@@ -49,16 +49,16 @@ public class LocalSimulator implements Simulator {
             for (int row = 0; row < a.length;row++) {
                 for (int col = 0; col < a.length; col++) {
                     a[row][col] = m[row][col];
-                    System.out.println("a["+row+"]["+col+"] = "+a[row][col]);
+                 //   System.out.println("a["+row+"]["+col+"] = "+a[row][col]);
                 }
             }
         }
         for (int i = 0; i < initial.length; i++) {
             result[i] = 0;
             for (int j = 0 ; j < initial.length; j++) {
-                System.out.println("a["+i+"]["+j+"] = "+a[i][j]+", initial was "+initial[j]);
+            //    System.out.println("a["+i+"]["+j+"] = "+a[i][j]+", initial was "+initial[j]);
                 result[i] = result[i] + a[i][j]*initial[j];
-                System.out.println("result["+i+"] = "+result[i]);
+            //    System.out.println("result["+i+"] = "+result[i]);
             }
         }
         return result;
@@ -69,8 +69,16 @@ public class LocalSimulator implements Simulator {
         int nq = m.getNQubits();
         double[] answer = new double[nq];
         double[] vectorresult = calculateResults(m);
+        int ressize = 1<<nq;
         for (int i = 0; i < nq; i++) {
-            answer[i] = Math.random();
+            int pw = nq-i-1;
+            int div = 1 << pw;
+            for (int j = 0; j < ressize; j++) {
+                int p1 = j / div;
+                if (p1 % 2 == 1) {
+                    answer[i] = answer[i] + vectorresult[j] * vectorresult[j];
+                }
+            }
         }
         return answer;
     }
@@ -126,20 +134,24 @@ public class LocalSimulator implements Simulator {
         LocalSimulator sim = new LocalSimulator();
         Model model = Model.getInstance();
         model.setNQubits(1);
-        model.setGates(GateConfig.of(Gate.NOGATE));
+        model.setGatesForCircuit(0, List.of(Gate.IDENTITY));
         double[] res = sim.calculateResults(model);
         System.out.println("SIMPLE res length should be 2: "+res.length);
         printResults(res);
+        double[] states = sim.calculateQubitStates(model);
+        printResults2(states);
     }
     
     private static void not1() {
         LocalSimulator sim = new LocalSimulator();
         Model model = Model.getInstance();
         model.setNQubits(1);
-        model.setGates(GateConfig.of(Gate.NOT));
+        model.setGatesForCircuit(0, List.of(Gate.NOT));
         double[] res = sim.calculateResults(model);
         System.out.println("NOT res length should be 2: "+res.length);
         printResults(res);
+        double[] states = sim.calculateQubitStates(model);
+        printResults2(states);
     }
         
     private static void hadamard1() {
@@ -147,10 +159,12 @@ public class LocalSimulator implements Simulator {
         LocalSimulator sim = new LocalSimulator();
         Model model = Model.getInstance();
         model.setNQubits(1);
-        model.setGates(GateConfig.of(Gate.HADAMARD));
+        model.setGatesForCircuit(0,List.of(Gate.HADAMARD));
         double[] res = sim.calculateResults(model);
         System.out.println("H res length should be 2: "+res.length);
         printResults(res);
+        double[] states = sim.calculateQubitStates(model);
+        printResults2(states);
     }
             
     private static void notnot1() {
@@ -158,14 +172,13 @@ public class LocalSimulator implements Simulator {
         LocalSimulator sim = new LocalSimulator();
         Model model = Model.getInstance();
         model.setNQubits(1);
-        GateConfig gates = GateConfig.of(
-            List.of(Gate.NOT),
-            List.of(Gate.NOT)
-        );
-        model.setGates(gates);
+        List<Gate> gates = List.of(Gate.NOT, Gate.NOT);
+        model.setGatesForCircuit(0, gates);
         double[] res = sim.calculateResults(model);
         System.out.println("not not length should be 2: "+res.length);
         printResults(res);
+        double[] states = sim.calculateQubitStates(model);
+        printResults2(states);
     }
                 
     private static void hhnot1() {
@@ -173,15 +186,14 @@ public class LocalSimulator implements Simulator {
         LocalSimulator sim = new LocalSimulator();
         Model model = Model.getInstance();
         model.setNQubits(1);
-        GateConfig gates = GateConfig.of(
-            List.of(Gate.HADAMARD),
-            List.of(Gate.HADAMARD),
-            List.of(Gate.NOT)
-        );
-        model.setGates(gates);
+        List gates = 
+            List.of(Gate.HADAMARD,Gate.HADAMARD,Gate.NOT);
+        model.setGatesForCircuit(0,gates);
         double[] res = sim.calculateResults(model);
         System.out.println("hhnot length should be 2: "+res.length);
         printResults(res);
+        double[] states = sim.calculateQubitStates(model);
+        printResults2(states);
     }
             
     private static void simple2() {
@@ -189,13 +201,13 @@ public class LocalSimulator implements Simulator {
         LocalSimulator sim = new LocalSimulator();
         Model model = Model.getInstance();
         model.setNQubits(2);
-        GateConfig gates = GateConfig.of(
-            Gate.NOGATE, Gate.NOGATE
-        );
+        GateConfig gates = GateConfig.of(List.of(Gate.IDENTITY), List.of(Gate.IDENTITY));
         model.setGates(gates);
         double[] res = sim.calculateResults(model);
         System.out.println("SIMPLE res length should be 4: "+res.length);
         printResults(res);
+        double[] states = sim.calculateQubitStates(model);
+        printResults2(states);
     }
                 
     private static void not2() {
@@ -203,20 +215,27 @@ public class LocalSimulator implements Simulator {
         LocalSimulator sim = new LocalSimulator();
         Model model = Model.getInstance();
         model.setNQubits(2);
-        GateConfig gates = GateConfig.of(
-            Gate.NOT, Gate.NOGATE
-        );
+        GateConfig gates = GateConfig.of(List.of(Gate.NOT), List.of(Gate.IDENTITY));
         model.setGates(gates);
         double[] res = sim.calculateResults(model);
         System.out.println("SIMPLE res length should be 4: "+res.length);
-        printResults(res);
+        printResults(res); // should be {0,0,1,0}
+        double[] states = sim.calculateQubitStates(model);
+        printResults2(states);
     }
+    
     private static void printResults (double[] res) {
         for (int i = 0; i < res.length; i++) {
             System.out.println("r["+i+"]: "+res[i] );
         }
     }
     
+        
+    private static void printResults2 (double[] res) {
+        for (int i = 0; i < res.length; i++) {
+            System.out.println("q["+i+"]: "+res[i] );
+        }
+    }
 }
 
 
