@@ -2,6 +2,7 @@
     rootColor: #7b7d7b;
     circuitColor: white;
     circuitSelectionColor: #f4faff;
+    icons-color: #636563;
 }
 
 .scroll-pane {
@@ -70,4 +71,14 @@
 
 .gate-symbol {
     -fx-background-color: #fffbf0;
+}
+
+
+.glyph-icon{
+    -fx-text-fill: icons-color;
+    -fx-fill: icons-color;
+}
+
+.glyph-icon:hover{
+    -fx-effect:  dropshadow(three-pass-box, rgba(0,0,0,0.2), 4, 0, 0, 0);
 }
