@@ -65,8 +65,6 @@ public class CircuitSkin extends SkinBase<Circuit> {
         });
 
         gateRow.setOnDragDropped(e -> {
-//            e.getSource();
-//            System.out.println("drag dropped: "+e.getSource());
 
             Dragboard db = e.getDragboard();
             if ( db.hasContent(GateSymbol.DRAGGABLE_GATE) ) {
@@ -76,7 +74,7 @@ public class CircuitSkin extends SkinBase<Circuit> {
                 if ( TransferMode.MOVE == e.getTransferMode()) {
 
                     // move the gate symbol between circuits
-                    ((Pane)symbol.getParent()).getChildren().remove(symbol);
+                    symbol.removeFromParent();
                     gateRow.getChildren().add(symbol);
                     e.setDropCompleted(true);
 

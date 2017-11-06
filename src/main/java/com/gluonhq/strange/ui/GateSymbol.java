@@ -83,7 +83,7 @@ public class GateSymbol extends Label {
         return menu;
     }
 
-    private void removeFromParent() {
+    public void removeFromParent() {
         Pane parent = (Pane) getParent();
         if (parent != null) {
             parent.getChildren().remove(this);
