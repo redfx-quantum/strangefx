@@ -2,11 +2,14 @@ package com.gluonhq.strange.ui;
 
 import com.gluonhq.strange.simulator.Gate;
 import javafx.geometry.Pos;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.Pane;
 
 import java.util.Objects;
 
@@ -34,6 +37,9 @@ public class GateSymbol extends Label {
         setAlignment(Pos.CENTER);
         setStyle("-fx-border-color: rootColor; -fx-padding: 10 5 10 5; -fx-text-fill: rootColor");
 
+        if (movable) {
+            setContextMenu(buildContextMenu());
+        }
 
         setOnDragDetected(e -> {
 
@@ -64,5 +70,23 @@ public class GateSymbol extends Label {
 
     public boolean isMovable() {
         return movable;
+    }
+
+    private ContextMenu buildContextMenu() {
+
+        ContextMenu menu = new ContextMenu();
+
+        MenuItem mnRemove = new MenuItem("Remove");
+        menu.setOnAction( e -> removeFromParent());
+
+        menu.getItems().addAll(mnRemove);
+        return menu;
+    }
+
+    private void removeFromParent() {
+        Pane parent = (Pane) getParent();
+        if (parent != null) {
+            parent.getChildren().remove(this);
+        }
     }
 }
