@@ -1,12 +1,11 @@
 package com.gluonhq.strange.ui;
 
+import com.gluonhq.strange.simulator.Gate;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -20,9 +19,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         BorderPane borderPane = new BorderPane();
-        Gate gateNot = new Gate("NOT", 1);
-        Gate gateH = new Gate("H", 2);
-        ToolBar gatesPane = new ToolBar(gateNot, gateH);
+        ToolBar gatesPane = new ToolBar(GateSymbol.of(Gate.NOT), GateSymbol.of(Gate.HADAMARD));
 
         VBox circuits = new VBox(new Circuit(0), new Circuit(1), new Circuit(2));
         ScrollPane scroller = new ScrollPane(circuits);

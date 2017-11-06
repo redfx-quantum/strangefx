@@ -1,5 +1,6 @@
 package com.gluonhq.strange.ui;
 
+import com.gluonhq.strange.simulator.Gate;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.input.ClipboardContent;
@@ -7,15 +8,23 @@ import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 
-public class Gate extends Label {
+import java.util.Objects;
+
+public class GateSymbol extends Label {
 
     private static final DataFormat DRAGGABLE_GATE = new DataFormat("draggable-gate");
 
-    private final int type;
+//    private final int type;
+    private Gate gate;
+
+    public static GateSymbol of( Gate gate ) {
+        return new GateSymbol(gate);
+    }
     
-    public Gate(String caption, int type) {
-        this.type = type;
-        setText(caption);
+    private GateSymbol( Gate gate ) {
+//        this.type = type;
+        this.gate = Objects.requireNonNull(gate);
+        setText(gate.getCaption());
         setMinWidth(40);
         setAlignment(Pos.CENTER);
         setStyle("-fx-border-color: rootColor; -fx-padding: 10 5 10 5; -fx-text-fill: rootColor");
@@ -43,9 +52,9 @@ public class Gate extends Label {
 
     }
     
-    public int getType() {
-        return this.type;
-    }
+//    public int getType() {
+//        return this.type;
+//    }
 
 
 }

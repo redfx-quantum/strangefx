@@ -5,7 +5,10 @@
  */
 package com.gluonhq.strange;
 
-import com.gluonhq.strange.ui.Gate;
+import com.gluonhq.strange.simulator.Gate;
+import com.gluonhq.strange.simulator.GateConfig;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,8 +23,8 @@ public class Model {
     private int nqubits;
     
     private double[] beginState;
-    private int[][] gates = new int[0][0];
-    
+    private GateConfig gates = GateConfig.of();
+
     private static Model instance = new Model();
     
     private Model() {        
@@ -41,22 +44,23 @@ public class Model {
     }
     
     
-    public void setGates(int[][] g) {
-        this.gates = g;
+    public void setGates(GateConfig gates) {
+        this.gates = gates;
     }
     
     public void setGatesForQubit(int n, List<Gate> gates) {
-        this.gates[n] = new int[gates.size()];
-        for (int i = 0; i < gates.size(); i++) {
-            this.gates[n][i] = gates.get(i).getType();
-        }
+        //TODO
+//        this.gates[n] = new int[gates.size()];
+//        for (int i = 0; i < gates.size(); i++) {
+//            this.gates[n][i] = gates.get(i).getType();
+//        }
     }
     
     public int getNumberOfSteps() {
-        return this.gates.length;
+        return this.gates.size();
     }
     
-    public int[] getStep(int i) {
-        return this.gates[i];
+    public List<Gate> getStep(int i) {
+        return this.gates.get(i);
     }
 }

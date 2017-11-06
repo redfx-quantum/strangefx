@@ -5,9 +5,11 @@
  */
 package com.gluonhq.strange.simulator.local;
 
+import com.gluonhq.strange.simulator.Gate;
+import com.gluonhq.strange.simulator.GateConfig;
 import com.gluonhq.strange.simulator.Simulator;
 import com.gluonhq.strange.Model;
-import java.util.Arrays;
+
 import java.util.List;
 
 /**
@@ -29,12 +31,12 @@ public class LocalSimulator implements Simulator {
         return result;
     }
     
-    private double[] applyStep(int[] step, double[] initial) {
+    private double[] applyStep(List<Gate> step, double[] initial) {
         double[] result = new double[initial.length];
-        double[][] a = getGate(step[0]);
-        for (int i = 1; i < step.length; i++) {
+        double[][] a =  step.get(0).getMatrix(); //getGate(step.get(0).getType());
+        for (int i = 1; i < step.size(); i++) {
             double[][] m = new double[4<<i][4<<i];
-            double[][] gate = getGate(step[i]);
+            double[][] gate = step.get(i).getMatrix(); //getGate(step.get(i).getType());
             for (int row = 0; row < a.length; row ++) {
                 for (int col = 0; col < a.length; col++) {
                     m[2*row][2*col] = a[row][col]*gate[0][0];
@@ -62,26 +64,26 @@ public class LocalSimulator implements Simulator {
         return result;
     }
     
-    private double[][] getGate(int g) {
-        double[][]answer = new double[2][2];
-
-        if (Model.GATE_NOT == g) {
-            answer[0][1] = 1;
-            answer[1][0] = 1;
-            return answer;
-        }
-        if (Model.GATE_HADAMARD == g) {
-            double s2 = 1./Math.sqrt(2.);
-            answer[0][0] = s2;
-            answer[0][1] = s2;
-            answer[1][0] = s2;
-            answer[1][1] = -s2;
-            return answer;
-        }
-        answer[0][0] = 1;
-        answer[1][1] = 1;
-        return answer;
-    }
+//    private double[][] getGate(int g) {
+//        double[][]answer = new double[2][2];
+//
+//        if (Model.GATE_NOT == g) {
+//            answer[0][1] = 1;
+//            answer[1][0] = 1;
+//            return answer;
+//        }
+//        if (Model.GATE_HADAMARD == g) {
+//            double s2 = 1./Math.sqrt(2.);
+//            answer[0][0] = s2;
+//            answer[0][1] = s2;
+//            answer[1][0] = s2;
+//            answer[1][1] = -s2;
+//            return answer;
+//        }
+//        answer[0][0] = 1;
+//        answer[1][1] = 1;
+//        return answer;
+//    }
     
     public static void main(String[] args) {
         Model model = Model.getInstance();
@@ -94,7 +96,7 @@ public class LocalSimulator implements Simulator {
         simple2();
         not2();
         
-//        
+
 //        model.setNQubits(2);
 //        res = sim.calculateResults(model);
 //        System.out.println("res length should be 4: "+res.length);
@@ -113,8 +115,7 @@ public class LocalSimulator implements Simulator {
         LocalSimulator sim = new LocalSimulator();
         Model model = Model.getInstance();
         model.setNQubits(1);
-        int[][] gates = new int[1][1];
-        model.setGates(gates);
+        model.setGates(GateConfig.of(Gate.NOGATE));
         double[] res = sim.calculateResults(model);
         System.out.println("SIMPLE res length should be 2: "+res.length);
         printResults(res);
@@ -124,9 +125,7 @@ public class LocalSimulator implements Simulator {
         LocalSimulator sim = new LocalSimulator();
         Model model = Model.getInstance();
         model.setNQubits(1);
-        int[][] gates = new int[1][1];
-        gates[0][0] = Model.GATE_NOT;
-        model.setGates(gates);
+        model.setGates(GateConfig.of(Gate.NOT));
         double[] res = sim.calculateResults(model);
         System.out.println("NOT res length should be 2: "+res.length);
         printResults(res);
@@ -137,9 +136,7 @@ public class LocalSimulator implements Simulator {
         LocalSimulator sim = new LocalSimulator();
         Model model = Model.getInstance();
         model.setNQubits(1);
-        int[][] gates = new int[1][1];
-        gates[0][0] = Model.GATE_HADAMARD;
-        model.setGates(gates);
+        model.setGates(GateConfig.of(Gate.HADAMARD));
         double[] res = sim.calculateResults(model);
         System.out.println("H res length should be 2: "+res.length);
         printResults(res);
@@ -150,9 +147,10 @@ public class LocalSimulator implements Simulator {
         LocalSimulator sim = new LocalSimulator();
         Model model = Model.getInstance();
         model.setNQubits(1);
-        int[][] gates = new int[2][1];
-        gates[0][0] = Model.GATE_NOT;
-        gates[1][0] = Model.GATE_NOT;
+        GateConfig gates = GateConfig.of(
+            List.of(Gate.NOT),
+            List.of(Gate.NOT)
+        );
         model.setGates(gates);
         double[] res = sim.calculateResults(model);
         System.out.println("not not length should be 2: "+res.length);
@@ -164,10 +162,11 @@ public class LocalSimulator implements Simulator {
         LocalSimulator sim = new LocalSimulator();
         Model model = Model.getInstance();
         model.setNQubits(1);
-        int[][] gates = new int[3][1];
-        gates[0][0] = Model.GATE_HADAMARD;
-        gates[1][0] = Model.GATE_HADAMARD;
-        gates[2][0] = Model.GATE_NOT;
+        GateConfig gates = GateConfig.of(
+            List.of(Gate.HADAMARD),
+            List.of(Gate.HADAMARD),
+            List.of(Gate.NOT)
+        );
         model.setGates(gates);
         double[] res = sim.calculateResults(model);
         System.out.println("hhnot length should be 2: "+res.length);
@@ -179,7 +178,9 @@ public class LocalSimulator implements Simulator {
         LocalSimulator sim = new LocalSimulator();
         Model model = Model.getInstance();
         model.setNQubits(2);
-        int[][] gates = new int[1][2];
+        GateConfig gates = GateConfig.of(
+            Gate.NOGATE, Gate.NOGATE
+        );
         model.setGates(gates);
         double[] res = sim.calculateResults(model);
         System.out.println("SIMPLE res length should be 4: "+res.length);
@@ -191,8 +192,9 @@ public class LocalSimulator implements Simulator {
         LocalSimulator sim = new LocalSimulator();
         Model model = Model.getInstance();
         model.setNQubits(2);
-        int[][] gates = new int[1][2];
-        gates[0][0] = Model.GATE_NOT;
+        GateConfig gates = GateConfig.of(
+            Gate.NOT, Gate.NOGATE
+        );
         model.setGates(gates);
         double[] res = sim.calculateResults(model);
         System.out.println("SIMPLE res length should be 4: "+res.length);
@@ -205,3 +207,5 @@ public class LocalSimulator implements Simulator {
     }
     
 }
+
+

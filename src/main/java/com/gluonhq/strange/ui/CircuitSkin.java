@@ -2,7 +2,7 @@ package com.gluonhq.strange.ui;
 
 import com.gluonhq.strange.Model;
 import java.util.List;
-import javafx.beans.InvalidationListener;
+
 import javafx.beans.Observable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -33,10 +33,12 @@ public class CircuitSkin extends SkinBase<Circuit> {
         hbox.getChildren().addAll(label, dragableArea, getSkinnable().getOutput());
         HBox.setHgrow(label, Priority.NEVER);
         HBox.setHgrow(dragableArea, Priority.ALWAYS);
-        circuit.getGates().addListener((Observable observable) -> {
-            List<Gate> gates = circuit.getGates();
-            Model.getInstance().setGatesForQubit(circuit.getIndex(), gates);
-            System.out.println("GATES for qubit "+circuit.getIndex()+": "+gates);
+
+        circuit.getGateSymbols().addListener((Observable observable) -> {
+            List<GateSymbol> gateSymbols = circuit.getGateSymbols();
+            //TODO
+//            Model.getInstance().setGatesForQubit(circuit.getIndex(), gateSymbols);
+            System.out.println("GATES for qubit "+circuit.getIndex()+": "+ gateSymbols);
         });
 
     }

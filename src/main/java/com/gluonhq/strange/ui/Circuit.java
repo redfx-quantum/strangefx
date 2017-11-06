@@ -1,5 +1,6 @@
 package com.gluonhq.strange.ui;
 
+import com.gluonhq.strange.simulator.Gate;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
@@ -10,7 +11,7 @@ public class Circuit extends Control {
 
     private CircuitOutput output = new CircuitOutput();
     private int idx; // the number of the qubit
-    private ObservableList<Gate> gates = FXCollections.observableArrayList();
+    private ObservableList<GateSymbol> gateSymbols = FXCollections.observableArrayList();
     
     public int getIndex() {
         return this.idx;
@@ -37,7 +38,7 @@ public class Circuit extends Control {
         this.setOnDragDropped(e -> {
             e.getSource();
             System.out.println("drag dropped: "+e.getSource());
-            gates.add(new Gate("D", 1));
+            gateSymbols.add(GateSymbol.of(Gate.NOT));
         });
     }
 
@@ -46,8 +47,8 @@ public class Circuit extends Control {
         return new CircuitSkin(this);
     }
 
-    public ObservableList<Gate> getGates() {
-        return this.gates;
+    public ObservableList<GateSymbol> getGateSymbols() {
+        return this.gateSymbols;
     }
     
     public CircuitOutput getOutput() {
