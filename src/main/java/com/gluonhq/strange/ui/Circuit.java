@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 
 public class Circuit extends Control {
 
+    private static final double HEIGHT = 70;
+
     private CircuitOutput output = new CircuitOutput();
     private int idx; // the number of the qubit
     private ObservableList<GateSymbol> gates = FXCollections.observableArrayList();
@@ -23,7 +25,9 @@ public class Circuit extends Control {
     
     public Circuit(int idx) {
         this.idx = idx;
-        setPrefHeight(70);
+        setPrefHeight(HEIGHT);
+        setMaxHeight(HEIGHT);
+        setMinHeight(HEIGHT);
         getStyleClass().add("circuit");
         model.getEndStates().addListener((Observable o)-> {
             double mv = model.getEndStates().get(idx);
