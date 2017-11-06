@@ -19,7 +19,10 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         BorderPane borderPane = new BorderPane();
-        ToolBar gatesPane = new ToolBar(GateSymbol.of(Gate.NOT), GateSymbol.of(Gate.HADAMARD));
+        ToolBar gatesPane = new ToolBar(
+                GateSymbol.of(Gate.NOT, false),
+                GateSymbol.of(Gate.HADAMARD, false)
+        );
 
         VBox circuits = new VBox(new Circuit(0), new Circuit(1), new Circuit(2));
         ScrollPane scroller = new ScrollPane(circuits);

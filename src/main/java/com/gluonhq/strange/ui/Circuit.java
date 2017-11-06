@@ -1,18 +1,20 @@
 package com.gluonhq.strange.ui;
 
-import com.gluonhq.strange.simulator.Gate;
+import com.gluonhq.strange.Model;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
-import javafx.scene.input.TransferMode;
+
+import java.util.stream.Collectors;
 
 public class Circuit extends Control {
 
     private CircuitOutput output = new CircuitOutput();
     private int idx; // the number of the qubit
-    private ObservableList<GateSymbol> gateSymbols = FXCollections.observableArrayList();
-    
+    private ObservableList<GateSymbol> gates = FXCollections.observableArrayList();
+
     public int getIndex() {
         return this.idx;
     }
@@ -20,26 +22,13 @@ public class Circuit extends Control {
     public Circuit(int idx) {
         this.idx = idx;
         setPrefHeight(70);
-//        setPrefWidth(Double.MAX_VALUE);
-        //setStyle("-fx-background-color: white");
         getStyleClass().add("circuit");
-        this.setOnDragOver(event -> {
-            
-             if (event.getGestureSource() != this &&
-                event.getDragboard().hasString()) {
-            /* allow for moving */
-            event.acceptTransferModes(TransferMode.MOVE);
-        }
-        
-        event.consume();
-         
+
+        gates.addListener( (Observable o) -> {
+            Model.getInstance().setGatesForQubit(
+                    idx, gates.stream().map(GateSymbol::getGate).collect(Collectors.toList()));
         });
-        
-        this.setOnDragDropped(e -> {
-            e.getSource();
-            System.out.println("drag dropped: "+e.getSource());
-            gateSymbols.add(GateSymbol.of(Gate.NOT));
-        });
+
     }
 
     @Override
@@ -48,7 +37,7 @@ public class Circuit extends Control {
     }
 
     public ObservableList<GateSymbol> getGateSymbols() {
-        return this.gateSymbols;
+        return this.gates;
     }
     
     public CircuitOutput getOutput() {

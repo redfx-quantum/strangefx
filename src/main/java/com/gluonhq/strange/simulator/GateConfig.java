@@ -24,7 +24,9 @@ public class GateConfig extends ArrayList<List<Gate>> {
         return GateConfig.of(List.of(Objects.requireNonNull(gate)));
     }
 
-    public static GateConfig of(Gate... gates) {
-        return GateConfig.of( Arrays.asList(gates) );
+    public static GateConfig of(Gate gate, Gate... gates) {
+        GateConfig gateConfig = GateConfig.of(gate);
+        gateConfig.get(0).addAll(Arrays.asList(gates));
+        return gateConfig;
     }
 }

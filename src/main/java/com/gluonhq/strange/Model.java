@@ -8,7 +8,6 @@ package com.gluonhq.strange;
 import com.gluonhq.strange.simulator.Gate;
 import com.gluonhq.strange.simulator.GateConfig;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +22,7 @@ public class Model {
     private int nqubits;
     
     private double[] beginState;
-    private GateConfig gates = GateConfig.of();
+    private GateConfig gates = GateConfig.of(Gate.NOGATE);
 
     private static Model instance = new Model();
     
@@ -49,11 +48,7 @@ public class Model {
     }
     
     public void setGatesForQubit(int n, List<Gate> gates) {
-        //TODO
-//        this.gates[n] = new int[gates.size()];
-//        for (int i = 0; i < gates.size(); i++) {
-//            this.gates[n][i] = gates.get(i).getType();
-//        }
+        this.gates.set(0, gates);
     }
     
     public int getNumberOfSteps() {

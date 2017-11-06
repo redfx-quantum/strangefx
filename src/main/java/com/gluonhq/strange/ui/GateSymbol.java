@@ -12,18 +12,23 @@ import java.util.Objects;
 
 public class GateSymbol extends Label {
 
-    private static final DataFormat DRAGGABLE_GATE = new DataFormat("draggable-gate");
+    static final DataFormat DRAGGABLE_GATE = new DataFormat("draggable-gate");
 
-//    private final int type;
-    private Gate gate;
+    private final Gate gate;
+    private final boolean movable;
+
+    public static GateSymbol of( Gate gate, Boolean movable ) {
+        return new GateSymbol(gate, movable);
+    }
 
     public static GateSymbol of( Gate gate ) {
-        return new GateSymbol(gate);
+        return new GateSymbol(gate, true);
     }
     
-    private GateSymbol( Gate gate ) {
-//        this.type = type;
+    private GateSymbol( Gate gate, boolean movable ) {
+        getStyleClass().setAll("gate-symbol");
         this.gate = Objects.requireNonNull(gate);
+        this.movable = movable;
         setText(gate.getCaption());
         setMinWidth(40);
         setAlignment(Pos.CENTER);
@@ -31,14 +36,15 @@ public class GateSymbol extends Label {
 
 
         setOnDragDetected(e -> {
-            Dragboard db = this.startDragAndDrop(TransferMode.ANY);
+
+            System.getProperties().put(DRAGGABLE_GATE, this);
+
+            Dragboard db = this.startDragAndDrop(  isMovable()? TransferMode.MOVE: TransferMode.COPY);
             db.setDragView(this.snapshot(null, null));
-
             ClipboardContent content = new ClipboardContent();
-            content.putString(this.getText());
-            db.setContent(content);
-
+            content.putString(gate.getCaption());
             content.put(DRAGGABLE_GATE, "");
+            db.setContent(content);
             e.consume();
         });
         
@@ -51,10 +57,12 @@ public class GateSymbol extends Label {
         });
 
     }
-    
-//    public int getType() {
-//        return this.type;
-//    }
 
+    public Gate getGate() {
+        return gate;
+    }
 
+    public boolean isMovable() {
+        return movable;
+    }
 }

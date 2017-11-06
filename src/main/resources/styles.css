@@ -14,7 +14,6 @@
 
 .circuit {
     -fx-background-color: circuitColor;
-    -fx-padding: 5 0 5 0;
 }
 
 .circuit:hover {
@@ -41,7 +40,9 @@
 
 .circuit .draggable-area {
     -fx-background-color: transparent;
-    -fx-padding: 7 5 7 0;
+    /*-fx-padding: 7 5 7 0;*/
+    -fx-spacing: 5;
+    -fx-alignment: center-left;
 }
 
 .circuit > .circuit-output {
@@ -65,4 +66,8 @@
 .circuit-output > .percentage {
     -fx-fill: springgreen;
     -fx-stroke-width: 0;
+}
+
+.gate-symbol {
+    -fx-background-color: #fffbf0;
 }
