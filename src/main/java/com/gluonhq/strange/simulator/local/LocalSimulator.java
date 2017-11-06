@@ -10,6 +10,7 @@ import com.gluonhq.strange.simulator.GateConfig;
 import com.gluonhq.strange.simulator.Simulator;
 import com.gluonhq.strange.Model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,6 +19,24 @@ import java.util.List;
  */
 public class LocalSimulator implements Simulator {
 
+    private final Model model = Model.getInstance();
+    public LocalSimulator() {
+        model.refreshRequest().addListener((obs, oldv, newv) -> {
+            System.out.println("refreshrequst set to "+newv);
+            if (newv) {
+                System.out.println("CALCULATE results!");
+                double[] res2 = calculateQubitStates(model);
+                printResults2(res2);
+                List<Double> reslist = new ArrayList<>();
+                for (double d: res2) {reslist.add(d);}
+                model.getEndStates().setAll(reslist);
+                System.out.println("endstates = "+model.getEndStates());
+                model.refreshRequest().set(false);
+                System.out.println("CALCULATE results done and request set to false!");
+
+            }
+        });
+    }
     @Override
     public double[] calculateResults(Model m) {
         int n = m.getNQubits();

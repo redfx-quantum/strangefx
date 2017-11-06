@@ -1,5 +1,6 @@
 package com.gluonhq.strange.ui;
 
+import com.gluonhq.strange.Model;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -7,6 +8,7 @@ import javafx.scene.layout.VBox;
 
 public class CircuitBoard extends VBox {
 
+    private Model model = Model.getInstance();
     private ObservableList<Circuit> circuits = FXCollections.observableArrayList();
 
     public CircuitBoard() {
@@ -14,6 +16,7 @@ public class CircuitBoard extends VBox {
         circuits.addListener( (Observable o) -> {
             getChildren().clear();
             getChildren().setAll(circuits);
+            model.setNQubits(circuits.size());
         });
     }
 

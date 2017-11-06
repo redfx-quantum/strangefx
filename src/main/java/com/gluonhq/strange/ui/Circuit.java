@@ -8,6 +8,8 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 
 import java.util.stream.Collectors;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 public class Circuit extends Control {
 
@@ -36,7 +38,8 @@ public class Circuit extends Control {
         gates.addListener( (Observable o) -> {
             model.setGatesForCircuit(
                     idx, gates.stream().map(GateSymbol::getGate).collect(Collectors.toList()));
-            output.setMeasuredChance(Math.random());
+            
+//            output.setMeasuredChance(Math.random());
         });
 
     }

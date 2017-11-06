@@ -1,6 +1,8 @@
 package com.gluonhq.strange.ui;
 
+import com.gluonhq.strange.Model;
 import com.gluonhq.strange.simulator.Gate;
+import com.gluonhq.strange.simulator.local.LocalSimulator;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.application.Application;
@@ -24,7 +26,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-
+        LocalSimulator sim = new LocalSimulator();
+        
         CircuitBoard board = new CircuitBoard();
 
         HBox toolbarFiller = new HBox();
@@ -47,6 +50,7 @@ public class Main extends Application {
         );
 
         board.getCircuits().addAll(new Circuit(0), new Circuit(1), new Circuit(2));
+        Model.getInstance().refreshRequest().set(true);
         ScrollPane scroller = new ScrollPane(board);
         scroller.setPannable(true);
         scroller.setFitToWidth(true);
