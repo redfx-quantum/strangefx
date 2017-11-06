@@ -64,6 +64,17 @@ public class LocalSimulator implements Simulator {
         return result;
     }
     
+    @Override
+    public double[] calculateQubitStates(Model m) {
+        int nq = m.getNQubits();
+        double[] answer = new double[nq];
+        double[] vectorresult = calculateResults(m);
+        for (int i = 0; i < nq; i++) {
+            answer[i] = Math.random();
+        }
+        return answer;
+    }
+    
 //    private double[][] getGate(int g) {
 //        double[][]answer = new double[2][2];
 //

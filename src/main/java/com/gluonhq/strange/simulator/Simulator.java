@@ -15,4 +15,6 @@ public interface Simulator {
     
     public double[] calculateResults(Model m);
     
+    public double[] calculateQubitStates(Model m);
+    
 }

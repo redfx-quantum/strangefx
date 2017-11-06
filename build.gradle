@@ -1,3 +1,4 @@
 apply plugin: 'java'
 apply plugin: 'application'
 mainClassName = 'com.gluonhq.strange.ui.Main'
+// mainClassName = 'com.gluonhq.strange.simulator.local.LocalSimulator'

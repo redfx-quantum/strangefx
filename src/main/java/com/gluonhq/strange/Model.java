@@ -9,6 +9,8 @@ import com.gluonhq.strange.simulator.Gate;
 import com.gluonhq.strange.simulator.GateConfig;
 
 import java.util.List;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  *
@@ -24,13 +26,20 @@ public class Model {
     private double[] beginState;
     private GateConfig gates = GateConfig.of(Gate.NOGATE);
 
+    private ObservableList<Double> endStates = FXCollections.observableArrayList();
+    
     private static Model instance = new Model();
+    
     
     private Model() {        
     }
     
     public static Model getInstance() {
         return instance;
+    }
+    
+    public ObservableList<Double> getEndStates() {
+        return endStates;
     }
     
     public void setNQubits(int n) {

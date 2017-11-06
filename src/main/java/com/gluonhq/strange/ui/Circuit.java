@@ -14,6 +14,8 @@ public class Circuit extends Control {
     private CircuitOutput output = new CircuitOutput();
     private int idx; // the number of the qubit
     private ObservableList<GateSymbol> gates = FXCollections.observableArrayList();
+    
+    private final Model model = Model.getInstance();
 
     public int getIndex() {
         return this.idx;
@@ -23,9 +25,12 @@ public class Circuit extends Control {
         this.idx = idx;
         setPrefHeight(70);
         getStyleClass().add("circuit");
-
+        model.getEndStates().addListener((Observable o)-> {
+            double mv = model.getEndStates().get(idx);
+            output.setMeasuredChance(mv);
+        });
         gates.addListener( (Observable o) -> {
-            Model.getInstance().setGatesForQubit(
+            model.setGatesForQubit(
                     idx, gates.stream().map(GateSymbol::getGate).collect(Collectors.toList()));
         });
 
