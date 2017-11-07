@@ -35,7 +35,7 @@ public class Main extends Application {
 
         Button btAddCircuit = new Button("",
                 MaterialIconFactory.get().createIcon(MaterialIcon.PLAYLIST_ADD, "2em"));
-        //btAddCircuit.setOnAction( e -> board.getCircuits().add( new Circuit(board.getCircuits().size())));
+        btAddCircuit.setOnAction( e -> board.getCircuits().add( new Circuit(board.getCircuits().size())));
 
         ImageView logo = new ImageView("/Gluon_combined_logo_300px.png");
         logo.setPreserveRatio(true);
