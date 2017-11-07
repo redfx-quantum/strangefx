@@ -4,7 +4,6 @@ import com.gluonhq.strange.Model;
 import com.gluonhq.strange.simulator.Gate;
 import com.gluonhq.strange.simulator.GateConfig;
 import com.gluonhq.strange.simulator.local.LocalSimulator;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

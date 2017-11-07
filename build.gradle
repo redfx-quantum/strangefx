@@ -10,4 +10,5 @@ repositories {
 
 dependencies {
     compile 'de.jensd:fontawesomefx-materialicons:2.2.0-9'
+    testCompile 'org.junit.jupiter:junit-jupiter-engine:5.0.0'
 }

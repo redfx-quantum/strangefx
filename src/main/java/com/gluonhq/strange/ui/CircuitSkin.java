@@ -6,9 +6,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.scene.shape.Line;
 
 import java.util.stream.Collectors;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 public class CircuitSkin extends SkinBase<Circuit> {
 
     private Line line = new Line();
-    private HBox hbox = new HBox();
+    private BorderPane content = new BorderPane();
     private Label label = new Label("IO>");
 
     private HBox gateRow = new HBox();
@@ -25,18 +24,19 @@ public class CircuitSkin extends SkinBase<Circuit> {
     CircuitSkin(Circuit control) {
         super(control);
         this.circuit = control;
-        getChildren().addAll(line, hbox);
+        getChildren().addAll(line, content);
 
         line.getStyleClass().add("center-line");
         label.getStyleClass().add("line-label");
-        gateRow.getStyleClass().add("draggable-area");
+        gateRow.getStyleClass().add("gate-row");
 
-        hbox.setStyle("-fx-padding: 10 5 10 0");
-
-        hbox.setAlignment(Pos.CENTER_LEFT);
-        hbox.getChildren().addAll(label, gateRow, getSkinnable().getOutput());
-        HBox.setHgrow(label, Priority.NEVER);
-        HBox.setHgrow(gateRow, Priority.ALWAYS);
+        content.setStyle("-fx-padding: 10 5 10 0");
+        content.setLeft(label);
+        content.setCenter(gateRow);
+        content.setRight(getSkinnable().getOutput());
+        BorderPane.setAlignment(label, Pos.CENTER_LEFT);
+        BorderPane.setAlignment(getSkinnable().getOutput(), Pos.CENTER_LEFT);
+        BorderPane.clearConstraints(gateRow);
 
         // initial update from control's gates
         gateRow.getChildren().setAll(control.getGateSymbols());
@@ -93,13 +93,46 @@ public class CircuitSkin extends SkinBase<Circuit> {
 
     }
 
+    @Override
+    protected double computeMinWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
+        return content.minWidth(height);
+    }
+
+    @Override
+    protected double computeMaxWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
+        return content.maxWidth(height);
+    }
+
+    @Override
+    protected double computeMinHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
+        return content.minHeight(width);
+    }
+
+    @Override
+    protected double computeMaxHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
+        return content.maxHeight(width);
+    }
+
+    @Override
+    protected double computePrefHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
+        return content.prefHeight(width);
+    }
+
+    @Override
+    protected double computePrefWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
+        return content.prefWidth(height);
+    }
 
     @Override
     protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
+
+        double middleY = contentHeight / 2;
+
         line.setStartX(0);
         line.setEndX(contentWidth);
-        line.setStartY(contentHeight / 2);
-        line.setEndY(contentHeight / 2);
-        hbox.resizeRelocate(0, 0, contentWidth, contentHeight);
+        line.setStartY(middleY);
+        line.setEndY(middleY);
+
+        content.resizeRelocate(0, 0, contentWidth, contentHeight);
     }
 }

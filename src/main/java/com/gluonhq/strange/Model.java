@@ -21,9 +21,6 @@ import javafx.collections.ObservableList;
  */
 public class Model {
     
-    public static final int GATE_NOT = 1;
-    public static final int GATE_HADAMARD = 2;
-    
     private int nqubits;
     
     private double[] beginState;

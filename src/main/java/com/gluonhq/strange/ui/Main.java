@@ -40,7 +40,7 @@ public class Main extends Application {
         ImageView logo = new ImageView("/Gluon_combined_logo_300px.png");
         logo.setPreserveRatio(true);
         logo.setFitWidth(100);
-        ToolBar gatesPane = new ToolBar(
+        ToolBar toolbar = new ToolBar(
                 btAddCircuit,
                 new Separator(),
                 GateSymbol.of(Gate.NOT, false),
@@ -56,7 +56,7 @@ public class Main extends Application {
         scroller.setFitToWidth(true);
 
         BorderPane borderPane = new BorderPane();
-        borderPane.setTop(gatesPane);
+        borderPane.setTop(toolbar);
         borderPane.setCenter(scroller);
 
         Scene scene = new Scene(borderPane, 600, 400);

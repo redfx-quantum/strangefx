@@ -2,16 +2,16 @@ package com.gluonhq.strange.ui;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.Pane;
 
 public class CircuitOutputSkin extends SkinBase<CircuitOutput> {
 
-
-    private Rectangle percentageRect = new Rectangle();
+    private Pane percentageRect = new Pane();
     private Label label = new Label();
 
-    protected CircuitOutputSkin(CircuitOutput control) {
+    CircuitOutputSkin(CircuitOutput control) {
         super(control);
+
 
         getSkinnable().measuredChanceProperty().addListener((o, ov, value) -> {
             label.setText(outputValue2String(value.doubleValue()));
@@ -31,11 +31,8 @@ public class CircuitOutputSkin extends SkinBase<CircuitOutput> {
     @Override
     protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
 
-        percentageRect.setX(1);
-        percentageRect.setWidth(contentWidth);
-        double height = contentHeight - contentHeight * getSkinnable().getMeasuredChance();
-        percentageRect.setY(height + 1);
-        percentageRect.setHeight(height);
+        double height = contentHeight * getSkinnable().getMeasuredChance();
+        percentageRect.resizeRelocate(1, contentHeight-height+1, contentWidth, height);
 
         label.resize(contentWidth, contentHeight);
 
