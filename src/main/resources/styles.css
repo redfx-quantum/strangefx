@@ -1,6 +1,6 @@
 .root {
     rootColor: #7b7d7b;
-    circuitColor: white;
+    circuitColor: #f2f2f2;
     circuitSelectionColor: #f4faff;
     icons-color: #636563;
 }
@@ -23,6 +23,7 @@
 
 .circuit > .center-line {
     -fx-stroke: rootColor;
+    -fx-stroke-width: 2;
 }
 
 /*.circuit:hover > .center-line {
@@ -33,10 +34,12 @@
     -fx-padding: 10;
     -fx-background-color: circuitColor;
     -fx-text-fill: rootColor;
+    -fx-font-weight: bold;
 }
 
 .circuit:hover .line-label {
     -fx-background-color: circuitSelectionColor;
+
 }
 
 .circuit .gate-row {
@@ -52,39 +55,45 @@
 }
 
 .circuit-output {
-    -fx-background-color: #f0f9f0;
+    -fx-background-color: #A9CB4D;
     -fx-border-color: rootColor;
     -fx-border-width: 0;
     /*-fx-effect: dropshadow(three-pass-box, rgba(7,7,7,0.5), 7, 0, 2, 2);*/
 }
 
 .circuit-output > .label {
-    -fx-text-fill: black;
+    -fx-text-fill: white;
     -fx-alignment: center;
     -fx-font-size: .8em;
+    -fx-font-weight: bold;
     -fx-border-width: 1;
-    -fx-border-color: rootColor;
+    /*-fx-border-color: rootColor;*/
 }
 
 .circuit-output > .percentage {
-    -fx-background-color: springgreen;
+    -fx-background-color: #72b94e;
     -fx-stroke-width: 0;
 }
 
 .gate-symbol {
-    -fx-background-color: #fffbf0;
+    -fx-padding: 7;
+    -fx-background-color: #17C0EE;
+    -fx-border-width: 0;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 1.4em;
 }
 
 
 .glyph-icon{
-    -fx-text-fill: icons-color;
-    -fx-fill: icons-color;
+    -fx-text-fill: icon-color;
+    -fx-fill: icon-color;
 }
 
-.glyph-icon:selected {
+./*glyph-icon:selected {
     -fx-text-fill: white;
     -fx-fill: white;
-}
+}*/
 
 .glyph-icon:hover{
     -fx-effect:  dropshadow(three-pass-box, rgba(0,0,0,0.2), 4, 0, 0, 0);

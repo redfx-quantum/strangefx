@@ -32,7 +32,7 @@ public class CircuitOutputSkin extends SkinBase<CircuitOutput> {
     protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
 
         double height = contentHeight * getSkinnable().getMeasuredChance();
-        percentageRect.resizeRelocate(1, contentHeight-height+1, contentWidth, height);
+        percentageRect.resizeRelocate(0, contentHeight-height, contentWidth, height);
 
         label.resize(contentWidth, contentHeight);
 

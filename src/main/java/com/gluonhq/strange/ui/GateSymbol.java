@@ -37,7 +37,6 @@ public class GateSymbol extends Label {
         setText(gate.getCaption());
         setMinWidth(40);
         setAlignment(Pos.CENTER);
-        setStyle("-fx-border-color: rootColor; -fx-padding: 10 5 10 5; -fx-text-fill: rootColor");
 
         if (movable) {
             setContextMenu(buildContextMenu());

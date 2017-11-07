@@ -10,9 +10,9 @@ public class CircuitOutput extends Control {
 
     public CircuitOutput() {
         getStyleClass().add("circuit-output");
-//        prefWidthProperty().bind(prefHeightProperty());
-        setPrefWidth(45);
-        setPrefHeight(45);
+
+        setPrefWidth(50);
+        setPrefHeight(50);
 
         setMinSize(Control.USE_PREF_SIZE, Control.USE_PREF_SIZE);
         setMaxSize(Control.USE_PREF_SIZE, Control.USE_PREF_SIZE);
