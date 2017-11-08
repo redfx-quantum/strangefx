@@ -24,6 +24,7 @@ public class Measurement extends Region {
         progressBase.setBottom(progress);
         progress.setPrefHeight(0);
         progress.getStyleClass().add("progress");
+
         label.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
         StackPane stack = new StackPane(progressBase, label);
@@ -48,7 +49,7 @@ public class Measurement extends Region {
         double chance = getMeasuredChance();
         if ( chance == 0d) return "Off";
         if (chance == 1d) return "On";
-        return String.format("%.2f%%", chance * 100);
+        return String.format("%2.1f%%", chance * 100);
     }
 
     // measuredChanceProperty
