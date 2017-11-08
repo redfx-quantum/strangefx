@@ -34,7 +34,7 @@ public class Qubit extends Region {
 
         this.idx = index;
 
-        title.setText( String.format("q%d  IO>", idx) );
+        title.setText( String.format("q[%d] IO>", idx) );
 
         getStyleClass().add("qubit");
 

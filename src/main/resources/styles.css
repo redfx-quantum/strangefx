@@ -1,7 +1,6 @@
 .root {
     rootColor: #7b7d7b;
-    circuitColor: #f2f2f2;
-    circuitSelectionColor: #f4faff;
+    qubitColor: white;
     icon-color: #636563;
 }
 
@@ -10,11 +9,11 @@
 }
 
 .scroll-pane > .viewport {
-    -fx-background-color: circuitColor;
+    -fx-background-color: qubitColor;
 }
 
 .qubit {
-    -fx-background-color: circuitColor;
+    -fx-background-color: qubitColor;
     -fx-pref-height: 77;
 }
 
@@ -25,7 +24,7 @@
 
 .qubit .title {
     -fx-padding: 10;
-    -fx-background-color: circuitColor;
+    -fx-background-color: qubitColor;
     -fx-text-fill: rootColor;
     -fx-font-weight: bold;
     -fx-alignment: center;
@@ -38,7 +37,6 @@
 
 .qubit .gate-row {
     -fx-background-color: transparent;
-    /*-fx-padding: 7 5 7 0;*/
     -fx-spacing: 5;
     -fx-alignment: center-left;
 }
