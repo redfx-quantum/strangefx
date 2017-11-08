@@ -49,19 +49,15 @@
     -fx-alignment: center-left;
 }
 
-.circuit > .circuit-output {
-    -fx-background-color: transparent;
-    /*-fx-padding: 15 5 15 0;*/
-}
-
-.circuit-output {
+.measurement {
     -fx-background-color: #A9CB4D;
     -fx-border-color: rootColor;
     -fx-border-width: 0;
     /*-fx-effect: dropshadow(three-pass-box, rgba(7,7,7,0.5), 7, 0, 2, 2);*/
 }
 
-.circuit-output > .label {
+.measurement .label {
+    -fx-background-color: transparents;
     -fx-text-fill: white;
     -fx-alignment: center;
     -fx-font-size: .8em;
@@ -70,7 +66,7 @@
     /*-fx-border-color: rootColor;*/
 }
 
-.circuit-output > .percentage {
+.measurement .progress {
     -fx-background-color: #72b94e;
     -fx-stroke-width: 0;
 }

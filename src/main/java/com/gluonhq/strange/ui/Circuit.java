@@ -13,7 +13,7 @@ public class Circuit extends Control {
 
     private static final double HEIGHT = 70;
 
-    private CircuitOutput output = new CircuitOutput();
+    private Measurement output = new Measurement();
     private int idx; // the number of the qubit
     private ObservableList<GateSymbol> gates = FXCollections.observableArrayList();
     
@@ -48,7 +48,7 @@ public class Circuit extends Control {
         return this.gates;
     }
     
-    public CircuitOutput getOutput() {
+    public Measurement getOutput() {
         return output;
     }
     

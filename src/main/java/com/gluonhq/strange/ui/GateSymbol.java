@@ -19,6 +19,7 @@ public class GateSymbol extends Label {
 
     static final DataFormat DRAGGABLE_GATE = new DataFormat("draggable-gate");
 
+
     private final Gate gate;
     private final boolean movable;
 
@@ -31,6 +32,7 @@ public class GateSymbol extends Label {
     }
     
     private GateSymbol( Gate gate, boolean movable ) {
+
         getStyleClass().setAll("gate-symbol");
         this.gate = Objects.requireNonNull(gate);
         this.movable = movable;
@@ -57,6 +59,8 @@ public class GateSymbol extends Label {
         
         this.setOnDragDone(e -> {
             System.out.println("Drag Done");
+            // clear out the ref to the dragged node
+            System.getProperties().remove(DRAGGABLE_GATE);
         });
         
         this.setOnDragDropped(e -> {

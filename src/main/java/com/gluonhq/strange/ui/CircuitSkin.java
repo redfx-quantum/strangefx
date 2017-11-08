@@ -85,8 +85,6 @@ public class CircuitSkin extends SkinBase<Circuit> {
                     e.setDropCompleted(true);
                 }
 
-                // clear our the ref to the dragged node
-                System.getProperties().remove(GateSymbol.DRAGGABLE_GATE);
             }
             e.consume();
         });
