@@ -29,6 +29,8 @@ public class Main extends Application {
         LocalSimulator sim = new LocalSimulator();
         
         QubitBoard board = new QubitBoard();
+        board.appendQubit();
+        board.appendQubit();
 
         HBox toolbarFiller = new HBox();
         HBox.setHgrow( toolbarFiller, Priority.ALWAYS);
@@ -49,7 +51,7 @@ public class Main extends Application {
                 logo
         );
 
-        board.getQubits().addAll( new Qubit(0), new Qubit(1));
+
         Model.getInstance().refreshRequest().set(true);
         ScrollPane scroller = new ScrollPane(board);
         scroller.setPannable(true);
@@ -59,7 +61,7 @@ public class Main extends Application {
         borderPane.setTop(toolbar);
         borderPane.setCenter(scroller);
 
-        Scene scene = new Scene(borderPane, 600, 400);
+        Scene scene = new Scene(borderPane, 800, 600);
         scene.getStylesheets().add(Main.class.getResource("/styles.css").toExternalForm());
 
         stage.setScene(scene);
