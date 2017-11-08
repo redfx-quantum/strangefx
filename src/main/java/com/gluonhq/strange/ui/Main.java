@@ -28,14 +28,14 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         LocalSimulator sim = new LocalSimulator();
         
-        CircuitBoard board = new CircuitBoard();
+        QubitBoard board = new QubitBoard();
 
         HBox toolbarFiller = new HBox();
         HBox.setHgrow( toolbarFiller, Priority.ALWAYS);
 
         Button btAddCircuit = new Button("",
                 MaterialIconFactory.get().createIcon(MaterialIcon.PLAYLIST_ADD, "2em"));
-        btAddCircuit.setOnAction( e -> board.getCircuits().add( new Circuit(board.getCircuits().size())));
+        btAddCircuit.setOnAction( e -> board.appendQubit());
 
         ImageView logo = new ImageView("/Gluon_combined_logo_300px.png");
         logo.setPreserveRatio(true);
@@ -49,7 +49,7 @@ public class Main extends Application {
                 logo
         );
 
-        board.getCircuits().addAll(new Circuit(0), new Circuit(1), new Circuit(2));
+        board.getQubits().addAll( new Qubit(0), new Qubit(1));
         Model.getInstance().refreshRequest().set(true);
         ScrollPane scroller = new ScrollPane(board);
         scroller.setPannable(true);

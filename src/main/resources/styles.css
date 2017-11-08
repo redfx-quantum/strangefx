@@ -2,7 +2,7 @@
     rootColor: #7b7d7b;
     circuitColor: #f2f2f2;
     circuitSelectionColor: #f4faff;
-    icons-color: #636563;
+    icon-color: #636563;
 }
 
 .scroll-pane {
@@ -13,54 +13,47 @@
     -fx-background-color: circuitColor;
 }
 
-.circuit {
+.qubit {
     -fx-background-color: circuitColor;
+    -fx-pref-height: 77;
 }
 
-.circuit:hover {
-    -fx-background-color: circuitSelectionColor;
-}
-
-.circuit > .center-line {
+.qubit .wire{
     -fx-stroke: rootColor;
     -fx-stroke-width: 2;
 }
 
-/*.circuit:hover > .center-line {
-    -fx-stroke-dash-array: 3;
-}*/
-
-.circuit .line-label {
+.qubit .title {
     -fx-padding: 10;
     -fx-background-color: circuitColor;
     -fx-text-fill: rootColor;
     -fx-font-weight: bold;
+    -fx-alignment: center;
 }
 
-.circuit:hover .line-label {
-    -fx-background-color: circuitSelectionColor;
+.qubit .base {
+    -fx-padding: 10 10 10 0;
 
 }
 
-.circuit .gate-row {
+.qubit .gate-row {
     -fx-background-color: transparent;
     /*-fx-padding: 7 5 7 0;*/
     -fx-spacing: 5;
     -fx-alignment: center-left;
 }
-
 .measurement {
     -fx-background-color: #A9CB4D;
     -fx-border-color: rootColor;
     -fx-border-width: 0;
-    /*-fx-effect: dropshadow(three-pass-box, rgba(7,7,7,0.5), 7, 0, 2, 2);*/
+    -fx-effect: dropshadow(three-pass-box, grey, 7, 0, 2, 2);
 }
 
 .measurement .label {
-    -fx-background-color: transparents;
+    -fx-background-color: transparent;
     -fx-text-fill: white;
     -fx-alignment: center;
-    -fx-font-size: .8em;
+    -fx-font-size: .9em;
     -fx-font-weight: bold;
     -fx-border-width: 1;
     /*-fx-border-color: rootColor;*/
