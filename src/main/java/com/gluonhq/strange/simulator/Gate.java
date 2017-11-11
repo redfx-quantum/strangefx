@@ -5,16 +5,18 @@ import java.util.Optional;
 
 public enum Gate {
 
-    IDENTITY( "I", new double[][]{{1,0}, {0,1}} ),
-    NOT     ( "X", new double[][]{{0,1}, {1,0}} ),
-    HADAMARD( "H", new double[][]{{ Const.HV, Const.HV }, { Const.HV, -Const.HV }} );
+    IDENTITY( "I", new double[][]{{1,0}, {0,1}}, GateGroup.IDENTITY ),
+    NOT     ( "X", new double[][]{{0,1}, {1,0}},  GateGroup.BIT_FLIP),
+    HADAMARD( "H", new double[][]{{ Const.HV, Const.HV }, { Const.HV, -Const.HV }}, GateGroup.SUPERPOSITION );
 
     private final String caption;
     private double[][] matrix;
+    private final GateGroup group;
 
-    Gate(String caption, double[][] matrix ) {
+    Gate(String caption, double[][] matrix, GateGroup group ) {
         this.caption = caption;
         this.matrix = matrix;
+        this.group = group;
     }
 
     public String getCaption() {
@@ -23,6 +25,10 @@ public enum Gate {
 
     public double[][] getMatrix() {
         return matrix;
+    }
+
+    public GateGroup getGroup() {
+        return group;
     }
 
     // direct static values cannot be used by enum

@@ -33,9 +33,9 @@ public class GateSymbol extends Label {
     
     private GateSymbol( Gate gate, boolean movable ) {
 
-        getStyleClass().setAll("gate-symbol");
         this.gate = Objects.requireNonNull(gate);
         this.movable = movable;
+        getStyleClass().setAll("gate-symbol", gate.getGroup().name().toLowerCase().replaceAll("_", ""));
         setText(gate.getCaption());
         setMinWidth(40);
         setAlignment(Pos.CENTER);

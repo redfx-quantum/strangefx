@@ -41,10 +41,11 @@
     -fx-alignment: center-left;
 }
 .measurement {
-    -fx-background-color: #A9CB4D;
+    -fx-background-color: #ED74A9;
     -fx-border-color: rootColor;
     -fx-border-width: 0;
-    -fx-effect: dropshadow(three-pass-box, grey, 7, 0, 2, 2);
+    -fx-font-weight: bold;
+    /*-fx-effect: dropshadow(three-pass-box, grey, 7, 0, 2, 2);*/
 }
 
 .measurement .label {
@@ -58,7 +59,7 @@
 }
 
 .measurement .progress {
-    -fx-background-color: #72b94e;
+    -fx-background-color: #c16182;
     -fx-stroke-width: 0;
 }
 
@@ -70,6 +71,19 @@
     -fx-font-weight: bold;
     -fx-font-size: 1.4em;
 }
+
+.gate-symbol.bitflip {
+    -fx-background-color: #A9CB4D;
+}
+
+.gate-symbol.superposition {
+    -fx-background-color: #17C0EE;
+}
+
+.gate-symbol.identity {
+    -fx-background-color: #FEC870;
+}
+
 
 
 .glyph-icon{
