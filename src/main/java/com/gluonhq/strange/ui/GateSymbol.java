@@ -1,6 +1,7 @@
 package com.gluonhq.strange.ui;
 
 import com.gluonhq.strange.simulator.Gate;
+import com.gluonhq.strange.simulator.GateGroup;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.geometry.Pos;
@@ -35,7 +36,7 @@ public class GateSymbol extends Label {
 
         this.gate = Objects.requireNonNull(gate);
         this.movable = movable;
-        getStyleClass().setAll("gate-symbol", gate.getGroup().name().toLowerCase().replaceAll("_", ""));
+        getStyleClass().setAll("gate-symbol", getStyle(gate.getGroup()));
         setText(gate.getCaption());
         setMinWidth(40);
         setAlignment(Pos.CENTER);
@@ -67,6 +68,10 @@ public class GateSymbol extends Label {
             System.out.println("Drag dropped");
         });
 
+    }
+
+    private String getStyle(GateGroup group ) {
+        return group.name().toLowerCase().replaceAll("_", "");
     }
 
     public Gate getGate() {

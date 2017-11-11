@@ -3,9 +3,21 @@
     qubitColor: white;
     icon-color: #636563;
 }
+.tool-bar {
+    -fx-background-color: #f1f1f1;
+}
+
+.button {
+    -fx-background-color: transparent;
+}
+
+.button:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.09);
+}
 
 .scroll-pane {
-    -fx-background-color: transparent;
+    -fx-padding: 10;
+    -fx-background-color: qubitColor;
 }
 
 .scroll-pane > .viewport {
