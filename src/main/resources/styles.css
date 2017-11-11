@@ -72,6 +72,12 @@
     -fx-font-size: 1.4em;
 }
 
+.gate-symbol:hover {
+    -fx-border-width: 2;
+    -fx-border-insets: -2;
+    -fx-border-color: rootColor;
+}
+
 .gate-symbol.bitflip {
     -fx-background-color: #A9CB4D;
 }
