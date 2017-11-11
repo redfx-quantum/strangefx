@@ -19,6 +19,15 @@ public class Measurement extends Region {
 
         getStyleClass().add("measurement");
 
+        initUI();
+
+        updateMeasuredChance();
+        measuredChanceProperty.addListener( (Observable o) -> updateMeasuredChance());
+
+    }
+
+    private void initUI() {
+
         BorderPane progressBase = new BorderPane();
         progressBase.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         progressBase.setBottom(progress);
@@ -34,11 +43,8 @@ public class Measurement extends Region {
         getChildren().add(stack);
 
         prefWidthProperty().bind(heightProperty());
-
-        updateMeasuredChance();
-        measuredChanceProperty.addListener( (Observable o) -> updateMeasuredChance());
-
     }
+
 
     private void updateMeasuredChance() {
         label.setText( measuredChanceAsString());

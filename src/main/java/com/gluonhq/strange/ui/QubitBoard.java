@@ -11,13 +11,18 @@ public class QubitBoard extends VBox {
     private Model model = Model.getInstance();
     private ObservableList<Qubit> qubits = FXCollections.observableArrayList();
 
-    public QubitBoard() {
-        getChildren().setAll(qubits);
+    public QubitBoard( int initialQubitNumber ) {
+
         qubits.addListener( (Observable o) -> {
             getChildren().clear();
             getChildren().setAll(qubits);
             model.setNQubits(qubits.size());
         });
+
+        for (int i = 0; i < initialQubitNumber; i++) {
+            appendQubit();
+        }
+        getChildren().setAll(qubits);
     }
 
     public ObservableList<Qubit> getQubits() {
