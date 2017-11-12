@@ -4,21 +4,22 @@ import com.gluonhq.strange.Model;
 import com.gluonhq.strange.simulator.Gate;
 import com.gluonhq.strange.simulator.GateConfig;
 import com.gluonhq.strange.simulator.local.LocalSimulator;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@DisplayName("Local simulator tests")
 class LocalSimulatorTests {
 
     private final LocalSimulator sim = new LocalSimulator();
 
 
     @Test
+    @DisplayName("Simple: One qubit, no gates")
     void simple1() {
-
-        System.out.println("Test: 1 qubit, no gate");
 
         Model model = Model.getInstance();
         model.setNQubits(1);
@@ -27,13 +28,10 @@ class LocalSimulatorTests {
         double[] res = sim.calculateResults(model);
         assertEquals( 2, res.length );
 
-//        System.out.println("SIMPLE res length should be 2: "+res.length);
-//        printResults(res);
-//        double[] states = sim.calculateQubitStates(model);
-//        printResults2(states);
     }
 
     @Test
+    @DisplayName("Not gate")
     void not1() {
         Model model = Model.getInstance();
         model.setNQubits(1);
@@ -42,15 +40,11 @@ class LocalSimulatorTests {
 
         assertEquals( 2, res.length );
 
-//        System.out.println("NOT res length should be 2: "+res.length);
-//        printResults(res);
-//        double[] states = sim.calculateQubitStates(model);
-//        printResults2(states);
     }
 
     @Test
+    @DisplayName("Hadamard gate")
     void hadamard1() {
-        System.out.println("Test: Hadamard");
         Model model = Model.getInstance();
         model.setNQubits(1);
         model.setGatesForCircuit(0,List.of(Gate.HADAMARD));
@@ -58,15 +52,11 @@ class LocalSimulatorTests {
 
         assertEquals( 2, res.length );
 
-//        System.out.println("H res length should be 2: "+res.length);
-//        printResults(res);
-//        double[] states = sim.calculateQubitStates(model);
-//        printResults2(states);
     }
 
     @Test
+    @DisplayName("Not Not gates")
     void notnot1() {
-        System.out.println("Test: notnot");
         LocalSimulator sim = new LocalSimulator();
         Model model = Model.getInstance();
         model.setNQubits(1);
@@ -76,33 +66,26 @@ class LocalSimulatorTests {
 
         assertEquals( 2, res.length );
 
-//        System.out.println("not not length should be 2: "+res.length);
-//        printResults(res);
-//        double[] states = sim.calculateQubitStates(model);
-//        printResults2(states);
     }
 
     @Test
+    @DisplayName("Hadamard Not Not gates")
     void hhnot1() {
         System.out.println("Test: hhnot");
         LocalSimulator sim = new LocalSimulator();
         Model model = Model.getInstance();
         model.setNQubits(1);
-        List gates = List.of(Gate.HADAMARD,Gate.HADAMARD,Gate.NOT);
+        List<Gate> gates = List.of(Gate.HADAMARD,Gate.HADAMARD,Gate.NOT);
         model.setGatesForCircuit(0,gates);
         double[] res = sim.calculateResults(model);
 
         assertEquals( 2, res.length );
 
-//        System.out.println("hhnot length should be 2: "+res.length);
-//        printResults(res);
-//        double[] states = sim.calculateQubitStates(model);
-//        printResults2(states);
     }
 
     @Test
+    @DisplayName("Two qubits, no gates")
     void simple2() {
-        System.out.println("Test: 2 qubits, no gate");
         LocalSimulator sim = new LocalSimulator();
         Model model = Model.getInstance();
         model.setNQubits(2);
@@ -112,15 +95,11 @@ class LocalSimulatorTests {
 
         assertEquals( 4, res.length );
 
-//        System.out.println("SIMPLE res length should be 4: "+res.length);
-//        printResults(res);
-//        double[] states = sim.calculateQubitStates(model);
-//        printResults2(states);
     }
 
     @Test
+    @DisplayName("Two qubits, not-I gate")
     void not2() {
-        System.out.println("Test: 2 qubits, not-I gate");
         LocalSimulator sim = new LocalSimulator();
         Model model = Model.getInstance();
         model.setNQubits(2);
@@ -130,10 +109,6 @@ class LocalSimulatorTests {
 
         assertEquals( 4, res.length );
 
-//        System.out.println("SIMPLE res length should be 4: "+res.length);
-//        printResults(res); // should be {0,0,1,0}
-//        double[] states = sim.calculateQubitStates(model);
-//        printResults2(states);
     }
 
 
