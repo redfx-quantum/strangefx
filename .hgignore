@@ -1,6 +1,0 @@
-syntax: glob
-out
-build
-.idea
-.gradle
-*.iml
