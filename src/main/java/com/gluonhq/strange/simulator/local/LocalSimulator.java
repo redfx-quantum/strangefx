@@ -22,9 +22,7 @@ public class LocalSimulator implements Simulator {
     private final Model model = Model.getInstance();
     public LocalSimulator() {
         model.refreshRequest().addListener((obs, oldv, newv) -> {
-            System.out.println("refreshrequst set to "+newv);
             if (newv) {
-                System.out.println("CALCULATE results!");
                 double[] res2 = calculateQubitStates(model);
                 printResults2(res2);
                 List<Double> reslist = new ArrayList<>();
@@ -32,18 +30,18 @@ public class LocalSimulator implements Simulator {
                 model.getEndStates().setAll(reslist);
                 System.out.println("endstates = "+model.getEndStates());
                 model.refreshRequest().set(false);
-                System.out.println("CALCULATE results done and request set to false!");
 
             }
         });
     }
     @Override
     public double[] calculateResults(Model m) {
+        System.out.println("Calculate results for "+m.getNQubits()+" qubits and "+m.getNumberOfSteps()+" steps");
+        m.printGates();
         int n = m.getNQubits();
         int v = 1<<n;
         double[] result = new double[v];
         result[0] = 1;
-        System.out.println("result has size "+v);
         for (int i = 0; i < m.getNumberOfSteps(); i++) {
             result = applyStep(m.getGatesByStep(i), result);
         }

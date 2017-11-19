@@ -17,6 +17,7 @@ public class QubitBoard extends VBox {
             getChildren().clear();
             getChildren().setAll(qubits);
             model.setNQubits(qubits.size());
+            model.refreshRequest().set(true);
         });
 
         for (int i = 0; i < initialQubitNumber; i++) {

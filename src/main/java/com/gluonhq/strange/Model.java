@@ -94,4 +94,10 @@ public class Model {
         }
         return answer;
     }
+    
+    public void printGates() {
+        for (int i = 0; i < getNumberOfSteps(); i++) {
+            System.out.println("step "+i+": "+getGatesByStep(i));
+        }
+    }
 }
