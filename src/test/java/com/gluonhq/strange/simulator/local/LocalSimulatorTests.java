@@ -1,9 +1,8 @@
-package com.gluonhq.strage.simulator.local;
+package com.gluonhq.strange.simulator.local;
 
 import com.gluonhq.strange.Model;
 import com.gluonhq.strange.simulator.Gate;
 import com.gluonhq.strange.simulator.GateConfig;
-import com.gluonhq.strange.simulator.local.LocalSimulator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
