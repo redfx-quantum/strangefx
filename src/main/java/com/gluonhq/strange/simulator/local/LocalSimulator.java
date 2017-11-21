@@ -45,7 +45,8 @@ public class LocalSimulator implements Simulator {
         for (int i = 0; i < m.getNumberOfSteps(); i++) {
             System.out.println("--- apply step "+i+" with gates "+m.getGatesByStep(i));
             result = applyStep(m.getGatesByStep(i), result, n);
-            System.out.println("--- applied step "+i);
+            System.out.println("--- applied step "+i+", result = ");
+            for (int j = 0; j < result.length;j++) {System.out.println("res["+j+"] = "+result[j]);}
         }
         return result;
     }
@@ -72,11 +73,8 @@ public class LocalSimulator implements Simulator {
         while ( idx < nqubits) {
             double[][] m = new double[4<<idx][4<<idx];
             double[][] gate = step.get(idx).getMatrix(); //getGate(step.get(i).getType());
-            if (gate.length != 2) {
-                throw new RuntimeException ("complex gates that are not on first circuit not yet implemented");
-            } 
             a = tensor(a,gate);
-            idx++;
+            idx = idx + (gate.length >> 1);
         }
         for (int i = 0; i < initial.length; i++) {
             result[i] = 0;
@@ -129,39 +127,33 @@ public class LocalSimulator implements Simulator {
     
     public static void main(String[] args) {
         Model model = Model.getInstance();
-        LocalSimulator sim = new LocalSimulator();
+      //  LocalSimulator sim = new LocalSimulator();
         swap();
-        simple1();
-        not1();
-        hadamard1();
-        notnot1();
-        hhnot1();
-        simple2();
-        not2();
+//        simple1();
+//        not1();
+//        hadamard1();
+//        notnot1();
+//        hhnot1();
+//        simple2();
+//        not2();
 //        
-
-//        model.setNQubits(2);
-//        res = sim.calculateResults(model);
-//        System.out.println("res length should be 4: "+res.length);
-//        printResults(res);
-//
-//        model.setNQubits(3);
-//        res = sim.calculateResults(model);
-//        System.out.println("res length should be 8: "+res.length);
-//        printResults(res);
-
     }
     
              
     private static void swap() {
-        System.out.println("1 qubit, no gate");
-        LocalSimulator sim = new LocalSimulator();
         Model model = Model.getInstance();
-        model.setNQubits(2);
-        model.setGatesForCircuit(0, List.of(Gate.NOT, Gate.SWAP));
-        double[] res = sim.calculateResults(model);
-        System.out.println("SIMPLE res length should be 2: "+res.length);
-        printResults(res);
+        model.setNQubits(3);
+        System.out.println("set circuit 0");
+        model.setGatesForCircuit(0, List.of(Gate.IDENTITY, Gate.IDENTITY));
+        System.out.println("set circuit 1");
+        model.setGatesForCircuit(1, List.of(Gate.NOT, Gate.SWAP));
+        System.out.println("set circuit 2");
+        model.setGatesForCircuit(2, List.of(Gate.IDENTITY, Gate.IDENTITY));
+//        double[] res = sim.calculateResults(model);
+//        System.out.println("SIMPLE res length should be 3: "+res.length);
+//        printResults(res);
+        LocalSimulator sim = new LocalSimulator();
+
         double[] states = sim.calculateQubitStates(model);
         printResults2(states);
     }
