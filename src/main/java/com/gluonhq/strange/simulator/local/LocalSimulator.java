@@ -43,39 +43,45 @@ public class LocalSimulator implements Simulator {
         double[] result = new double[v];
         result[0] = 1;
         for (int i = 0; i < m.getNumberOfSteps(); i++) {
-            result = applyStep(m.getGatesByStep(i), result);
+            System.out.println("--- apply step "+i+" with gates "+m.getGatesByStep(i));
+            result = applyStep(m.getGatesByStep(i), result, n);
+            System.out.println("--- applied step "+i);
         }
         return result;
     }
+    private double[][] tensor (double[][] a, double[][]b) {
+        int d1 = a.length;
+        int d2 = b.length;
+        double[][] result = new double[d1*d2][d1*d2];
+           for (int rowa = 0; rowa <d1; rowa ++) {
+                for (int cola = 0; cola <d1; cola++) {
+                    for (int rowb = 0; rowb < d2;rowb++) {
+                        for (int colb = 0; colb < d2; colb++) {
+                            result[d2*rowa+rowb][d2*cola+colb] = a[rowa][cola]*b[rowb][colb];
+                        }
+                    }
+                }
+            }
+           return result;
+    }
     
-    private double[] applyStep(List<Gate> step, double[] initial) {
+    private double[] applyStep(List<Gate> step, double[] initial, int nqubits) {
         double[] result = new double[initial.length];
         double[][] a =  step.get(0).getMatrix(); //getGate(step.get(0).getType());
-        for (int i = 1; i < step.size(); i++) {
-            double[][] m = new double[4<<i][4<<i];
-            double[][] gate = step.get(i).getMatrix(); //getGate(step.get(i).getType());
-            for (int row = 0; row < a.length; row ++) {
-                for (int col = 0; col < a.length; col++) {
-                    m[2*row][2*col] = a[row][col]*gate[0][0];
-                    m[2*row][2*col+1] = a[row][col]*gate[0][1];
-                    m[2*row+1][2*col] = a[row][col]*gate[1][0];
-                    m[2*row+1][2*col+1] = a[row][col]*gate[1][1];
-                }
-            }
-            a = new double[4<<i][4<<i]; // replace with System.arrayCopy
-            for (int row = 0; row < a.length;row++) {
-                for (int col = 0; col < a.length; col++) {
-                    a[row][col] = m[row][col];
-                 //   System.out.println("a["+row+"]["+col+"] = "+a[row][col]);
-                }
-            }
+        int idx = a.length >>1;
+        while ( idx < nqubits) {
+            double[][] m = new double[4<<idx][4<<idx];
+            double[][] gate = step.get(idx).getMatrix(); //getGate(step.get(i).getType());
+            if (gate.length != 2) {
+                throw new RuntimeException ("complex gates that are not on first circuit not yet implemented");
+            } 
+            a = tensor(a,gate);
+            idx++;
         }
         for (int i = 0; i < initial.length; i++) {
             result[i] = 0;
             for (int j = 0 ; j < initial.length; j++) {
-            //    System.out.println("a["+i+"]["+j+"] = "+a[i][j]+", initial was "+initial[j]);
                 result[i] = result[i] + a[i][j]*initial[j];
-            //    System.out.println("result["+i+"] = "+result[i]);
             }
         }
         return result;
@@ -124,6 +130,7 @@ public class LocalSimulator implements Simulator {
     public static void main(String[] args) {
         Model model = Model.getInstance();
         LocalSimulator sim = new LocalSimulator();
+        swap();
         simple1();
         not1();
         hadamard1();
@@ -131,7 +138,7 @@ public class LocalSimulator implements Simulator {
         hhnot1();
         simple2();
         not2();
-        
+//        
 
 //        model.setNQubits(2);
 //        res = sim.calculateResults(model);
@@ -145,7 +152,20 @@ public class LocalSimulator implements Simulator {
 
     }
     
-        
+             
+    private static void swap() {
+        System.out.println("1 qubit, no gate");
+        LocalSimulator sim = new LocalSimulator();
+        Model model = Model.getInstance();
+        model.setNQubits(2);
+        model.setGatesForCircuit(0, List.of(Gate.NOT, Gate.SWAP));
+        double[] res = sim.calculateResults(model);
+        System.out.println("SIMPLE res length should be 2: "+res.length);
+        printResults(res);
+        double[] states = sim.calculateQubitStates(model);
+        printResults2(states);
+    }
+       
     private static void simple1() {
         System.out.println("1 qubit, no gate");
         LocalSimulator sim = new LocalSimulator();
