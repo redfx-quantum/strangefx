@@ -39,6 +39,7 @@ public class Main extends Application {
         ToolBar toolbar = new ToolBar(
             createButton( MaterialIcon.PLAYLIST_ADD, e -> board.appendQubit() ),
             new Separator(),
+            GateSymbol.of(Gate.IDENTITY, false),
             GateSymbol.of(Gate.NOT, false),
             GateSymbol.of(Gate.CNOT, false),
             GateSymbol.of(Gate.SWAP, false),
