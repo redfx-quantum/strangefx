@@ -10,7 +10,6 @@ import com.gluonhq.strange.simulator.GateConfig;
 import java.util.ArrayList;
 
 import java.util.List;
-import java.util.stream.IntStream;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;

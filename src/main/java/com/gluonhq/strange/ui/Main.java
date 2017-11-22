@@ -40,6 +40,8 @@ public class Main extends Application {
             createButton( MaterialIcon.PLAYLIST_ADD, e -> board.appendQubit() ),
             new Separator(),
             GateSymbol.of(Gate.NOT, false),
+            GateSymbol.of(Gate.CNOT, false),
+            GateSymbol.of(Gate.SWAP, false),
             GateSymbol.of(Gate.HADAMARD, false),
             toolbarFiller,
             logo

@@ -20,7 +20,6 @@ public class GateSymbol extends Label {
 
     static final DataFormat DRAGGABLE_GATE = new DataFormat("draggable-gate");
 
-
     private final Gate gate;
     private final boolean movable;
 
@@ -83,14 +82,9 @@ public class GateSymbol extends Label {
     }
 
     private ContextMenu buildContextMenu() {
-
         ContextMenu menu = new ContextMenu();
-
         MenuItem mnRemove = new MenuItem("Remove", MaterialIconFactory.get().createIcon(MaterialIcon.DELETE));
-
-
         menu.setOnAction( e -> removeFromParent());
-
         menu.getItems().addAll(mnRemove);
         return menu;
     }
