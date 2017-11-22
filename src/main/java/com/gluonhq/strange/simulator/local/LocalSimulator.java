@@ -36,13 +36,14 @@ public class LocalSimulator implements Simulator {
     }
     @Override
     public double[] calculateResults(Model m) {
-        System.out.println("Calculate results for "+m.getNQubits()+" qubits and "+m.getNumberOfSteps()+" steps");
+        System.out.println("Calculate results for "+m.getNQubits()+" qubits and "+m.getNumberOfSteps()+" steps");       
+        Gate[][] gates = toMatrix(m.getGates());
         m.printGates();
-        int n = m.getNQubits();
+        System.out.println("GATES =- "+m.getGateDescription());
+        int n = gates.length;
         int v = 1<<n;
         double[] result = new double[v];
         result[0] = 1;
-        Gate[][] gates = toMatrix(m.getGates());
         for (int i = 0; i < m.getNumberOfSteps(); i++) {
         //    System.out.println("--- apply step "+i+" with gates "+m.getGatesByStep(i));
             result = applyStep(m.getGatesByStep(i), result, n);
@@ -78,6 +79,24 @@ public class LocalSimulator implements Simulator {
                 answer[i][j] = gate;
             }
         }
+        return answer;
+    }
+    
+    private Gate[][] toMatrix(String m) {
+        int nq = 0;
+        int ns = 0;
+        int idx = m.indexOf("[", -1);
+        while (idx > -1) {
+            ns++; idx = m.indexOf("[", idx);
+        }
+        int st = m.indexOf("]");
+        idx = m.indexOf(",",0);
+        while ((idx < st) && (idx> -1)) {
+            idx = m.indexOf(",",idx);
+            nq++;
+        }
+        Gate[][] answer = new Gate[nq][ns];
+        
         return answer;
     }
     

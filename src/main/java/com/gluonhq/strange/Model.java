@@ -38,7 +38,7 @@ public class Model {
     public static Model getInstance() {
         return instance;
     }
-    
+
     public BooleanProperty refreshRequest() {
         return refreshRequest;
     }
@@ -97,6 +97,21 @@ public class Model {
             answer[i] = this.gates.get(i).get(idx);
         }
         return answer;
+    }
+    
+    public String getGateDescription() {
+        StringBuffer answer = new StringBuffer("[");
+        int nq = this.getNQubits();
+        for (int i = 0; i < getNumberOfSteps(); i++) {
+            answer.append("[");
+            for (int j = 0; j < nq;j++) {
+                answer.append(getGates().get(j).get(i).getCaption());
+                if (j < nq-1) answer.append(",");
+            }
+            answer.append("]");
+        }
+        answer.append("]");
+        return answer.toString();
     }
     
     public void printGates() {
