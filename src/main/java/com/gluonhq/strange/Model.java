@@ -57,6 +57,9 @@ public class Model {
         return this.nqubits;
     }
     
+    public List<List<Gate>> getGates() {
+        return gates;
+    }
     
     public void setGates(GateConfig gates) {
         this.gates = gates;
@@ -78,9 +81,9 @@ public class Model {
         return this.gates.get(idx);
     }
     
-    public List<Gate> getGatesByStep(int idx) {
+    public Gate[] getGatesByStep(int idx) {
         int nq = this.gates.size();
-        ArrayList<Gate> answer = new ArrayList<>();
+        Gate[] answer = new Gate[nq];
         for (int i = 0; i < nq; i++) {
             // if this gate didn't have a step, we'll add an I gate to it.
             if (this.gates.get(i).size() < (idx+1)) {
@@ -91,7 +94,7 @@ public class Model {
                 newList.add(Gate.IDENTITY);
                 this.gates.set(i, newList);
             }
-            answer.add(this.gates.get(i).get(idx));
+            answer[i] = this.gates.get(i).get(idx);
         }
         return answer;
     }

@@ -42,8 +42,9 @@ public class LocalSimulator implements Simulator {
         int v = 1<<n;
         double[] result = new double[v];
         result[0] = 1;
+        Gate[][] gates = toMatrix(m.getGates());
         for (int i = 0; i < m.getNumberOfSteps(); i++) {
-            System.out.println("--- apply step "+i+" with gates "+m.getGatesByStep(i));
+        //    System.out.println("--- apply step "+i+" with gates "+m.getGatesByStep(i));
             result = applyStep(m.getGatesByStep(i), result, n);
             System.out.println("--- applied step "+i+", result = ");
             for (int j = 0; j < result.length;j++) {System.out.println("res["+j+"] = "+result[j]);}
@@ -66,13 +67,27 @@ public class LocalSimulator implements Simulator {
            return result;
     }
     
-    private double[] applyStep(List<Gate> step, double[] initial, int nqubits) {
+    private Gate[][] toMatrix(List<List<Gate>> gateList) {
+        int nqubits = gateList.size();
+        int stepsize = gateList.get(0).size();
+        Gate[][] answer = new Gate[nqubits][stepsize];
+        int i = 0;
+        for (List<Gate> circuits : gateList) {
+            int j = 0;
+            for (Gate gate : circuits) {
+                answer[i][j] = gate;
+            }
+        }
+        return answer;
+    }
+    
+    private double[] applyStep(Gate[] step, double[] initial, int nqubits) {
         double[] result = new double[initial.length];
-        double[][] a =  step.get(0).getMatrix(); //getGate(step.get(0).getType());
+        double[][] a =  step[0].getMatrix(); //getGate(step.get(0).getType());
         int idx = a.length >>1;
         while ( idx < nqubits) {
             double[][] m = new double[4<<idx][4<<idx];
-            double[][] gate = step.get(idx).getMatrix(); //getGate(step.get(i).getType());
+            double[][] gate = step[idx].getMatrix(); //getGate(step.get(i).getType());
             a = tensor(a,gate);
             idx = idx + (gate.length >> 1);
         }
@@ -104,26 +119,6 @@ public class LocalSimulator implements Simulator {
         return answer;
     }
     
-//    private double[][] getGate(int g) {
-//        double[][]answer = new double[2][2];
-//
-//        if (Model.GATE_NOT == g) {
-//            answer[0][1] = 1;
-//            answer[1][0] = 1;
-//            return answer;
-//        }
-//        if (Model.GATE_HADAMARD == g) {
-//            double s2 = 1./Math.sqrt(2.);
-//            answer[0][0] = s2;
-//            answer[0][1] = s2;
-//            answer[1][0] = s2;
-//            answer[1][1] = -s2;
-//            return answer;
-//        }
-//        answer[0][0] = 1;
-//        answer[1][1] = 1;
-//        return answer;
-//    }
     
     public static void main(String[] args) {
         Model model = Model.getInstance();
