@@ -1,21 +1,18 @@
 package com.gluonhq.strange.simulator;
 
-import java.util.Objects;
-import java.util.Optional;
-
 public enum Gate {
 
-    IDENTITY( "I", new double[][]{{1,0}, {0,1}}, GateGroup.IDENTITY ),
-    NOT     ( "X", new double[][]{{0,1}, {1,0}},  GateGroup.BIT_FLIP),
-    HADAMARD( "H", new double[][]{{ Const.HV, Const.HV }, { Const.HV, -Const.HV }}, GateGroup.SUPERPOSITION ),
-    SWAP("S", new double[][]{{1,0,0,0},{0,0,1,0},{0,1,0,0},{0,0,0,1}}, GateGroup.BIT_FLIP),
-    CNOT("C", new double[][]{{1,0,0,0},{0,1,0,0},{0,0,0,1},{0,0,1,0}}, GateGroup.BIT_FLIP);
+    IDENTITY( "I", GateGroup.IDENTITY,      new double[][]{{1,0}, {0,1}}),
+    NOT     ( "X", GateGroup.BIT_FLIP,      new double[][]{{0,1}, {1,0}}),
+    HADAMARD( "H", GateGroup.SUPERPOSITION, new double[][]{{ Const.HV, Const.HV }, { Const.HV, -Const.HV }}),
+    SWAP    ( "S", GateGroup.BIT_FLIP,      new double[][]{{1,0,0,0},{0,0,1,0},{0,1,0,0},{0,0,0,1}}),
+    CNOT    ( "C", GateGroup.BIT_FLIP,      new double[][]{{1,0,0,0},{0,1,0,0},{0,0,0,1},{0,0,1,0}});
    
     private final String caption;
     private double[][] matrix;
     private final GateGroup group;
 
-    Gate(String caption, double[][] matrix, GateGroup group ) {
+    Gate(String caption, GateGroup group, double[][] matrix) {
         this.caption = caption;
         this.matrix = matrix;
         this.group = group;
