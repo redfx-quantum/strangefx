@@ -37,7 +37,8 @@ public class Main extends Application {
         logo.setFitWidth(100);
 
         ToolBar toolbar = new ToolBar(
-            createButton( MaterialIcon.PLAYLIST_ADD, e -> board.appendQubit() ),
+            createButton( "Append Qubit",  MaterialIcon.PLAYLIST_ADD,       e -> board.appendQubit() ),
+            createButton( "Clear All",     MaterialIcon.DELETE_SWEEP, e -> board.clear() ),
             new Separator(),
             GateSymbol.of(Gate.IDENTITY, false),
             GateSymbol.of(Gate.NOT, false),
@@ -65,11 +66,15 @@ public class Main extends Application {
         stage.show();
     }
 
-    private Button createButton(MaterialIcon icon, EventHandler<ActionEvent> eventHandler ) {
+    private Button createButton( String tooltip, MaterialIcon icon, EventHandler<ActionEvent> eventHandler ) {
         Button button =  MaterialIconFactory
                             .get()
                             .createIconButton(icon, "", "2em", "", ContentDisplay.GRAPHIC_ONLY);
         button.setOnAction(eventHandler);
+        if ( tooltip != null && !tooltip.trim().isEmpty()) {
+            Tooltip t = new Tooltip(tooltip);
+            button.setTooltip(t);
+        }
         return button;
     }
 

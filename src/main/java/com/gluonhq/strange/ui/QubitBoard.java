@@ -11,10 +11,14 @@ public class QubitBoard extends VBox {
     private Model model = Model.getInstance();
     private ObservableList<Qubit> qubits = FXCollections.observableArrayList();
 
+    private final int initialQubitNumber;
+
     public QubitBoard( int initialQubitNumber ) {
 
+        this.initialQubitNumber = initialQubitNumber;
+        getChildren().setAll(qubits);
+
         qubits.addListener( (Observable o) -> {
-            getChildren().clear();
             getChildren().setAll(qubits);
             model.setNQubits(qubits.size());
             model.refreshRequest().set(true);
@@ -23,7 +27,7 @@ public class QubitBoard extends VBox {
         for (int i = 0; i < initialQubitNumber; i++) {
             appendQubit();
         }
-        getChildren().setAll(qubits);
+
     }
 
     public ObservableList<Qubit> getQubits() {
@@ -32,5 +36,10 @@ public class QubitBoard extends VBox {
 
     public void appendQubit() {
         qubits.add( new Qubit(qubits.size()));
+    }
+
+    public void clear() {
+        qubits.forEach(Qubit::clear);
+        qubits.removeIf(qb -> qb.getIndex() > (initialQubitNumber-1));
     }
 }

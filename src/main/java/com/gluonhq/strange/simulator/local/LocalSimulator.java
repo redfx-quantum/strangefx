@@ -70,6 +70,9 @@ public class LocalSimulator implements Simulator {
     private Gate[][] toMatrix(List<List<Gate>> gateList) {
         int nqubits = gateList.size();
         int stepsize = gateList.get(0).size();
+
+        if ( nqubits == 0 || stepsize == 0 ) return new Gate[0][0];
+
         Gate[][] answer = new Gate[nqubits][stepsize];
         int i = 0;
         for (List<Gate> circuits : gateList) {

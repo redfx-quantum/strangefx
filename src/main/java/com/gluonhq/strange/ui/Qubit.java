@@ -1,6 +1,7 @@
 package com.gluonhq.strange.ui;
 
 import com.gluonhq.strange.Model;
+import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,6 +30,11 @@ public class Qubit extends Region {
     private ObservableList<GateSymbol> gates = FXCollections.observableArrayList();
 
     private final Model model = Model.getInstance();
+
+    private InvalidationListener endStateListener = (Observable o)-> {
+        double mv = model.getEndStates().get(idx);
+        measurement.setMeasuredChance(mv);
+    };
 
     public Qubit( int index ) {
 
@@ -112,10 +118,7 @@ public class Qubit extends Region {
             e.consume();
         });
 
-        model.getEndStates().addListener((Observable o)-> {
-            double mv = model.getEndStates().get(idx);
-            measurement.setMeasuredChance(mv);
-        });
+        model.getEndStates().addListener(endStateListener);
 
         gates.addListener( (Observable o) -> {
             model.setGatesForCircuit(
@@ -133,6 +136,11 @@ public class Qubit extends Region {
 
     public ObservableList<GateSymbol> getGateSymbols() {
         return this.gates;
+    }
+
+    public void clear() {
+        model.getEndStates().removeListener(endStateListener);
+        gateRow.getChildren().clear();
     }
 
     public Measurement getOutput() {
