@@ -1,11 +1,13 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven { url 'https://plugins.gradle.org/m2/' }
         // The following is only necessary if you want to use SNAPSHOT releases.
         // maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
     dependencies {
         classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.2'
+        classpath 'gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.14.0'
     }
 }
 
@@ -13,6 +15,7 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'org.junit.platform.gradle.plugin'
 apply plugin: 'application'
+apply from: project.file('gradle/code-quality.gradle')
 
 mainClassName = 'com.gluonhq.strange.ui.Main'
 // mainClassName = 'com.gluonhq.strange.simulator.local.LocalSimulator'
