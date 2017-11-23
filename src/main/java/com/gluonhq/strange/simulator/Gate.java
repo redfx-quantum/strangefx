@@ -31,6 +31,11 @@
  */
 package com.gluonhq.strange.simulator;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 public enum Gate {
 
     IDENTITY( "I", GateGroup.IDENTITY,      new double[][]{{1,0}, {0,1}}),
@@ -39,7 +44,7 @@ public enum Gate {
     SWAP    ( "S", GateGroup.BIT_FLIP,      new double[][]{{1,0,0,0},{0,0,1,0},{0,1,0,0},{0,0,0,1}}),
     CNOT    ( "C", GateGroup.BIT_FLIP,      new double[][]{{1,0,0,0},{0,1,0,0},{0,0,0,1},{0,0,1,0}}),
     C0    ( "C0", GateGroup.BIT_FLIP,      new double[][]{{}});
-   
+
     private final String caption;
     private double[][] matrix;
     private final GateGroup group;
@@ -62,8 +67,44 @@ public enum Gate {
         return group;
     }
 
+    /**
+     * Return the gate that has this caption. Should fail big time if there is no such gate.
+     * @param cap
+     * @return 
+     */
+    public static Gate byCaption(String cap) {
+        List<Gate> list = Arrays.asList(Gate.values());
+        return list.stream().filter(g -> g.getCaption().equals(cap)).findFirst().get();
+    }
+    
+    public static Gate[][] toMatrix(String m) {
+        int nq = 1;
+        int ns = -1;
+        int idx = m.indexOf("[", -1);
+        while (idx > -1) {
+            ns++; idx = m.indexOf("[", idx+1);
+        }
+        int st = m.indexOf("]");
+        idx = m.indexOf(",",0);
+        while ((idx < st) && (idx> -1)) {
+            idx = m.indexOf(",",idx+1);
+            nq++;
+        }
+        Gate[][] answer = new Gate[nq][ns];
+        String[] elements = Arrays.asList(m.split("[\\[\\],]",0))
+                .stream()
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList()).toArray(new String[0]);
+        for (int i = 0; i < nq; i++) {
+            for (int j = 0; j < ns; j++) {
+                answer[i][j] = Gate.byCaption(elements[j*nq+i]);
+            }
+        }
+        return answer;
+    }
+    
     // direct static values cannot be used by enum
     private static class Const {
         private static double HV = 1./Math.sqrt(2.);
-    }
+    }    
 }

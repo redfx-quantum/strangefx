@@ -116,24 +116,7 @@ public class LocalSimulator implements Simulator {
         return answer;
     }
     
-    private Gate[][] toMatrix(String m) {
-        int nq = 0;
-        int ns = 0;
-        int idx = m.indexOf("[", -1);
-        while (idx > -1) {
-            ns++; idx = m.indexOf("[", idx);
-        }
-        int st = m.indexOf("]");
-        idx = m.indexOf(",",0);
-        while ((idx < st) && (idx> -1)) {
-            idx = m.indexOf(",",idx);
-            nq++;
-        }
-        Gate[][] answer = new Gate[nq][ns];
-        
-        return answer;
-    }
-    
+
     private double[] applyStep(Gate[] step, double[] initial, int nqubits) {
         double[] result = new double[initial.length];
         double[][] a =  step[0].getMatrix(); //getGate(step.get(0).getType());
