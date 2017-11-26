@@ -104,6 +104,7 @@ public class LocalSimulator implements Simulator {
     private double[][] tensor (double[][] a, double[][]b) {
         int d1 = a.length;
         int d2 = b.length;
+        System.out.println("tensor product, d1 = "+d1+" and d2 = "+d2);
         double[][] result = new double[d1*d2][d1*d2];
            for (int rowa = 0; rowa <d1; rowa ++) {
                 for (int cola = 0; cola <d1; cola++) {
@@ -152,7 +153,7 @@ public class LocalSimulator implements Simulator {
         double[][] a =  step[0].getMatrix(); //getGate(step.get(0).getType());
         int idx = a.length >>1;
         while ( idx < nqubits) {
-            double[][] m = new double[4<<idx][4<<idx];
+           // double[][] m = new double[4<<idx][4<<idx];
             double[][] gate = step[idx].getMatrix(); //getGate(step.get(i).getType());
             a = tensor(a,gate);
             idx = idx + (gate.length >> 1);
@@ -187,9 +188,9 @@ public class LocalSimulator implements Simulator {
     
     
     public static void main(String[] args) {
-        Model model = Model.getInstance();
+//        Model model = Model.getInstance();
       //  LocalSimulator sim = new LocalSimulator();
-        swap();
+    //    swap();
 //        simple1();
 //        not1();
 //        hadamard1();
@@ -199,8 +200,7 @@ public class LocalSimulator implements Simulator {
 //        not2();
 //        
     }
-    
-             
+
     private static void swap() {
         Model model = Model.getInstance();
         model.setNQubits(3);

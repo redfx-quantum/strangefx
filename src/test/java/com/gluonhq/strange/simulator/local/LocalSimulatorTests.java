@@ -178,7 +178,49 @@ class LocalSimulatorTests {
         assertEquals(SQRT2, results[5], DELTA);
         assertEquals(0.0d, results[6], DELTA);
         assertEquals(SQRT2, results[7], DELTA);
-      
     }
 
+//    @Test
+//    @DisplayName("CNOT qubits")
+//    public void unmarshalDX() {
+//        String s = "[[C0,C]]";
+//        Gate[][] gates = Gate.toMatrix(s);
+//        LocalSimulator sim = new LocalSimulator();
+//        double[] results = sim.calculateResults(gates);
+//        assertEquals(results.length, 4);
+//        assertEquals(1.0d, results[0], DELTA);
+//        assertEquals(0.0d, results[1], DELTA);
+//        assertEquals(0.0d, results[2], DELTA);
+//        assertEquals(0.0d, results[3], DELTA);
+//    }
+
+    @Test
+    @DisplayName("CNOT qubits")
+    public void unmarshalXD() {
+        String s = "[[C,C0]]";
+        Gate[][] gates = Gate.toMatrix(s);
+        LocalSimulator sim = new LocalSimulator();
+        double[] results = sim.calculateResults(gates);
+        assertEquals(results.length, 4);
+        assertEquals(1.0d, results[0], DELTA);
+        assertEquals(0.0d, results[1], DELTA);
+        assertEquals(0.0d, results[2], DELTA);
+        assertEquals(0.0d, results[3], DELTA);
+    }
+    
+    @Test
+    @DisplayName("NOTCNOT qubits")
+    public void unmarshalXXD() {
+        System.out.println("NOTCNOT");
+        String s = "[[X,I][C,C0]]";
+        Gate[][] gates = Gate.toMatrix(s);
+        LocalSimulator sim = new LocalSimulator();
+        double[] results = sim.calculateResults(gates);
+        assertEquals(results.length, 4);
+        assertEquals(0.0d, results[0], DELTA);
+        assertEquals(0.0d, results[1], DELTA);
+        assertEquals(0.0d, results[2], DELTA);
+        assertEquals(1.0d, results[3], DELTA);
+    }
+    
 }
