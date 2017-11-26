@@ -94,4 +94,40 @@ public class GateProtocolTests {
         assertEquals(res[1][1], Gate.SWAP);
         assertEquals(res[1][2], Gate.IDENTITY);
     }
+    
+        
+    @Test
+    @DisplayName("CNOT12 2 qubits")
+    public void unmarshalCNOT12() {
+        String s = "[[C0,C]]";
+        Gate[][] res = Gate.toMatrix(s);
+        assertEquals(res.length, 2);    
+        assertEquals(res[0].length, 1);
+        assertEquals(res[0][0], Gate.C0);
+        assertEquals(res[1][0], Gate.CNOT);
+    }
+            
+    @Test
+    @DisplayName("CNOT21 2 qubits")
+    public void unmarshalCNOT21() {
+        String s = "[[C,C0]]";
+        Gate[][] res = Gate.toMatrix(s);
+        assertEquals(res.length, 2);    
+        assertEquals(res[0].length, 1);
+        assertEquals(res[0][0], Gate.CNOT);
+        assertEquals(res[1][0], Gate.C0);
+    }
+                
+    @Test
+    @DisplayName("SWAP 3 qubits")
+    public void unmarshalSWAP13() {
+        String s = "[[S,I,S]]";
+        Gate[][] res = Gate.toMatrix(s);
+        assertEquals(res.length, 3);    
+        assertEquals(res[0].length, 1);
+        assertEquals(res[0][0], Gate.SWAP);
+        assertEquals(res[1][0], Gate.IDENTITY);
+        assertEquals(res[2][0], Gate.SWAP);
+    }
+    
 }
