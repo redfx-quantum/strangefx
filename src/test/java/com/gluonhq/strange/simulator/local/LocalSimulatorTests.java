@@ -149,6 +149,36 @@ class LocalSimulatorTests {
         assertEquals(1.d, res[2], DELTA);
         assertEquals(0.d, res[3], DELTA);
     }
-
+    
+    @Test
+    @DisplayName("I gate")
+    public void unmarshalI() {
+        String s = "[[I]]";
+        Gate[][] gates = Gate.toMatrix(s);
+        LocalSimulator sim = new LocalSimulator();
+        double[] results = sim.calculateResults(gates);
+        assertEquals(results.length, 2);    
+        assertEquals(1.0d, results[0], DELTA);
+        assertEquals(0.0d, results[1], DELTA);
+    }   
+    
+    @Test
+    @DisplayName("XHX qubits")
+    public void unmarshalIXH() {
+        String s = "[[X,H,X]]";
+        Gate[][] gates = Gate.toMatrix(s);
+        LocalSimulator sim = new LocalSimulator();
+        double[] results = sim.calculateResults(gates);
+        assertEquals(results.length, 8);
+        assertEquals(0.0d, results[0], DELTA);
+        assertEquals(0.0d, results[1], DELTA);
+        assertEquals(0.0d, results[2], DELTA);
+        assertEquals(0.0d, results[3], DELTA);
+        assertEquals(0.0d, results[4], DELTA);
+        assertEquals(SQRT2, results[5], DELTA);
+        assertEquals(0.0d, results[6], DELTA);
+        assertEquals(SQRT2, results[7], DELTA);
+      
+    }
 
 }

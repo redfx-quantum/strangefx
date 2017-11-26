@@ -44,6 +44,8 @@ import com.gluonhq.strange.Model;
  */
 public interface Simulator {
     
+    public double[] calculateResults(Gate[][] gates);
+    
     public double[] calculateResults(Model m);
     
     public double[] calculateQubitStates(Model m);

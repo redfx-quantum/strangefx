@@ -65,6 +65,23 @@ public class LocalSimulator implements Simulator {
             }
         });
     }
+    
+    @Override 
+    public double[] calculateResults(Gate[][] gates) {
+        int nQubits = gates.length;
+        int nSteps = gates[0].length;
+        double[] result = new double[1<<nQubits];
+        result[0] = 1;
+        for (int i = 0; i < nSteps; i++) {
+            Gate[] operations = getColumn(gates, i);
+        //    System.out.println("--- apply step "+i+" with gates "+m.getGatesByStep(i));
+            result = applyStep(operations, result, nQubits);
+            System.out.println("--- applied step "+i+", result = ");
+            for (int j = 0; j < result.length;j++) {System.out.println("res["+j+"] = "+result[j]);}
+        }
+        return result;
+    }
+    
     @Override
     public double[] calculateResults(Model m) {
         System.out.println("Calculate results for "+m.getNQubits()+" qubits and "+m.getNumberOfSteps()+" steps");       
@@ -83,6 +100,7 @@ public class LocalSimulator implements Simulator {
         }
         return result;
     }
+    
     private double[][] tensor (double[][] a, double[][]b) {
         int d1 = a.length;
         int d2 = b.length;
@@ -116,6 +134,18 @@ public class LocalSimulator implements Simulator {
         return answer;
     }
     
+    private static Gate[] getColumn(Gate[][] matrix, int j) {
+        int nRows = matrix.length;
+        if (nRows == 0) {
+            return new Gate[0];
+        }
+        int nCols = matrix[0].length;
+        Gate[] answer = new Gate[nRows];
+        for (int i = 0; i < nRows; i++) {
+            answer[i] = matrix[i][j];
+        }
+        return answer;
+    }
 
     private double[] applyStep(Gate[] step, double[] initial, int nqubits) {
         double[] result = new double[initial.length];
