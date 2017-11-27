@@ -32,13 +32,16 @@
 package com.gluonhq.strange.ui;
 
 import com.gluonhq.strange.Model;
+import com.gluonhq.strange.simulator.Gate;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.PickResult;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -50,12 +53,19 @@ import java.util.stream.Collectors;
 
 public class Qubit extends Region {
 
+    private  static GateSymbol SPACER = new GateSymbol( Gate.IDENTITY, false ) {{
+        getStyleClass().setAll("gate-spacer");
+        int SPACER_WIDTH = 5;
+        setMaxWidth(SPACER_WIDTH);
+        setMinWidth(SPACER_WIDTH);
+        setText(null);
+    }};
+
     private Line line = new Line();
 
     private Label title = new Label();
     private Measurement measurement = new Measurement();
     private HBox gateRow = new HBox();
-
 
     private int idx; // the number of the qubit
     private ObservableList<GateSymbol> gates = FXCollections.observableArrayList();
@@ -105,19 +115,47 @@ public class Qubit extends Region {
         //ensure all updates from the skin go back to control
         gateRow.getChildren().addListener( (Observable observable) -> {
             getGateSymbols().setAll(
-                    gateRow.getChildren().stream().map( n -> (GateSymbol)n).collect(Collectors.toList())
+                    gateRow.getChildren()
+                           .stream()
+                           .filter(g -> g != SPACER)
+                           .map( n -> (GateSymbol)n).collect(Collectors.toList())
             );
         });
 
         gateRow.setOnDragOver(event -> {
 
             if (event.getGestureSource() != this &&
-
-                    // only accept gates
-                    event.getDragboard().getContent(GateSymbol.DRAGGABLE_GATE) != null) {
+                // only accept gates
+                event.getDragboard().getContent(GateSymbol.DRAGGABLE_GATE) != null) {
 
                 // allow both copy(i.e. creation from toolbar) and move(between circuits)
                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+
+
+                if ( gateRow.getChildren().isEmpty() ) {
+
+                    gateRow.getChildren().add(SPACER);
+
+                } else {
+
+                    PickResult pickResult = event.getPickResult();
+                    Node intersectedNode = pickResult.getIntersectedNode();
+                    double x = pickResult.getIntersectedPoint().getX();
+
+                    if (intersectedNode instanceof GateSymbol && intersectedNode != SPACER) {
+                        removeSpacer();
+                        int nodeIndex = gateRow.getChildren().indexOf(intersectedNode);
+                        int insertionIndex = (x <= ((GateSymbol) intersectedNode).getWidth() / 2) ? nodeIndex : nodeIndex + 1;
+                        gateRow.getChildren().add(insertionIndex, SPACER);
+
+                    } else if ( intersectedNode == gateRow &&
+                                x >= getOccupiedWidth() &&
+                                gateRow.getChildren().indexOf(SPACER) < gateRow.getChildren().size() ) {
+                            removeSpacer();
+                            gateRow.getChildren().add(SPACER);
+                    }
+                }
+
             }
 
             event.consume();
@@ -129,35 +167,48 @@ public class Qubit extends Region {
             Dragboard db = e.getDragboard();
             if ( db.hasContent(GateSymbol.DRAGGABLE_GATE) ) {
 
-                // retriave symbol from global storage (only way to keep ref to the node)
+                // retrieve symbol from global storage (only way to keep ref to the node)
                 GateSymbol symbol = (GateSymbol) System.getProperties().get(GateSymbol.DRAGGABLE_GATE);
                 if ( TransferMode.MOVE == e.getTransferMode()) {
-
                     // move the gate symbol between circuits
                     symbol.removeFromParent();
-                    gateRow.getChildren().add(symbol);
+                    int spacerIndex = gateRow.getChildren().indexOf(SPACER);
+                    gateRow.getChildren().set(spacerIndex,symbol);
                     e.setDropCompleted(true);
-
                 } else {
-
                     // re-create gate symbol which was dragged from the toolbar
-                    gateRow.getChildren().add(GateSymbol.of(symbol.getGate()));
+                    symbol = GateSymbol.of(symbol.getGate());
+                    int spacerIndex = gateRow.getChildren().indexOf(SPACER);
+                    gateRow.getChildren().set(spacerIndex,symbol);
                     e.setDropCompleted(true);
                 }
-
             }
+
             e.consume();
         });
+
+        gateRow.setOnDragExited( e -> removeSpacer());
 
         model.getEndStates().addListener(endStateListener);
 
         gates.addListener( (Observable o) -> {
             model.setGatesForCircuit(
                     idx, gates.stream().map(GateSymbol::getGate).collect(Collectors.toList()));
-
-//            output.setMeasuredChance(Math.random());
         });
 
+    }
+
+    private void removeSpacer() {
+        gateRow.getChildren().remove(SPACER);
+    }
+
+    private double getOccupiedWidth() {
+
+        double width = 0;
+        for ( Node node: gateRow.getChildren()) {
+            width += ((GateSymbol)node).getWidth();
+        }
+        return width + gateRow.getSpacing() * gateRow.getChildren().size();
 
     }
 

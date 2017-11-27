@@ -133,7 +133,12 @@
     -fx-background-color: #FEC870;
 }
 
-
+.gate-spacer {
+    -fx-padding: 15;
+    -fx-border-width: 2;
+    -fx-background-color: rootColor;
+    -fx-border-color: rootColor;
+}
 
 .glyph-icon{
     -fx-text-fill: icon-color;
