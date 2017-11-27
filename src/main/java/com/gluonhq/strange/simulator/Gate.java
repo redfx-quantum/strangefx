@@ -45,6 +45,7 @@ public enum Gate {
     CNOT    ( "C", GateGroup.BIT_FLIP,      new double[][]{{}}),
     C0      ( "C0", GateGroup.BIT_FLIP,      new double[][]{{1,0,0,0},{0,1,0,0},{0,0,0,1},{0,0,1,0}}); // control qubit
 
+
     private final String caption;
     private double[][] matrix;
     private final GateGroup group;

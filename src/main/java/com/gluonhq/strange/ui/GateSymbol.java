@@ -61,8 +61,8 @@ public class GateSymbol extends Label {
     public static GateSymbol of( Gate gate ) {
         return new GateSymbol(gate, true);
     }
-    
-    private GateSymbol( Gate gate, boolean movable ) {
+
+    GateSymbol(Gate gate, boolean movable) {
 
         this.gate = Objects.requireNonNull(gate);
         this.movable = movable;
