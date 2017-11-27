@@ -149,6 +149,20 @@ public class LocalSimulator implements Simulator {
     }
 
     private double[] applyStep(Gate[] step, double[] initial, int nqubits) {
+        int cnotidx = hasGate(step, Gate.CNOT);
+        if (cnotidx > -1) {
+            int controlidx = hasGate(step, Gate.C0);
+            if (controlidx < 0) {
+                throw new IllegalArgumentException ("CNOT gate without a control qubit, won't work");
+            }
+            if (controlidx == cnotidx-1) {
+                // ok
+            } else { 
+                if (controlidx > cnotidx) {
+                   
+                }
+            }
+        }
         double[] result = new double[initial.length];
         double[][] a =  step[0].getMatrix(); //getGate(step.get(0).getType());
         int idx = a.length >>1;
@@ -165,6 +179,20 @@ public class LocalSimulator implements Simulator {
             }
         }
         return result;
+    }
+    
+    /**
+     * Check if there is a target in the gates for a specific qubit
+     * @param gates
+     * @return the first index of the target gate, -1 if there is no such gate
+     */
+    private int hasGate(Gate[] gates, Gate target) {
+        int idx = 0;
+        for (Gate gate: gates) {
+            if (gate.equals(target)) return idx;
+            idx++;
+        }
+        return -1;
     }
     
     @Override

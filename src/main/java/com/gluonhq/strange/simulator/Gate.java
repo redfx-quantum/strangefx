@@ -42,8 +42,8 @@ public enum Gate {
     NOT     ( "X", GateGroup.BIT_FLIP,      new double[][]{{0,1}, {1,0}}),
     HADAMARD( "H", GateGroup.SUPERPOSITION, new double[][]{{ Const.HV, Const.HV }, { Const.HV, -Const.HV }}),
     SWAP    ( "S", GateGroup.BIT_FLIP,      new double[][]{{1,0,0,0},{0,0,1,0},{0,1,0,0},{0,0,0,1}}),
-    CNOT    ( "C", GateGroup.BIT_FLIP,      new double[][]{{1,0,0,0},{0,1,0,0},{0,0,0,1},{0,0,1,0}}),
-    C0      ( "C0", GateGroup.BIT_FLIP,      new double[][]{{}}); // control qubit
+    CNOT    ( "C", GateGroup.BIT_FLIP,      new double[][]{{}}),
+    C0      ( "C0", GateGroup.BIT_FLIP,      new double[][]{{1,0,0,0},{0,1,0,0},{0,0,0,1},{0,0,1,0}}); // control qubit
 
     private final String caption;
     private double[][] matrix;

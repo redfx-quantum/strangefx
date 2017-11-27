@@ -197,7 +197,7 @@ class LocalSimulatorTests {
     @Test
     @DisplayName("CNOT qubits")
     public void unmarshalXD() {
-        String s = "[[C,C0]]";
+        String s = "[[C0,C]]";
         Gate[][] gates = Gate.toMatrix(s);
         LocalSimulator sim = new LocalSimulator();
         double[] results = sim.calculateResults(gates);
@@ -212,7 +212,7 @@ class LocalSimulatorTests {
     @DisplayName("NOTCNOT qubits")
     public void unmarshalXXD() {
         System.out.println("NOTCNOT");
-        String s = "[[X,I][C,C0]]";
+        String s = "[[X,I][C0,C]]";
         Gate[][] gates = Gate.toMatrix(s);
         LocalSimulator sim = new LocalSimulator();
         double[] results = sim.calculateResults(gates);
