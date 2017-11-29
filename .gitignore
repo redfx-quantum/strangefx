@@ -4,3 +4,4 @@ build/
 .gradle/
 *.iml
 /.nb-gradle/
+src/main/resources/gluoncloudlink_config.json
