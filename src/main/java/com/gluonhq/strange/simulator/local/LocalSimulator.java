@@ -61,7 +61,10 @@ public class LocalSimulator implements Simulator {
 
     public LocalSimulator() {
         model.refreshRequest().addListener((obs, oldv, newv) -> {
+            System.out.println("REFRESH REQUEST changed to "+newv);
             if (newv) {
+                Thread.dumpStack();
+
                 double[] res2;
                 if (model.getNQubits() < LOCAL_TRESHOLD) {
                     res2 = calculateQubitStates(model);
@@ -71,7 +74,6 @@ public class LocalSimulator implements Simulator {
                         reslist.add(d);
                     }
                     model.getEndStates().setAll(reslist);
-                    System.out.println("endstates = " + model.getEndStates());
                     model.refreshRequest().set(false);
                 } else {
                     System.out.println("CLOUDREQUEST! "+model.getNQubits());

@@ -97,11 +97,22 @@ public class Model {
     }
     
     public void setGatesForCircuit(int n, List<Gate> gates) {
-        System.out.println("BEFORE, size = "+this.gates.get(n).size());
-        System.out.println("gates was "+this.gates.get(n)+" and this = "+this);
-        this.gates.set(n, gates);
-        System.out.println("AFTER, size = "+this.gates.get(n).size());
-        refreshRequest.set(true);
+        List<Gate> old = this.gates.get(n);
+        boolean similar = true;
+        if (gates.size() == old.size()) {
+            for (int i = 0; i < gates.size(); i++) {
+                if (!gates.get(i).equals(old.get(i))) {
+                    similar = false; i = gates.size();
+                }
+            }
+        } else {
+            similar = false;
+        }
+        if (!similar) {
+            this.gates.set(n, gates);
+            System.out.println("gates changed for circuit "+n+" from "+old+" to "+gates);
+            refreshRequest.set(true);
+        } 
     }
     
     public int getNumberOfSteps() {
