@@ -63,8 +63,6 @@ public class LocalSimulator implements Simulator {
         model.refreshRequest().addListener((obs, oldv, newv) -> {
             System.out.println("REFRESH REQUEST changed to "+newv);
             if (newv) {
-                Thread.dumpStack();
-
                 double[] res2;
                 if (model.getNQubits() < LOCAL_TRESHOLD) {
                     res2 = calculateQubitStates(model);
