@@ -57,8 +57,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        CloudSimulator cs = new CloudSimulator();
-        cs.calculateResults("[[I]]");
+//        CloudSimulator cs = new CloudSimulator();
+//        cs.calculateResults("[[I]]");
         LocalSimulator sim = new LocalSimulator();
         
         QubitBoard board = new QubitBoard(2);
