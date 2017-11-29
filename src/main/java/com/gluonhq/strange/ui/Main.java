@@ -32,6 +32,7 @@
 package com.gluonhq.strange.ui;
 
 import com.gluonhq.strange.Model;
+import com.gluonhq.strange.simulator.CloudSimulator;
 import com.gluonhq.strange.simulator.Gate;
 import com.gluonhq.strange.simulator.local.LocalSimulator;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
@@ -56,6 +57,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        CloudSimulator cs = new CloudSimulator();
+        cs.calculateResults("[[I]]");
         LocalSimulator sim = new LocalSimulator();
         
         QubitBoard board = new QubitBoard(2);

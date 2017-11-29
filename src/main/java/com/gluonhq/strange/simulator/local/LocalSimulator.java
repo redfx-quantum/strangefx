@@ -156,10 +156,11 @@ public class LocalSimulator implements Simulator {
                 throw new IllegalArgumentException ("CNOT gate without a control qubit, won't work");
             }
             if (controlidx == cnotidx-1) {
+                System.out.println("OK");
                 // ok
             } else { 
                 if (controlidx > cnotidx) {
-                   
+                    System.out.println("NOK");
                 }
             }
         }
