@@ -45,7 +45,6 @@ public class CloudSimulator {
     
     public GluonObservableObject<String> calculateResults(String configuration) {
         System.out.println("I will ask results for "+configuration+" from GCL");
-        Thread.dumpStack();
         RemoteFunctionObject function = RemoteFunctionBuilder.create("calculateResults").object();
         function.setRawBody(configuration.getBytes());
         GluonObservableObject<String> answer = function.call(String.class);

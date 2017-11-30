@@ -147,7 +147,12 @@ public class Model {
         for (int i = 0; i < getNumberOfSteps(); i++) {
             answer.append("[");
             for (int j = 0; j < nq;j++) {
-                answer.append(getGates().get(j).get(i).getCaption());
+                List<Gate> row = getGates().get(j);
+                Gate target = Gate.IDENTITY;
+                if (row.size() > i ) {
+                    target = row.get(i);
+                }
+                answer.append(target.getCaption());
                 if (j < nq-1) answer.append(",");
             }
             answer.append("]");

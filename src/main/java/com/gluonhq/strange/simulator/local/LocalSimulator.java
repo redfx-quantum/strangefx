@@ -55,7 +55,7 @@ import javafx.beans.Observable;
  */
 public class LocalSimulator implements Simulator {
 
-    private final int LOCAL_TRESHOLD = 8;
+    private final int LOCAL_TRESHOLD = 1;
     private final Model model = Model.getInstance();
     CloudSimulator cloudSimulator = new CloudSimulator();
 
@@ -96,8 +96,13 @@ public class LocalSimulator implements Simulator {
                                 for (double d : stateresult) {
                                     reslist.add(d);
                                 }
-                                model.getEndStates().setAll(reslist);
-                                System.out.println("endstates = " + model.getEndStates());
+                                try {
+System.out.println("will now set endstates with a vector size "+reslist.size());
+                                    model.getEndStates().setAll(reslist);
+                                    System.out.println("endstates = " + model.getEndStates());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                                 model.refreshRequest().set(false);
                             }
                         }
