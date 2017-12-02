@@ -75,6 +75,7 @@ public class Model {
     }
     
     public ObservableList<Double> getEndStates() {
+        System.out.println("getendstates asked, nqubits = "+this.nqubits);
         return endStates;
     }
     

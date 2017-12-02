@@ -97,9 +97,16 @@ public class LocalSimulator implements Simulator {
                                     reslist.add(d);
                                 }
                                 try {
+                                    // only update the state if the size of the returned answer matches the #qubits in the model
+                                    int nq  = model.getNQubits();
+                                    if (nq == reslist.size()) {
 System.out.println("will now set endstates with a vector size "+reslist.size());
-                                    model.getEndStates().setAll(reslist);
+                                        model.getEndStates().setAll(reslist);
                                     System.out.println("endstates = " + model.getEndStates());
+
+                                    } else {
+                                        System.out.println("ignore update, model has "+nq);
+                                    }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }

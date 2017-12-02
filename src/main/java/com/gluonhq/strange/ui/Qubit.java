@@ -80,7 +80,7 @@ public class Qubit extends Region {
     public Qubit( int index ) {
 
         this.idx = index;
-
+        System.out.println("QUBIT with index "+index+" created");
         title.setText( String.format("q[%d] I0>", idx) );
 
         getStyleClass().add("qubit");
