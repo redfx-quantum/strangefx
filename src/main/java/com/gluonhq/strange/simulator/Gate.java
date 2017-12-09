@@ -31,6 +31,7 @@
  */
 package com.gluonhq.strange.simulator;
 
+import com.gluonhq.strange.math.Complex;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -38,19 +39,23 @@ import java.util.stream.Collectors;
 
 public enum Gate {
 
-    IDENTITY( "I", GateGroup.IDENTITY,      new double[][]{{1,0}, {0,1}}),
-    NOT     ( "X", GateGroup.BIT_FLIP,      new double[][]{{0,1}, {1,0}}),
-    HADAMARD( "H", GateGroup.SUPERPOSITION, new double[][]{{ Const.HV, Const.HV }, { Const.HV, -Const.HV }}),
-    SWAP    ( "S", GateGroup.BIT_FLIP,      new double[][]{{1,0,0,0},{0,0,1,0},{0,1,0,0},{0,0,0,1}}),
-    CNOT    ( "C", GateGroup.BIT_FLIP,      new double[][]{{}}),
-    C0      ( "C0", GateGroup.BIT_FLIP,      new double[][]{{1,0,0,0},{0,1,0,0},{0,0,0,1},{0,0,1,0}}); // control qubit
+    IDENTITY( "I", GateGroup.IDENTITY,      new Complex[][]{{Complex.ONE,Complex.ZERO}, {Complex.ZERO,Complex.ONE}}),
+    NOT     ( "X", GateGroup.BIT_FLIP,      new Complex[][]{{Complex.ZERO,Complex.ONE}, {Complex.ONE,Complex.ZERO}}),
+    HADAMARD( "H", GateGroup.SUPERPOSITION, new Complex[][]{{Complex.HC, Complex.HC}, {Complex.HC,Complex.HCN }}),
+    SWAP    ( "S", GateGroup.BIT_FLIP,      new Complex[][]{{Complex.ONE,Complex.ZERO,Complex.ZERO,Complex.ZERO}
+            ,{Complex.ZERO,Complex.ZERO,Complex.ONE,Complex.ZERO},{Complex.ZERO,Complex.ONE,Complex.ZERO,Complex.ZERO}
+            ,{Complex.ZERO,Complex.ZERO,Complex.ZERO,Complex.ONE}}),
+    CNOT    ( "C", GateGroup.BIT_FLIP,      new Complex[][]{{}}),
+    C0      ( "C0", GateGroup.BIT_FLIP,      new Complex[][]{{Complex.ONE,Complex.ZERO,Complex.ZERO,Complex.ZERO}
+            ,{Complex.ZERO,Complex.ONE,Complex.ZERO,Complex.ZERO},
+        {Complex.ZERO,Complex.ZERO,Complex.ZERO,Complex.ONE},{Complex.ZERO,Complex.ZERO,Complex.ONE,Complex.ZERO}}); // control qubit
 
 
     private final String caption;
-    private double[][] matrix;
+    private Complex[][] matrix;
     private final GateGroup group;
 
-    Gate(String caption, GateGroup group, double[][] matrix) {
+    Gate(String caption, GateGroup group, Complex[][] matrix) {
         this.caption = caption;
         this.matrix = matrix;
         this.group = group;
@@ -60,7 +65,7 @@ public enum Gate {
         return caption;
     }
 
-    public double[][] getMatrix() {
+    public Complex[][] getMatrix() {
         return matrix;
     }
 

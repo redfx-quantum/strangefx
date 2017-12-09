@@ -32,6 +32,7 @@
 package com.gluonhq.strange.simulator.local;
 
 import com.gluonhq.strange.Model;
+import com.gluonhq.strange.math.Complex;
 import com.gluonhq.strange.simulator.Gate;
 import com.gluonhq.strange.simulator.GateConfig;
 import org.junit.jupiter.api.DisplayName;
@@ -51,15 +52,15 @@ class LocalSimulatorTests {
     @Test
     @DisplayName("Simple: One qubit, no gates")
     void simple1() {
-
         Model model = Model.getInstance();
         model.setNQubits(1);
         model.setGatesForCircuit(0, List.of(Gate.IDENTITY));
-        double[] res = sim.calculateResults(model);
+        Complex[] res = sim.calculateResults(model);
         assertEquals( 2, res.length );
-        assertEquals(1.d, res[0], DELTA);
-        assertEquals(0.d, res[1], DELTA);
-
+        assertEquals(1.d, res[0].r, DELTA);
+        assertEquals(0.d, res[1].r, DELTA);
+        assertEquals(0.d, res[0].i, DELTA);
+        assertEquals(0.d, res[1].i, DELTA);
     }
 
     @Test
@@ -68,10 +69,12 @@ class LocalSimulatorTests {
         Model model = Model.getInstance();
         model.setNQubits(1);
         model.setGatesForCircuit(0, List.of(Gate.NOT));
-        double[] res = sim.calculateResults(model);
+        Complex[] res = sim.calculateResults(model);
         assertEquals( 2, res.length );
-        assertEquals(0.d, res[0], DELTA);
-        assertEquals(1.d, res[1], DELTA);
+        assertEquals(0.d, res[0].r, DELTA);
+        assertEquals(1.d, res[1].r, DELTA);
+        assertEquals(0.d, res[0].i, DELTA);
+        assertEquals(0.d, res[1].i, DELTA);
 
     }
 
@@ -81,10 +84,12 @@ class LocalSimulatorTests {
         Model model = Model.getInstance();
         model.setNQubits(1);
         model.setGatesForCircuit(0,List.of(Gate.HADAMARD));
-        double[] res = sim.calculateResults(model);
+        Complex[] res = sim.calculateResults(model);
         assertEquals( 2, res.length );
-        assertEquals(SQRT2, res[0], DELTA);
-        assertEquals(SQRT2, res[1], DELTA);
+        assertEquals(SQRT2, res[0].r, DELTA);
+        assertEquals(SQRT2, res[1].r, DELTA);
+        assertEquals(0.d, res[0].i, DELTA);
+        assertEquals(0.d, res[1].i, DELTA);
     }
 
     @Test
@@ -95,10 +100,12 @@ class LocalSimulatorTests {
         model.setNQubits(1);
         List<Gate> gates = List.of(Gate.NOT, Gate.NOT);
         model.setGatesForCircuit(0, gates);
-        double[] res = sim.calculateResults(model);
+        Complex[] res = sim.calculateResults(model);
         assertEquals( 2, res.length );
-        assertEquals(1.d, res[0], DELTA);
-        assertEquals(0.d, res[1], DELTA);
+        assertEquals(1.d, res[0].r, DELTA);
+        assertEquals(0.d, res[1].r, DELTA);
+        assertEquals(0.d, res[0].i, DELTA);
+        assertEquals(0.d, res[1].i, DELTA);
     }
 
     @Test
@@ -110,10 +117,12 @@ class LocalSimulatorTests {
         model.setNQubits(1);
         List<Gate> gates = List.of(Gate.HADAMARD,Gate.HADAMARD,Gate.NOT);
         model.setGatesForCircuit(0,gates);
-        double[] res = sim.calculateResults(model);
+        Complex[] res = sim.calculateResults(model);
         assertEquals( 2, res.length );
-        assertEquals(0.d, res[0], DELTA);
-        assertEquals(1.d, res[1], DELTA);
+        assertEquals(0.d, res[0].r, DELTA);
+        assertEquals(1.d, res[1].r, DELTA);
+        assertEquals(0.d, res[0].i, DELTA);
+        assertEquals(0.d, res[1].i, DELTA);
     }
 
     @Test
@@ -124,12 +133,16 @@ class LocalSimulatorTests {
         model.setNQubits(2);
         GateConfig gates = GateConfig.of(List.of(Gate.IDENTITY), List.of(Gate.IDENTITY));
         model.setGates(gates);
-        double[] res = sim.calculateResults(model);
+        Complex[] res = sim.calculateResults(model);
         assertEquals( 4, res.length );
-        assertEquals(1.d, res[0], DELTA);
-        assertEquals(0.d, res[1], DELTA);
-        assertEquals(0.d, res[2], DELTA);
-        assertEquals(0.d, res[3], DELTA);
+        assertEquals(1.d, res[0].r, DELTA);
+        assertEquals(0.d, res[1].r, DELTA);
+        assertEquals(0.d, res[2].r, DELTA);
+        assertEquals(0.d, res[3].r, DELTA);
+        assertEquals(0.d, res[0].i, DELTA);
+        assertEquals(0.d, res[1].i, DELTA);
+        assertEquals(0.d, res[2].i, DELTA);
+        assertEquals(0.d, res[3].i, DELTA);
 
     }
 
@@ -141,13 +154,17 @@ class LocalSimulatorTests {
         model.setNQubits(2);
         GateConfig gates = GateConfig.of(List.of(Gate.NOT), List.of(Gate.IDENTITY));
         model.setGates(gates);
-        double[] res = sim.calculateResults(model);
+        Complex[] res = sim.calculateResults(model);
         assertEquals( 4, res.length );
 
-        assertEquals(0.d, res[0], DELTA);
-        assertEquals(0.d, res[1], DELTA);
-        assertEquals(1.d, res[2], DELTA);
-        assertEquals(0.d, res[3], DELTA);
+        assertEquals(0.d, res[0].r, DELTA);
+        assertEquals(0.d, res[1].r, DELTA);
+        assertEquals(1.d, res[2].r, DELTA);
+        assertEquals(0.d, res[3].r, DELTA);
+        assertEquals(0.d, res[0].i, DELTA);
+        assertEquals(0.d, res[1].i, DELTA);
+        assertEquals(0.d, res[2].i, DELTA);
+        assertEquals(0.d, res[3].i, DELTA);
     }
     
     @Test
@@ -156,10 +173,12 @@ class LocalSimulatorTests {
         String s = "[[I]]";
         Gate[][] gates = Gate.toMatrix(s);
         LocalSimulator sim = new LocalSimulator();
-        double[] results = sim.calculateResults(gates);
-        assertEquals(results.length, 2);    
-        assertEquals(1.0d, results[0], DELTA);
-        assertEquals(0.0d, results[1], DELTA);
+        Complex[] res = sim.calculateResults(gates);
+        assertEquals(res.length, 2);    
+        assertEquals(1.0d, res[0].r, DELTA);
+        assertEquals(0.0d, res[1].r, DELTA);
+        assertEquals(0.d, res[0].i, DELTA);
+        assertEquals(0.d, res[1].i, DELTA);
     }   
     
     @Test
@@ -168,16 +187,16 @@ class LocalSimulatorTests {
         String s = "[[X,H,X]]";
         Gate[][] gates = Gate.toMatrix(s);
         LocalSimulator sim = new LocalSimulator();
-        double[] results = sim.calculateResults(gates);
+        Complex[] results = sim.calculateResults(gates);
         assertEquals(results.length, 8);
-        assertEquals(0.0d, results[0], DELTA);
-        assertEquals(0.0d, results[1], DELTA);
-        assertEquals(0.0d, results[2], DELTA);
-        assertEquals(0.0d, results[3], DELTA);
-        assertEquals(0.0d, results[4], DELTA);
-        assertEquals(SQRT2, results[5], DELTA);
-        assertEquals(0.0d, results[6], DELTA);
-        assertEquals(SQRT2, results[7], DELTA);
+        assertEquals(0.0d, results[0].r, DELTA);
+        assertEquals(0.0d, results[1].r, DELTA);
+        assertEquals(0.0d, results[2].r, DELTA);
+        assertEquals(0.0d, results[3].r, DELTA);
+        assertEquals(0.0d, results[4].r, DELTA);
+        assertEquals(SQRT2, results[5].r, DELTA);
+        assertEquals(0.0d, results[6].r, DELTA);
+        assertEquals(SQRT2, results[7].r, DELTA);
     }
 
 //    @Test
@@ -200,12 +219,12 @@ class LocalSimulatorTests {
         String s = "[[C0,C]]";
         Gate[][] gates = Gate.toMatrix(s);
         LocalSimulator sim = new LocalSimulator();
-        double[] results = sim.calculateResults(gates);
+        Complex[] results = sim.calculateResults(gates);
         assertEquals(results.length, 4);
-        assertEquals(1.0d, results[0], DELTA);
-        assertEquals(0.0d, results[1], DELTA);
-        assertEquals(0.0d, results[2], DELTA);
-        assertEquals(0.0d, results[3], DELTA);
+        assertEquals(1.0d, results[0].r, DELTA);
+        assertEquals(0.0d, results[1].r, DELTA);
+        assertEquals(0.0d, results[2].r, DELTA);
+        assertEquals(0.0d, results[3].r, DELTA);
     }
     
     @Test
@@ -215,12 +234,12 @@ class LocalSimulatorTests {
         String s = "[[X,I][C0,C]]";
         Gate[][] gates = Gate.toMatrix(s);
         LocalSimulator sim = new LocalSimulator();
-        double[] results = sim.calculateResults(gates);
+        Complex[] results = sim.calculateResults(gates);
         assertEquals(results.length, 4);
-        assertEquals(0.0d, results[0], DELTA);
-        assertEquals(0.0d, results[1], DELTA);
-        assertEquals(0.0d, results[2], DELTA);
-        assertEquals(1.0d, results[3], DELTA);
+        assertEquals(0.0d, results[0].r, DELTA);
+        assertEquals(0.0d, results[1].r, DELTA);
+        assertEquals(0.0d, results[2].r, DELTA);
+        assertEquals(1.0d, results[3].r, DELTA);
     }
     
 }

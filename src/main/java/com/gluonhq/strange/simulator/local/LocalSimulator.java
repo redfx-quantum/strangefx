@@ -42,6 +42,7 @@ import com.gluonhq.strange.simulator.Gate;
 import com.gluonhq.strange.simulator.GateConfig;
 import com.gluonhq.strange.simulator.Simulator;
 import com.gluonhq.strange.Model;
+import com.gluonhq.strange.math.Complex;
 import com.gluonhq.strange.simulator.CloudSimulator;
 
 import java.util.ArrayList;
@@ -86,9 +87,10 @@ public class LocalSimulator implements Simulator {
                                 System.out.println("got answer from cloud: " + answer);
                                 String[] split = answer.split(";");
                                 System.out.println("size = " + split.length);
-                                final double[] probability = new double[split.length];
+                                final Complex[] probability = new Complex[split.length];
                                 for (int i = 0; i < split.length; i++) {
-                                    probability[i] = Double.parseDouble(split[i]);
+                                    // TODO: allow complex numbers to be returned from cloud #23
+                                    probability[i] = new Complex(Double.parseDouble(split[i]));
                                     System.out.println("prob["+i+"] = "+probability[i]);
                                 }
                                 double[] stateresult = calculateQubitStatesFromVector(probability);
@@ -125,11 +127,13 @@ System.out.println("will now set endstates with a vector size "+reslist.size());
     }
 
     @Override
-    public double[] calculateResults(Gate[][] gates) {
+    public Complex[] calculateResults(Gate[][] gates) {
         int nQubits = gates.length;
         int nSteps = gates[0].length;
-        double[] result = new double[1 << nQubits];
-        result[0] = 1;
+        Complex[] result = new Complex[1 << nQubits];
+        result[0] = Complex.ONE;
+        for (int i = 1; i < 1 << nQubits; i++) result[i] = Complex.ZERO;
+
         for (int i = 0; i < nSteps; i++) {
             Gate[] operations = getColumn(gates, i);
             //    System.out.println("--- apply step "+i+" with gates "+m.getGatesByStep(i));
@@ -143,15 +147,16 @@ System.out.println("will now set endstates with a vector size "+reslist.size());
     }
 
     @Override
-    public double[] calculateResults(Model m) {
+    public Complex[] calculateResults(Model m) {
         System.out.println("Calculate results for " + m.getNQubits() + " qubits and " + m.getNumberOfSteps() + " steps");
         Gate[][] gates = toMatrix(m.getGates());
         m.printGates();
-        System.out.println("GATES =- " + m.getGateDescription());
+        System.out.println("GATES = " + m.getGateDescription());
         int n = gates.length;
         int v = 1 << n;
-        double[] result = new double[v];
-        result[0] = 1;
+        Complex[] result = new Complex[v];
+        result[0] = Complex.ONE;
+        for (int i = 1; i < v; i++) result[i] = Complex.ZERO;
         for (int i = 0; i < m.getNumberOfSteps(); i++) {
             //    System.out.println("--- apply step "+i+" with gates "+m.getGatesByStep(i));
             result = applyStep(m.getGatesByStep(i), result, n);
@@ -163,16 +168,16 @@ System.out.println("will now set endstates with a vector size "+reslist.size());
         return result;
     }
 
-    private double[][] tensor(double[][] a, double[][] b) {
+    private Complex[][] tensor(Complex[][] a, Complex[][] b) {
         int d1 = a.length;
         int d2 = b.length;
         System.out.println("tensor product, d1 = " + d1 + " and d2 = " + d2);
-        double[][] result = new double[d1 * d2][d1 * d2];
+        Complex[][] result = new Complex[d1 * d2][d1 * d2];
         for (int rowa = 0; rowa < d1; rowa++) {
             for (int cola = 0; cola < d1; cola++) {
                 for (int rowb = 0; rowb < d2; rowb++) {
                     for (int colb = 0; colb < d2; colb++) {
-                        result[d2 * rowa + rowb][d2 * cola + colb] = a[rowa][cola] * b[rowb][colb];
+                        result[d2 * rowa + rowb][d2 * cola + colb] = a[rowa][cola].mul( b[rowb][colb]);
                     }
                 }
             }
@@ -212,7 +217,7 @@ System.out.println("will now set endstates with a vector size "+reslist.size());
         return answer;
     }
 
-    private double[] applyStep(Gate[] step, double[] initial, int nqubits) {
+    private Complex[] applyStep(Gate[] step, Complex[] initial, int nqubits) {
         int cnotidx = hasGate(step, Gate.CNOT);
         if (cnotidx > -1) {
             int controlidx = hasGate(step, Gate.C0);
@@ -228,19 +233,19 @@ System.out.println("will now set endstates with a vector size "+reslist.size());
                 }
             }
         }
-        double[] result = new double[initial.length];
-        double[][] a = step[0].getMatrix(); //getGate(step.get(0).getType());
+        Complex[] result = new Complex[initial.length];
+        Complex[][] a = step[0].getMatrix(); //getGate(step.get(0).getType());
         int idx = a.length >> 1;
         while (idx < nqubits) {
             // double[][] m = new double[4<<idx][4<<idx];
-            double[][] gate = step[idx].getMatrix(); //getGate(step.get(i).getType());
+            Complex[][] gate = step[idx].getMatrix(); //getGate(step.get(i).getType());
             a = tensor(a, gate);
             idx = idx + (gate.length >> 1);
         }
         for (int i = 0; i < initial.length; i++) {
-            result[i] = 0;
+            result[i] = Complex.ZERO;
             for (int j = 0; j < initial.length; j++) {
-                result[i] = result[i] + a[i][j] * initial[j];
+                result[i] = result[i].add(a[i][j].mul(initial[j]));
             }
         }
         return result;
@@ -266,12 +271,11 @@ System.out.println("will now set endstates with a vector size "+reslist.size());
     @Override
     public double[] calculateQubitStates(Model m) {
         int nq = m.getNQubits();
-        double[] answer = new double[nq];
-        double[] vectorresult = calculateResults(m);
+        Complex[] vectorresult = calculateResults(m);
         return calculateQubitStatesFromVector(vectorresult);
     }
 
-    private double[] calculateQubitStatesFromVector(double[] vectorresult) {
+    private double[] calculateQubitStatesFromVector(Complex[] vectorresult) {
         int nq = (int) Math.round(Math.log(vectorresult.length) / Math.log(2));
         System.out.println("nq = "+nq);
         double[] answer = new double[nq];
@@ -282,7 +286,7 @@ System.out.println("will now set endstates with a vector size "+reslist.size());
             for (int j = 0; j < ressize; j++) {
                 int p1 = j / div;
                 if (p1 % 2 == 1) {
-                    answer[i] = answer[i] + vectorresult[j] * vectorresult[j];
+                    answer[i] = answer[i] + vectorresult[j].abssqr();
                 }
             }
         }
@@ -327,95 +331,101 @@ System.out.println("will now set endstates with a vector size "+reslist.size());
         Model model = Model.getInstance();
         model.setNQubits(1);
         model.setGatesForCircuit(0, List.of(Gate.IDENTITY));
-        double[] res = sim.calculateResults(model);
+        Complex[] res = sim.calculateResults(model);
         System.out.println("SIMPLE res length should be 2: " + res.length);
         printResults(res);
         double[] states = sim.calculateQubitStates(model);
         printResults2(states);
     }
+//
+//    private static void not1() {
+//        LocalSimulator sim = new LocalSimulator();
+//        Model model = Model.getInstance();
+//        model.setNQubits(1);
+//        model.setGatesForCircuit(0, List.of(Gate.NOT));
+//        double[] res = sim.calculateResults(model);
+//        System.out.println("NOT res length should be 2: " + res.length);
+//        printResults(res);
+//        double[] states = sim.calculateQubitStates(model);
+//        printResults2(states);
+//    }
+//
+//    private static void hadamard1() {
+//        System.out.println("Hadamard");
+//        LocalSimulator sim = new LocalSimulator();
+//        Model model = Model.getInstance();
+//        model.setNQubits(1);
+//        model.setGatesForCircuit(0, List.of(Gate.HADAMARD));
+//        double[] res = sim.calculateResults(model);
+//        System.out.println("H res length should be 2: " + res.length);
+//        printResults(res);
+//        double[] states = sim.calculateQubitStates(model);
+//        printResults2(states);
+//    }
+//
+//    private static void notnot1() {
+//        System.out.println("notnot");
+//        LocalSimulator sim = new LocalSimulator();
+//        Model model = Model.getInstance();
+//        model.setNQubits(1);
+//        List<Gate> gates = List.of(Gate.NOT, Gate.NOT);
+//        model.setGatesForCircuit(0, gates);
+//        double[] res = sim.calculateResults(model);
+//        System.out.println("not not length should be 2: " + res.length);
+//        printResults(res);
+//        double[] states = sim.calculateQubitStates(model);
+//        printResults2(states);
+//    }
+//
+//    private static void hhnot1() {
+//        System.out.println("hhnot");
+//        LocalSimulator sim = new LocalSimulator();
+//        Model model = Model.getInstance();
+//        model.setNQubits(1);
+//        List gates
+//                = List.of(Gate.HADAMARD, Gate.HADAMARD, Gate.NOT);
+//        model.setGatesForCircuit(0, gates);
+//        double[] res = sim.calculateResults(model);
+//        System.out.println("hhnot length should be 2: " + res.length);
+//        printResults(res);
+//        double[] states = sim.calculateQubitStates(model);
+//        printResults2(states);
+//    }
+//
+//    private static void simple2() {
+//        System.out.println("2 qubits, no gate");
+//        LocalSimulator sim = new LocalSimulator();
+//        Model model = Model.getInstance();
+//        model.setNQubits(2);
+//        GateConfig gates = GateConfig.of(List.of(Gate.IDENTITY), List.of(Gate.IDENTITY));
+//        model.setGates(gates);
+//        double[] res = sim.calculateResults(model);
+//        System.out.println("SIMPLE res length should be 4: " + res.length);
+//        printResults(res);
+//        double[] states = sim.calculateQubitStates(model);
+//        printResults2(states);
+//    }
+//
+//    private static void not2() {
+//        System.out.println("2 qubits, not-I gate");
+//        LocalSimulator sim = new LocalSimulator();
+//        Model model = Model.getInstance();
+//        model.setNQubits(2);
+//        GateConfig gates = GateConfig.of(List.of(Gate.NOT), List.of(Gate.IDENTITY));
+//        model.setGates(gates);
+//        double[] res = sim.calculateResults(model);
+//        System.out.println("SIMPLE res length should be 4: " + res.length);
+//        printResults(res); // should be {0,0,1,0}
+//        double[] states = sim.calculateQubitStates(model);
+//        printResults2(states);
+//    }
 
-    private static void not1() {
-        LocalSimulator sim = new LocalSimulator();
-        Model model = Model.getInstance();
-        model.setNQubits(1);
-        model.setGatesForCircuit(0, List.of(Gate.NOT));
-        double[] res = sim.calculateResults(model);
-        System.out.println("NOT res length should be 2: " + res.length);
-        printResults(res);
-        double[] states = sim.calculateQubitStates(model);
-        printResults2(states);
+    private static void printResults(Complex[] res) {
+        for (int i = 0; i < res.length; i++) {
+            System.out.println("r[" + i + "]: " + res[i]);
+        }
     }
-
-    private static void hadamard1() {
-        System.out.println("Hadamard");
-        LocalSimulator sim = new LocalSimulator();
-        Model model = Model.getInstance();
-        model.setNQubits(1);
-        model.setGatesForCircuit(0, List.of(Gate.HADAMARD));
-        double[] res = sim.calculateResults(model);
-        System.out.println("H res length should be 2: " + res.length);
-        printResults(res);
-        double[] states = sim.calculateQubitStates(model);
-        printResults2(states);
-    }
-
-    private static void notnot1() {
-        System.out.println("notnot");
-        LocalSimulator sim = new LocalSimulator();
-        Model model = Model.getInstance();
-        model.setNQubits(1);
-        List<Gate> gates = List.of(Gate.NOT, Gate.NOT);
-        model.setGatesForCircuit(0, gates);
-        double[] res = sim.calculateResults(model);
-        System.out.println("not not length should be 2: " + res.length);
-        printResults(res);
-        double[] states = sim.calculateQubitStates(model);
-        printResults2(states);
-    }
-
-    private static void hhnot1() {
-        System.out.println("hhnot");
-        LocalSimulator sim = new LocalSimulator();
-        Model model = Model.getInstance();
-        model.setNQubits(1);
-        List gates
-                = List.of(Gate.HADAMARD, Gate.HADAMARD, Gate.NOT);
-        model.setGatesForCircuit(0, gates);
-        double[] res = sim.calculateResults(model);
-        System.out.println("hhnot length should be 2: " + res.length);
-        printResults(res);
-        double[] states = sim.calculateQubitStates(model);
-        printResults2(states);
-    }
-
-    private static void simple2() {
-        System.out.println("2 qubits, no gate");
-        LocalSimulator sim = new LocalSimulator();
-        Model model = Model.getInstance();
-        model.setNQubits(2);
-        GateConfig gates = GateConfig.of(List.of(Gate.IDENTITY), List.of(Gate.IDENTITY));
-        model.setGates(gates);
-        double[] res = sim.calculateResults(model);
-        System.out.println("SIMPLE res length should be 4: " + res.length);
-        printResults(res);
-        double[] states = sim.calculateQubitStates(model);
-        printResults2(states);
-    }
-
-    private static void not2() {
-        System.out.println("2 qubits, not-I gate");
-        LocalSimulator sim = new LocalSimulator();
-        Model model = Model.getInstance();
-        model.setNQubits(2);
-        GateConfig gates = GateConfig.of(List.of(Gate.NOT), List.of(Gate.IDENTITY));
-        model.setGates(gates);
-        double[] res = sim.calculateResults(model);
-        System.out.println("SIMPLE res length should be 4: " + res.length);
-        printResults(res); // should be {0,0,1,0}
-        double[] states = sim.calculateQubitStates(model);
-        printResults2(states);
-    }
-
+    
     private static void printResults(double[] res) {
         for (int i = 0; i < res.length; i++) {
             System.out.println("r[" + i + "]: " + res[i]);

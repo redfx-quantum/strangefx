@@ -29,26 +29,58 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.gluonhq.strange.simulator;
+package com.gluonhq.strange.math;
 
-import com.gluonhq.strange.Model;
-import com.gluonhq.strange.math.Complex;
+public class Complex {
+    
+    public static final Complex ZERO = new Complex(0.d, 0.d);
+    public static final Complex ONE = new Complex(1.d, 0.d);
+    public static final Complex I = new Complex(0.d, 1.d);
+    
+    private static final double HV = 1./Math.sqrt(2.);
 
-/**
- *
- * @author johan
- */
-public interface Simulator {
+    public static final Complex HC = new Complex(HV, 0.d);
+    public static final Complex HCN = new Complex(-HV, 0.d);
     
-    public Complex[] calculateResults(Gate[][] gates);
+    public final double r;
+    public final double i;
     
-    public Complex[] calculateResults(Model m);
+    /**
+     * Create a complex number with a real component only
+     * @param r the real component
+     */
+    public Complex(double r) {
+        this(r, 0.d);
+    }
     
-    public double[] calculateQubitStates(Model m);
+    /**
+     * Create a complex number with a real and imaginary component
+     * @param r the real component
+     * @param i the imaginary component
+     */
+    public Complex(double r, double i) {
+        this.r = r;
+        this.i = i;
+    }
     
+    public Complex add(Complex b) {
+        double nr = this.r + b.r;
+        double ni = this.i + b.i;
+        return new Complex(nr, ni);
+    }
+    
+    public Complex mul(Complex b) {
+        double nr = (this.r * b.r) - (this.i * b.i);
+        double ni = (this.r * b.i) + (this.i * b.r);
+        return new Complex(nr, ni);
+    }
+    
+    public double abssqr() {
+        return (this.r*this.r + this.i*this.i);
+    }
+    
+    @Override 
+    public String toString() {
+        return "("+this.r+", "+this.i+")";
+    }
 }
