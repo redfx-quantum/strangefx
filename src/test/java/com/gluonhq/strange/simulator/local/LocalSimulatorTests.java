@@ -241,5 +241,69 @@ class LocalSimulatorTests {
         assertEquals(0.0d, results[2].r, DELTA);
         assertEquals(1.0d, results[3].r, DELTA);
     }
+      
+    @Test
+    @DisplayName("QFT2 qubits")
+    public void unmarshalQFT2() {
+        System.out.println("QFT2");
+        String s = "[[QFT,QFT]]";
+        Gate[][] gates = Gate.toMatrix(s);
+        LocalSimulator sim = new LocalSimulator();
+        Complex[] results = sim.calculateResults(gates);
+        assertEquals(results.length, 4);
+        assertEquals(.5d, results[0].r, DELTA);
+        assertEquals(.5d, results[1].r, DELTA);
+        assertEquals(.5d, results[2].r, DELTA);
+        assertEquals(.5d, results[3].r, DELTA);
+    }
+    
+    @Test
+    @DisplayName("QFT2X qubits")
+    public void unmarshalQFT2X() {
+        try {
+        System.out.println("QFT2X");
+        String s = "[[QFT,QFT,X]]";
+        Gate[][] gates = Gate.toMatrix(s);
+        LocalSimulator sim = new LocalSimulator();
+        Complex[] results = sim.calculateResults(gates);
+        assertEquals(results.length, 8);
+        assertEquals(.5d, results[1].r, DELTA);
+        assertEquals(.5d, results[3].r, DELTA);
+        assertEquals(.5d, results[5].r, DELTA);
+        assertEquals(.5d, results[7].r, DELTA);
+        assertEquals(.0d, results[0].r, DELTA);
+        assertEquals(.0d, results[2].r, DELTA);
+        assertEquals(.0d, results[4].r, DELTA);
+        assertEquals(.0d, results[6].r, DELTA);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @Test
+    @DisplayName("2stepQFT2X qubits")
+    public void unmarshal2stepQFT2X() {
+        System.out.println("2stepQFT2X");
+        String s = "[[X,H,X][QFT,QFT,X]]";
+        Gate[][] gates = Gate.toMatrix(s);
+        LocalSimulator sim = new LocalSimulator();
+        Complex[] results = sim.calculateResults(gates);
+        assertEquals(results.length, 8);
+        assertEquals(SQRT2, results[0].r, DELTA);
+        assertEquals(0.d, results[0].i, DELTA);
+        assertEquals(0.d, results[1].r, DELTA);
+        assertEquals(0.d, results[1].i, DELTA);
+        assertEquals(-.5*SQRT2, results[2].r, DELTA);
+        assertEquals(-.5*SQRT2, results[2].i, DELTA);
+        assertEquals(0.d, results[3].r, DELTA);
+        assertEquals(0.d, results[3].i, DELTA);
+        assertEquals(0.d, results[4].r, DELTA);
+        assertEquals(0.d, results[4].i, DELTA);
+        assertEquals(0.d, results[5].r, DELTA);
+        assertEquals(0.d, results[5].i, DELTA);
+        assertEquals(-.5*SQRT2, results[6].r, DELTA);
+        assertEquals(.5*SQRT2, results[6].i, DELTA);
+        assertEquals(0.d, results[7].r, DELTA);
+        assertEquals(0.d, results[7].i, DELTA);
+    }
     
 }

@@ -152,4 +152,5 @@ public class GateProtocolTests {
         assertEquals(res[1][0], Gate.QFT);
         assertEquals(res[2][0], Gate.NOT);
     }
+    
 }

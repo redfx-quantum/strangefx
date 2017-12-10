@@ -75,6 +75,10 @@ public class Complex {
         return new Complex(nr, ni);
     }
     
+    public Complex mul(double b) {
+        return new Complex(this.r * b, this.i * b);
+    }
+    
     public double abssqr() {
         return (this.r*this.r + this.i*this.i);
     }

@@ -135,8 +135,10 @@ System.out.println("will now set endstates with a vector size "+reslist.size());
         for (int i = 1; i < 1 << nQubits; i++) result[i] = Complex.ZERO;
 
         for (int i = 0; i < nSteps; i++) {
+            System.out.println("--- applying step " + i + ", result = ");
+
             Gate[] operations = getColumn(gates, i);
-            //    System.out.println("--- apply step "+i+" with gates "+m.getGatesByStep(i));
+                System.out.println("--- 1apply step "+i);
             result = applyStep(operations, result, nQubits);
             System.out.println("--- applied step " + i + ", result = ");
             for (int j = 0; j < result.length; j++) {
@@ -177,6 +179,8 @@ System.out.println("will now set endstates with a vector size "+reslist.size());
             for (int cola = 0; cola < d1; cola++) {
                 for (int rowb = 0; rowb < d2; rowb++) {
                     for (int colb = 0; colb < d2; colb++) {
+                        System.out.println("A = "+a[rowa][cola]);
+                        System.out.println("B = "+b[rowb][colb] );
                         result[d2 * rowa + rowb][d2 * cola + colb] = a[rowa][cola].mul( b[rowb][colb]);
                     }
                 }
@@ -249,7 +253,9 @@ System.out.println("will now set endstates with a vector size "+reslist.size());
         }
         Complex[] result = new Complex[dim];
         Complex[][] a = step[0].getMatrix(); //getGate(step.get(0).getType());
-        int idx = a.length >> 1;
+        a = new Complex[1][1];
+        a[0][0] = Complex.ONE;
+        int idx = 0;// a.length >> 1;
         while (idx < nqubits) {
             Gate g = step[idx];
             
@@ -257,8 +263,9 @@ System.out.println("will now set endstates with a vector size "+reslist.size());
             if (g.equals(Gate.QFT)) {
                 int qi = idx;
                 while ((qi < nqubits) && (step[qi].equals(Gate.QFT))){
-                    qftn++;
+                    qftn++; qi++;
                 }
+                System.out.println("qftn = "+qftn);
             }
             Complex[][] gate = (g.equals(Gate.QFT)) ? getQftMatrix(qftn): g.getMatrix(); //getGate(step.get(i).getType());
             a = tensor(a, gate);
@@ -269,18 +276,23 @@ System.out.println("will now set endstates with a vector size "+reslist.size());
     
     private static Complex[][] getQftMatrix(int n) {
         int size = 1 << n;
+        System.out.println("qft matrix for n = "+n+", size = "+size);
         double r = Math.cos(2* Math.PI/size);
         double i = Math.sin(2* Math.PI/size);
         Complex omega = new Complex(r,i);
         Complex[][] answer = new Complex[size][size];
         Complex o = Complex.ONE;
+        double scalar = 1/Math.sqrt(size);
+        System.out.println("SCALAR = "+scalar);
         for (int idx = 0; idx < size*size; idx++) {
+            System.out.println("IDX = "+idx);
             int row = 0;
             while (row < size) {
                 int col = 0;
                 while (col < size) {
-                    if (row * col == size) {
-                        answer[row][col] = o;
+                    if (row * col == idx) {
+                        System.out.println("SET ["+row+"]["+col+"] to "+o);
+                        answer[row][col] = o.mul(scalar);
                     } else if ((row * col) > idx) {
                         col = size;
                     }
