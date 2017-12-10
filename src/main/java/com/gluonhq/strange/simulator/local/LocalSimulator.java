@@ -218,7 +218,21 @@ System.out.println("will now set endstates with a vector size "+reslist.size());
     }
 
     private Complex[] applyStep(Gate[] step, Complex[] initial, int nqubits) {
-        int cnotidx = hasGate(step, Gate.CNOT);
+        Complex[][] a = calculateStepMatrix(step);
+        Complex[] result = new Complex[initial.length];
+        for (int i = 0; i < initial.length; i++) {
+            result[i] = Complex.ZERO;
+            for (int j = 0; j < initial.length; j++) {
+                result[i] = result[i].add(a[i][j].mul(initial[j]));
+            }
+        }
+        return result;
+    }
+
+    private Complex[][] calculateStepMatrix(Gate[] step) {
+        int nqubits = step.length;
+        int dim = 1 << nqubits;
+          int cnotidx = hasGate(step, Gate.CNOT);
         if (cnotidx > -1) {
             int controlidx = hasGate(step, Gate.C0);
             if (controlidx < 0) {
@@ -233,24 +247,52 @@ System.out.println("will now set endstates with a vector size "+reslist.size());
                 }
             }
         }
-        Complex[] result = new Complex[initial.length];
+        Complex[] result = new Complex[dim];
         Complex[][] a = step[0].getMatrix(); //getGate(step.get(0).getType());
         int idx = a.length >> 1;
         while (idx < nqubits) {
-            // double[][] m = new double[4<<idx][4<<idx];
-            Complex[][] gate = step[idx].getMatrix(); //getGate(step.get(i).getType());
+            Gate g = step[idx];
+            
+            int qftn = 0;
+            if (g.equals(Gate.QFT)) {
+                int qi = idx;
+                while ((qi < nqubits) && (step[qi].equals(Gate.QFT))){
+                    qftn++;
+                }
+            }
+            Complex[][] gate = (g.equals(Gate.QFT)) ? getQftMatrix(qftn): g.getMatrix(); //getGate(step.get(i).getType());
             a = tensor(a, gate);
             idx = idx + (gate.length >> 1);
         }
-        for (int i = 0; i < initial.length; i++) {
-            result[i] = Complex.ZERO;
-            for (int j = 0; j < initial.length; j++) {
-                result[i] = result[i].add(a[i][j].mul(initial[j]));
-            }
-        }
-        return result;
+        return a;
     }
-
+    
+    private static Complex[][] getQftMatrix(int n) {
+        int size = 1 << n;
+        double r = Math.cos(2* Math.PI/size);
+        double i = Math.sin(2* Math.PI/size);
+        Complex omega = new Complex(r,i);
+        Complex[][] answer = new Complex[size][size];
+        Complex o = Complex.ONE;
+        for (int idx = 0; idx < size*size; idx++) {
+            int row = 0;
+            while (row < size) {
+                int col = 0;
+                while (col < size) {
+                    if (row * col == size) {
+                        answer[row][col] = o;
+                    } else if ((row * col) > idx) {
+                        col = size;
+                    }
+                    col++;
+                }
+                row ++;
+            }
+            o = o.mul(omega);
+        }
+        return answer;
+    }
+    
     /**
      * Check if there is a target in the gates for a specific qubit
      *
@@ -267,6 +309,8 @@ System.out.println("will now set endstates with a vector size "+reslist.size());
         }
         return -1;
     }
+    
+    
 
     @Override
     public double[] calculateQubitStates(Model m) {

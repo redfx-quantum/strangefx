@@ -48,12 +48,13 @@ public enum Gate {
     CNOT    ( "C", GateGroup.BIT_FLIP,      new Complex[][]{{}}),
     C0      ( "C0", GateGroup.BIT_FLIP,      new Complex[][]{{Complex.ONE,Complex.ZERO,Complex.ZERO,Complex.ZERO}
             ,{Complex.ZERO,Complex.ONE,Complex.ZERO,Complex.ZERO},
-        {Complex.ZERO,Complex.ZERO,Complex.ZERO,Complex.ONE},{Complex.ZERO,Complex.ZERO,Complex.ONE,Complex.ZERO}}); // control qubit
-
+        {Complex.ZERO,Complex.ZERO,Complex.ZERO,Complex.ONE},{Complex.ZERO,Complex.ZERO,Complex.ONE,Complex.ZERO}}), // control qubit
+    QFT("QFT", GateGroup.BIT_FLIP, new Complex[][]{{}});
 
     private final String caption;
     private Complex[][] matrix;
     private final GateGroup group;
+    private int span = 1;
 
     Gate(String caption, GateGroup group, Complex[][] matrix) {
         this.caption = caption;
@@ -80,7 +81,8 @@ public enum Gate {
      */
     public static Gate byCaption(String cap) {
         List<Gate> list = Arrays.asList(Gate.values());
-        return list.stream().filter(g -> g.getCaption().equals(cap)).findFirst().get();
+        Gate candidate = list.stream().filter(g -> g.getCaption().equals(cap)).findFirst().get();
+        return candidate;
     }
     
     public static Gate[][] toMatrix(String m) {

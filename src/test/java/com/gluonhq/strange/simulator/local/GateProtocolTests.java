@@ -130,4 +130,26 @@ public class GateProtocolTests {
         assertEquals(res[2][0], Gate.SWAP);
     }
     
+    @Test
+    @DisplayName("QFT")
+    public void unmarshalQFT2() {
+        String s= "[[QFT,QFT]]";
+        Gate[][] res = Gate.toMatrix(s);
+        assertEquals(res.length, 2);    
+        assertEquals(res[0].length, 1);
+        assertEquals(res[0][0], Gate.QFT);
+        assertEquals(res[1][0], Gate.QFT);
+    }    
+    
+    @Test
+    @DisplayName("QFTX")
+    public void unmarshalQFT2X() {
+        String s= "[[QFT,QFT,X]]";
+        Gate[][] res = Gate.toMatrix(s);
+        assertEquals(res.length, 3);    
+        assertEquals(res[0].length, 1);
+        assertEquals(res[0][0], Gate.QFT);
+        assertEquals(res[1][0], Gate.QFT);
+        assertEquals(res[2][0], Gate.NOT);
+    }
 }
