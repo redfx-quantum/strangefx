@@ -33,7 +33,7 @@ package com.gluonhq.strange.simulator.local;
 
 import com.gluonhq.strange.simulator.Model;
 import com.gluonhq.strange.Complex;
-import com.gluonhq.strange.simulator.Gate;
+import com.gluonhq.strange.Gate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

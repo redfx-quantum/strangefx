@@ -31,7 +31,7 @@
  */
 package com.gluonhq.strange.simulator.local;
 
-import com.gluonhq.strange.simulator.Gate;
+import com.gluonhq.strange.Gate;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
