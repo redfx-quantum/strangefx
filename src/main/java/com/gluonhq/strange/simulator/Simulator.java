@@ -36,8 +36,8 @@
  */
 package com.gluonhq.strange.simulator;
 
-import com.gluonhq.strange.Model;
-import com.gluonhq.strange.math.Complex;
+import com.gluonhq.strange.Complex;
+import com.gluonhq.strange.Gate;
 
 /**
  *

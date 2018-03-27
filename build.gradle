@@ -31,6 +31,7 @@ repositories {
 dependencies {
     compile 'de.jensd:fontawesomefx-materialicons:2.2.0-9'
     compile 'com.gluonhq:charm-cloudlink-client:4.4.4'
+    compile 'com.gluonhq:strange:0.0.1'
 
     runtime 'com.gluonhq:charm-down-plugin-storage-desktop:3.6.0'
 

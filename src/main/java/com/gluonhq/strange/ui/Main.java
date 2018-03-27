@@ -31,9 +31,8 @@
  */
 package com.gluonhq.strange.ui;
 
-import com.gluonhq.strange.Model;
-import com.gluonhq.strange.simulator.CloudSimulator;
-import com.gluonhq.strange.simulator.Gate;
+import com.gluonhq.strange.simulator.Model;
+import com.gluonhq.strange.gate.*;
 import com.gluonhq.strange.simulator.local.LocalSimulator;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
@@ -57,8 +56,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-//        CloudSimulator cs = new CloudSimulator();
-//        cs.calculateResults("[[I]]");
         LocalSimulator sim = new LocalSimulator();
         
         QubitBoard board = new QubitBoard(2);
@@ -74,11 +71,11 @@ public class Main extends Application {
             createButton( "Append Qubit",  MaterialIcon.PLAYLIST_ADD,       e -> board.appendQubit() ),
             createButton( "Clear All",     MaterialIcon.DELETE_SWEEP, e -> board.clear() ),
             new Separator(),
-            GateSymbol.of(Gate.IDENTITY, false),
-            GateSymbol.of(Gate.NOT, false),
-            GateSymbol.of(Gate.CNOT, false),
-            GateSymbol.of(Gate.SWAP, false),
-            GateSymbol.of(Gate.HADAMARD, false),
+            GateSymbol.of(new Identity(0), false),
+            GateSymbol.of(new X(0), false),
+            GateSymbol.of(new Y(0), false),
+            GateSymbol.of(new Z(0), false),
+            GateSymbol.of(new Hadamard(0), false),
             toolbarFiller,
             logo
         );

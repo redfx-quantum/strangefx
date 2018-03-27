@@ -93,7 +93,6 @@ public class Measurement extends Region {
     private final DoubleProperty measuredChanceProperty = new SimpleDoubleProperty(this, "measured chance", 0) {
         @Override
         public void set(double newValue) {
-            System.out.println("mcp set to "+newValue);
             if (newValue >= 0 && newValue <= 1) {
                 super.set(newValue);
             }

@@ -31,7 +31,7 @@
  */
 package com.gluonhq.strange.ui;
 
-import com.gluonhq.strange.Model;
+import com.gluonhq.strange.simulator.Model;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -40,7 +40,7 @@ import javafx.scene.layout.VBox;
 public class QubitBoard extends VBox {
 
     private Model model = Model.getInstance();
-    private ObservableList<Qubit> qubits = FXCollections.observableArrayList();
+    private ObservableList<QubitFlow> qubits = FXCollections.observableArrayList();
 
     private final int initialQubitNumber;
 
@@ -61,16 +61,16 @@ public class QubitBoard extends VBox {
 
     }
 
-    public ObservableList<Qubit> getQubits() {
+    public ObservableList<QubitFlow> getQubits() {
         return qubits;
     }
 
     public void appendQubit() {
-        qubits.add( new Qubit(qubits.size()));
+        qubits.add( new QubitFlow(qubits.size()));
     }
 
     public void clear() {
-        qubits.forEach(Qubit::clear);
+        qubits.forEach(QubitFlow::clear);
         qubits.removeIf(qb -> qb.getIndex() > (initialQubitNumber-1));
     }
 }

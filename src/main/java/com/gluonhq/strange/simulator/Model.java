@@ -34,11 +34,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.gluonhq.strange;
+package com.gluonhq.strange.simulator;
 
-import com.gluonhq.strange.simulator.Gate;
-import com.gluonhq.strange.simulator.GateConfig;
+import com.gluonhq.strange.Gate;
+import com.gluonhq.strange.gate.Identity;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import java.util.List;
 
@@ -56,12 +57,13 @@ public class Model {
     private int nqubits;
     
     private double[] beginState;
-    private GateConfig gates = GateConfig.initial(0);
 
     private ObservableList<Double> endStates = FXCollections.observableArrayList();
     private BooleanProperty refreshRequest = new SimpleBooleanProperty();
 
     private static Model instance = new Model();
+    
+    private List<List<Gate>> gates = new LinkedList<>();
     
     private Model() {        
     }
@@ -75,14 +77,16 @@ public class Model {
     }
     
     public ObservableList<Double> getEndStates() {
-        System.out.println("getendstates asked, nqubits = "+this.nqubits);
         return endStates;
     }
     
     public void setNQubits(int n) {
         this.nqubits = n;
         this.beginState = new double[n];
-        this.gates = GateConfig.initial(n);
+        this.gates = new LinkedList();
+        for (int i = 0; i < n; i++) {
+            this.gates.add(new LinkedList<Gate>());
+        }
     }
     
     public int getNQubits() {
@@ -93,11 +97,10 @@ public class Model {
         return gates;
     }
     
-    public void setGates(GateConfig gates) {
-        this.gates = gates;
-    }
-    
     public void setGatesForCircuit(int n, List<Gate> gates) {
+        for (Gate gate: gates) {
+            gate.setMainQubit(n);
+        }
         List<Gate> old = this.gates.get(n);
         boolean similar = true;
         if (gates.size() == old.size()) {
@@ -111,7 +114,6 @@ public class Model {
         }
         if (!similar) {
             this.gates.set(n, gates);
-            System.out.println("gates changed for circuit "+n+" from "+old+" to "+gates);
             refreshRequest.set(true);
         } 
     }
@@ -130,11 +132,10 @@ public class Model {
         for (int i = 0; i < nq; i++) {
             // if this gate didn't have a step, we'll add an I gate to it.
             if (this.gates.get(i).size() < (idx+1)) {
-                System.out.println("Adding an I gate to circuit "+i);
                 List<Gate> old = this.gates.get(i);
                 ArrayList<Gate> newList = new ArrayList<>();
                 newList.addAll(old);
-                newList.add(Gate.IDENTITY);
+                newList.add(new Identity(i));
                 this.gates.set(i, newList);
             }
             answer[i] = this.gates.get(i).get(idx);
@@ -149,11 +150,11 @@ public class Model {
             answer.append("[");
             for (int j = 0; j < nq;j++) {
                 List<Gate> row = getGates().get(j);
-                Gate target = Gate.IDENTITY;
+                Gate target = new Identity(j);
                 if (row.size() > i ) {
                     target = row.get(i);
                 }
-                answer.append(target.getCaption());
+                answer.append(target.getName());
                 if (j < nq-1) answer.append(",");
             }
             answer.append("]");
@@ -167,4 +168,5 @@ public class Model {
             System.out.println("step "+i+": "+getGatesByStep(i));
         }
     }
+    
 }

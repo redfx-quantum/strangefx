@@ -31,8 +31,8 @@
  */
 package com.gluonhq.strange.ui;
 
-import com.gluonhq.strange.simulator.Gate;
 import com.gluonhq.strange.simulator.GateGroup;
+import com.gluonhq.strange.Gate;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.geometry.Pos;
@@ -62,10 +62,11 @@ public class GateSymbol extends Label {
         return new GateSymbol(gate, true);
     }
 
-    GateSymbol(Gate gate, boolean movable) {
+    GateSymbol( Gate gate, boolean movable) {
 
         this.gate = Objects.requireNonNull(gate);
         this.movable = movable;
+
         getStyleClass().setAll("gate-symbol", getStyle(gate.getGroup()));
         setText(gate.getCaption());
         setMinWidth(40);
@@ -82,14 +83,13 @@ public class GateSymbol extends Label {
             Dragboard db = this.startDragAndDrop(  isMovable()? TransferMode.MOVE: TransferMode.COPY);
             db.setDragView(this.snapshot(null, null));
             ClipboardContent content = new ClipboardContent();
-            content.putString(gate.getCaption());
+            content.putString(gate.getName());
             content.put(DRAGGABLE_GATE, "");
             db.setContent(content);
             e.consume();
         });
         
         this.setOnDragDone(e -> {
-            System.out.println("Drag Done");
             // clear out the ref to the dragged node
             System.getProperties().remove(DRAGGABLE_GATE);
         });
@@ -100,8 +100,8 @@ public class GateSymbol extends Label {
 
     }
 
-    private String getStyle(GateGroup group ) {
-        return group.name().toLowerCase().replaceAll("_", "");
+    private String getStyle(String group ) {
+        return group.toLowerCase().replaceAll("_", "");
     }
 
     public Gate getGate() {

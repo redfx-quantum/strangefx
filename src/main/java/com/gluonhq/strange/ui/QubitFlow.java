@@ -31,8 +31,14 @@
  */
 package com.gluonhq.strange.ui;
 
-import com.gluonhq.strange.Model;
-import com.gluonhq.strange.simulator.Gate;
+import com.gluonhq.strange.simulator.Model;
+import com.gluonhq.strange.Gate;
+import com.gluonhq.strange.gate.Identity;
+import com.gluonhq.strange.simulator.local.LocalSimulator;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
@@ -51,9 +57,9 @@ import javafx.scene.shape.Line;
 
 import java.util.stream.Collectors;
 
-public class Qubit extends Region {
+public class QubitFlow extends Region {
 
-    private  static GateSymbol SPACER = new GateSymbol( Gate.IDENTITY, false ) {{
+    private  static GateSymbol SPACER = new GateSymbol( new Identity(0), false ) {{
         getStyleClass().setAll("gate-spacer");
         int SPACER_WIDTH = 5;
         setMaxWidth(SPACER_WIDTH);
@@ -77,7 +83,7 @@ public class Qubit extends Region {
         measurement.setMeasuredChance(mv);
     };
 
-    public Qubit( int index ) {
+    public QubitFlow( int index ) {
 
         this.idx = index;
         System.out.println("QUBIT with index "+index+" created");
@@ -191,9 +197,9 @@ public class Qubit extends Region {
 
         model.getEndStates().addListener(endStateListener);
 
-        gates.addListener( (Observable o) -> {
+        gates.addListener((Observable o) -> {
             model.setGatesForCircuit(
-                    idx, gates.stream().map(GateSymbol::getGate).collect(Collectors.toList()));
+                idx, gates.stream().map(gs -> createGate(gs.getGate())).collect(Collectors.toList()));
         });
 
     }
@@ -228,4 +234,18 @@ public class Qubit extends Region {
     public Measurement getOutput() {
         return measurement;
     }
+
+    private Gate createGate(Gate g) {
+        Class<? extends Gate> gateClass = g.getClass();
+        try {
+            Constructor<? extends Gate> constructor = gateClass.getConstructor(int.class);
+            Gate copyGate = constructor.newInstance(g.getAffectedQubitIndex().get(0));
+            return copyGate;
+
+        } catch (Exception ex) {
+            Logger.getLogger(LocalSimulator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
 }
