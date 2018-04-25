@@ -17,7 +17,8 @@ apply plugin: 'org.junit.platform.gradle.plugin'
 apply plugin: 'application'
 apply from: project.file('gradle/code-quality.gradle')
 
-mainClassName = 'com.gluonhq.strange.ui.Main'
+// mainClassName = 'com.gluonhq.strange.ui.Main'
+mainClassName = 'com.gluonhq.strangefx.demo.RenderDemo'
 // mainClassName = 'com.gluonhq.strange.simulator.local.LocalSimulator'
 
 repositories {
@@ -31,7 +32,7 @@ repositories {
 dependencies {
     compile 'de.jensd:fontawesomefx-materialicons:2.2.0-9'
     compile 'com.gluonhq:charm-cloudlink-client:4.4.4'
-    compile 'com.gluonhq:strange:0.0.1'
+    compile 'com.gluonhq:strange:0.0.2'
 
     runtime 'com.gluonhq:charm-down-plugin-storage-desktop:3.6.0'
 
