@@ -69,13 +69,17 @@ public class RenderDemo extends Application {
     
     private void simulate() {
         Program p = new Program(2);
-        Step s = new Step();
-        s.addGate(new X(0));
-        p.addStep(s);
+        Step s1 = new Step();
+        s1.addGate(new X(0));
+        p.addStep(s1);
+        Step s2 = new Step();
+        s2.addGate(new X(1));
+        p.addStep(s2);
         SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
         Result res = sqee.runProgram(p);
         Qubit[] qubits = res.getQubits();
-        Node sim = RenderEngine.createNode(p);
+        RenderEngine sim = RenderEngine.createNode(p);
         borderPane.setCenter(sim);
+        sim.animate();
     }
 }

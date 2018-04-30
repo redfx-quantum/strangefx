@@ -21,15 +21,17 @@ import org.fxyz3d.shapes.primitives.SegmentedSphereMesh;
  */
 public class Qubit3D extends Group {
     
+    private int currentStep = 0;
     private double mouseOldX, mouseOldY = 0;
     private final Rotate rotateX = new Rotate(0, Rotate.X_AXIS);
     private final Rotate rotateY = new Rotate(0, Rotate.Y_AXIS);
     private Group rodSphere;
+    private Rotate myRotate;
 
     public Qubit3D() {
         createQubit();
     }
-
+    
     private void createQubit() {
         PerspectiveCamera camera = new PerspectiveCamera(true);        
         camera.setNearClip(0.1);
@@ -73,7 +75,21 @@ public class Qubit3D extends Group {
         getChildren().add(subScene);
     }
     
+    public int getCurrentStep() {
+        return currentStep;
+    }
+    
+    public void incrementStep() {
+        currentStep++;
+    }
     public void rotateRod(Rotate rotate) {
+        this.myRotate = rotate;
         rodSphere.getTransforms().setAll(rotate);
+    }
+
+    public void flip() {
+        double a = this.myRotate.getAngle() * (-1.);
+        myRotate.setAngle(a);
+        rodSphere.getTransforms().setAll(myRotate);
     }
 }
