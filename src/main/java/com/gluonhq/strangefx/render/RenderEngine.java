@@ -67,8 +67,6 @@ public class RenderEngine extends VBox {
                     qubit3D.flip();
                 }
             });
-            // TODO: set rod rotation
-            qubit3D.rotateRod(new Rotate(new Random().nextInt(360), 0, 0, 0, Rotate.Z_AXIS));
             answer.qubits.add(qubit3D);
             answer.getChildren().add(pane[i]);
         }
