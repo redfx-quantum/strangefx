@@ -145,7 +145,7 @@
     -fx-fill: icon-color;
 }
 
-./*glyph-icon:selected {
+/* .glyph-icon:selected {
     -fx-text-fill: white;
     -fx-fill: white;
 }*/
