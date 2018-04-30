@@ -42,7 +42,6 @@ import com.gluonhq.strangefx.render.RenderEngine;
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -69,7 +68,7 @@ public class RenderDemo extends Application {
     }
     
     private void simulate() {
-       Program p = new Program(2);
+        Program p = new Program(2);
         Step s = new Step();
         s.addGate(new X(0));
         p.addStep(s);

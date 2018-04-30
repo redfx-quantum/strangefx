@@ -5,15 +5,17 @@ import com.gluonhq.strange.Program;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.X;
 import java.util.List;
+import java.util.Random;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Rotate;
 
 /**
  *
@@ -33,17 +35,21 @@ public class RenderEngine {
         int nq = p.getNumberQubits();
         List<Step> steps = p.getSteps();
         // render all qubits, store in Pane[]
-        Pane[] pane = new Pane[nq];
+        HBox[] pane = new HBox[nq];
         for (int i = 0; i < nq; i++) {
             // for each qubit...
-            pane[i] = new Pane();
+            pane[i] = new HBox();
+            pane[i].setAlignment(Pos.CENTER_LEFT);
             Line l = new Line(0, 0, 200, 0);
             l.setStrokeWidth(3);
             l.setStroke(Color.BLUE);
-            Circle qubit = new Circle(20, Color.RED);
+            Qubit3D qubit3D = new Qubit3D();
             
-            pane[i].getChildren().addAll(l, qubit);
+            pane[i].getChildren().addAll(qubit3D, l);
 
+            // TODO: set rod rotation
+            qubit3D.rotateRod(new Rotate(new Random().nextInt(360), 0, 0, 0, Rotate.Z_AXIS));
+            
             answer.getChildren().add(pane[i]);
         }
         for (Step step : steps) {
@@ -58,8 +64,7 @@ public class RenderEngine {
                     l.setText("X");
                 }
                 g.getChildren().addAll(gateui, l);
-                g.setTranslateX(100 * (idx + 1));
-                g.setTranslateY(-15);
+                g.setTranslateX(-200 + 100 * (idx + 1));
                 pane[mqi].getChildren().add(g);
                 idx++;
             }
