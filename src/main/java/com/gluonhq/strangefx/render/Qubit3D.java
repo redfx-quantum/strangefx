@@ -26,7 +26,7 @@ public class Qubit3D extends Group {
     private final Rotate rotateX = new Rotate(0, Rotate.X_AXIS);
     private final Rotate rotateY = new Rotate(0, Rotate.Y_AXIS);
     private Group rodSphere;
-    private Rotate myRotate;
+    private final Rotate myRotate = new Rotate(90, 0, 0, 0, Rotate.Z_AXIS);
 
     public Qubit3D() {
         createQubit();
@@ -48,10 +48,10 @@ public class Qubit3D extends Group {
         frameSphere.setMaterial(new PhongMaterial(Color.BLACK));
         frameSphere.setDrawMode(DrawMode.LINE);
         
-        FrustumMesh rod = new FrustumMesh(2, 2, 1, 1, new Point3D(0, 0, 0), new Point3D(0, -50, 0));
+        FrustumMesh rod = new FrustumMesh(2, 2, 1, 1, new Point3D(0, 0, 0), new Point3D(50, 0, 0));
         rod.setMaterial(new PhongMaterial(Color.web("#0080ff")));
         
-        SegmentedSphereMesh smallSphere = new SegmentedSphereMesh(20, 0, 0, 4, new Point3D(0, -50, 0));
+        SegmentedSphereMesh smallSphere = new SegmentedSphereMesh(20, 0, 0, 4, new Point3D(50, 0, 0));
         smallSphere.setMaterial(new PhongMaterial(Color.web("#0080ff")));
         
         rodSphere = new Group(smallSphere, rod);
@@ -73,6 +73,8 @@ public class Qubit3D extends Group {
         });
         
         getChildren().add(subScene);
+        
+        rodSphere.getTransforms().setAll(myRotate);
     }
     
     public int getCurrentStep() {
@@ -82,14 +84,8 @@ public class Qubit3D extends Group {
     public void incrementStep() {
         currentStep++;
     }
-    public void rotateRod(Rotate rotate) {
-        this.myRotate = rotate;
-        rodSphere.getTransforms().setAll(rotate);
-    }
 
     public void flip() {
-        double a = this.myRotate.getAngle() * (-1.);
-        myRotate.setAngle(a);
-        rodSphere.getTransforms().setAll(myRotate);
+        myRotate.setAngle(- myRotate.getAngle());
     }
 }
