@@ -31,17 +31,20 @@
  */
 package com.gluonhq.strangefx.render;
 
+import com.gluonhq.strange.ui.Main;
 import javafx.scene.AmbientLight;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.PerspectiveCamera;
+import javafx.scene.Scene;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.DrawMode;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
+import javafx.stage.Stage;
 import org.fxyz3d.geometry.Point3D;
 import org.fxyz3d.shapes.primitives.FrustumMesh;
 import org.fxyz3d.shapes.primitives.SegmentedSphereMesh;
@@ -118,5 +121,19 @@ public class Qubit3D extends Group {
 
     public void flip() {
         myRotate.setAngle(- myRotate.getAngle());
+    }
+    
+        
+    public void show() {
+        BorderPane bp = new BorderPane(this);
+         Scene scene = new Scene(bp, 300, 300);
+        scene.getStylesheets().add(Main.class.getResource("/styles.css").toExternalForm());
+                Stage stage = new Stage();
+        stage.setTitle("StrangeFX rendering");
+        stage.setScene(scene);
+        System.out.println("show stage...");
+        stage.show();
+        System.out.println("showed scene");
+
     }
 }
