@@ -35,6 +35,7 @@ import com.gluonhq.strange.Gate;
 import com.gluonhq.strange.Program;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.X;
+import com.gluonhq.strange.ui.Main;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -43,6 +44,7 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -50,6 +52,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 /**
@@ -125,6 +128,21 @@ public class RenderEngine extends VBox {
         TranslateTransition tt = new TranslateTransition(Duration.seconds(5), qubits.get(0));
         tt.setByX(nSteps * stepSize);
         tt.play();
+    }
+    
+    public static void showCircuit(Program p) {
+        System.out.println("will show circuit for "+p);
+        RenderEngine re = createNode(p);
+        System.out.println("re = "+re);
+         Scene scene = new Scene(re, 800, 600);
+        scene.getStylesheets().add(Main.class.getResource("/styles.css").toExternalForm());
+                Stage stage = new Stage();
+        stage.setTitle("StrangeFX rendering");
+        stage.setScene(scene);
+        System.out.println("show stage...");
+        stage.show();
+        System.out.println("showed scene");
+
     }
 
 }
