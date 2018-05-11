@@ -39,9 +39,13 @@ import com.gluonhq.strange.gate.X;
 import com.gluonhq.strange.local.SimpleQuantumExecutionEnvironment;
 import com.gluonhq.strange.ui.Main;
 import com.gluonhq.strangefx.render.RenderEngine;
+import de.jensd.fx.glyphs.materialicons.MaterialIcon;
+import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -80,6 +84,11 @@ public class RenderDemo extends Application {
         Qubit[] qubits = res.getQubits();
         RenderEngine sim = RenderEngine.createNode(p);
         borderPane.setCenter(sim);
-        sim.animate();
+        
+        Button button =  MaterialIconFactory
+                            .get()
+                            .createIconButton(MaterialIcon.PLAY_ARROW, "", "2em", "", ContentDisplay.GRAPHIC_ONLY);
+        button.setOnAction(e -> sim.animate());
+        borderPane.setTop(button);
     }
 }

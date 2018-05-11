@@ -119,6 +119,10 @@ public class Qubit3D extends Group {
         currentStep++;
     }
 
+    public void resetStep() {
+        currentStep = 0;
+    }
+
     public void flip() {
         myRotate.setAngle(- myRotate.getAngle());
     }
