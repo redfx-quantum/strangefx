@@ -11,11 +11,10 @@ buildscript {
     }
 }
 
-
-apply plugin: 'java'
-apply plugin: 'org.junit.platform.gradle.plugin'
-apply plugin: 'application'
-apply from: project.file('gradle/code-quality.gradle')
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.5'
+}
 
 // mainClassName = 'com.gluonhq.strange.ui.Main'
 mainClassName = 'com.gluonhq.strangefx.demo.RenderDemo'
@@ -27,6 +26,11 @@ repositories {
     maven {
         url 'http://nexus.gluonhq.com/nexus/content/repositories/releases'
     }
+}
+
+javafx {
+    modules = [ 'javafx.controls' ]
+    version = "11.0.+"
 }
 
 dependencies {
