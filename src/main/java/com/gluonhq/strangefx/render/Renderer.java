@@ -17,31 +17,45 @@ public class Renderer {
 
     public Renderer(Program p) {
         int nq = p.getNumberQubits();
-        QubitBoard board = new QubitBoard(nq);
-        this.application = new RenderApplication(board);
+
+        this.application = new RenderApplication(nq);
+
+      //  this.application.setBoard(board);
     }
 
     public void show() {
-        RenderApplication.launch();
+        application.launchMe();
+       // RenderApplication.launch(RenderApplication.class);
     }
 
 
 
-    public class RenderApplication extends Application {
+    public static class RenderApplication extends Application {
 
+        private int nq;
         private QubitBoard board;
 
-        public RenderApplication(QubitBoard board) {
-            this.board = board;
+        public RenderApplication() {}
+
+        public RenderApplication(int nq) {
+            this.nq = nq;
         }
 
+        public void setBoard(QubitBoard qb) {
+            this.board = qb;
+        }
         @Override
         public void start(Stage stage) throws Exception {
+            QubitBoard board = new QubitBoard(nq);
+
             Scene scene = new Scene(board);
             stage.setScene(scene);
             stage.show();
         }
 
+        public void launchMe() {
+            RenderApplication.launch();
+        }
     }
 
 }
