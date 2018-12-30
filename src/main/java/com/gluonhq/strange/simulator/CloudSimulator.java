@@ -31,9 +31,9 @@
  */
 package com.gluonhq.strange.simulator;
 
-import com.gluonhq.cloudlink.client.data.RemoteFunctionBuilder;
-import com.gluonhq.cloudlink.client.data.RemoteFunctionObject;
-import com.gluonhq.connect.GluonObservableObject;
+//import com.gluonhq.cloudlink.client.data.RemoteFunctionBuilder;
+//import com.gluonhq.cloudlink.client.data.RemoteFunctionObject;
+//import com.gluonhq.connect.GluonObservableObject;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 
@@ -43,25 +43,25 @@ import javafx.beans.Observable;
  */
 public class CloudSimulator {
     
-    public GluonObservableObject<String> calculateResults(String configuration) {
-        System.out.println("I will ask results for "+configuration+" from GCL");
-        RemoteFunctionObject function = RemoteFunctionBuilder.create("calculateResults").object();
-        function.setRawBody(configuration.getBytes());
-        GluonObservableObject<String> answer = function.call(String.class);
-        System.out.println("FUNCTION got answer: "+answer);
-        answer.stateProperty().addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable o) {
-                System.out.println("NEW ANSWER = "+answer.get());
-                System.out.println("NEW STATE = "+answer.getState());
-                if (answer.getException()!= null) {
-                    answer.getException().printStackTrace();
-                }
-            }
-        });
-        if (answer != null) {
-            System.out.println("answer = "+answer.get());
-        }
-        return answer;
-    }
+//    public GluonObservableObject<String> calculateResults(String configuration) {
+//        System.out.println("I will ask results for "+configuration+" from GCL");
+//        RemoteFunctionObject function = RemoteFunctionBuilder.create("calculateResults").object();
+//        function.setRawBody(configuration.getBytes());
+//        GluonObservableObject<String> answer = function.call(String.class);
+//        System.out.println("FUNCTION got answer: "+answer);
+//        answer.stateProperty().addListener(new InvalidationListener() {
+//            @Override
+//            public void invalidated(Observable o) {
+//                System.out.println("NEW ANSWER = "+answer.get());
+//                System.out.println("NEW STATE = "+answer.getState());
+//                if (answer.getException()!= null) {
+//                    answer.getException().printStackTrace();
+//                }
+//            }
+//        });
+//        if (answer != null) {
+//            System.out.println("answer = "+answer.get());
+//        }
+//        return answer;
+//    }
 }
