@@ -33,8 +33,8 @@ package com.gluonhq.strange.ui;
 
 import com.gluonhq.strange.simulator.GateGroup;
 import com.gluonhq.strange.Gate;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+//import de.jensd.fx.glyphs.materialicons.MaterialIcon;
+//import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -114,7 +114,7 @@ public class GateSymbol extends Label {
 
     private ContextMenu buildContextMenu() {
         ContextMenu menu = new ContextMenu();
-        MenuItem mnRemove = new MenuItem("Remove", MaterialIconFactory.get().createIcon(MaterialIcon.DELETE));
+        MenuItem mnRemove = new MenuItem("Remove");//, MaterialIconFactory.get().createIcon(MaterialIcon.DELETE));
         menu.setOnAction( e -> removeFromParent());
         menu.getItems().addAll(mnRemove);
         return menu;
