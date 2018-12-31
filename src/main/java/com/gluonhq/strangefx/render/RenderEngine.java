@@ -87,7 +87,7 @@ public class RenderEngine extends VBox {
 
             pane[i].getChildren().addAll(qubit3D, l);
             qubit3D.translateXProperty().addListener((Observable o) -> {
-                int mystep = (int)(qubit3D.getTranslateX()/stepSize);
+                int mystep = (int)((qubit3D.getTranslateX()-1)/stepSize);
                 int cstep = qubit3D.getCurrentStep();
                 if (mystep > cstep) {
                     qubit3D.incrementStep();
