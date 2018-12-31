@@ -59,7 +59,7 @@ import java.util.stream.Collectors;
 
 public class QubitFlow extends Region {
 
-    private  static GateSymbol SPACER = new GateSymbol( new Identity(0), false ) {{
+    private static GateSymbol SPACER = new GateSymbol(new Identity(0), false) {{
         getStyleClass().setAll("gate-spacer");
         int SPACER_WIDTH = 5;
         setMaxWidth(SPACER_WIDTH);
@@ -78,16 +78,16 @@ public class QubitFlow extends Region {
 
     private final Model model = Model.getInstance();
 
-    private InvalidationListener endStateListener = (Observable o)-> {
+    private InvalidationListener endStateListener = (Observable o) -> {
         double mv = model.getEndStates().get(idx);
         measurement.setMeasuredChance(mv);
     };
 
-    public QubitFlow( int index ) {
+    public QubitFlow(int index) {
 
         this.idx = index;
-        System.out.println("QUBIT with index "+index+" created");
-        title.setText( String.format("q[%d] I0>", idx) );
+        System.out.println("QUBIT with index " + index + " created");
+        title.setText(String.format("q[%d] I0>", idx));
 
         getStyleClass().add("qubit");
 
@@ -116,29 +116,29 @@ public class QubitFlow extends Region {
 
 
         // initial update from control's gates
-        gateRow.getChildren().setAll( getGateSymbols());
+        gateRow.getChildren().setAll(getGateSymbols());
 
         //ensure all updates from the skin go back to control
-        gateRow.getChildren().addListener( (Observable observable) -> {
+        gateRow.getChildren().addListener((Observable observable) -> {
             getGateSymbols().setAll(
                     gateRow.getChildren()
-                           .stream()
-                           .filter(g -> g != SPACER)
-                           .map( n -> (GateSymbol)n).collect(Collectors.toList())
+                            .stream()
+                            .filter(g -> g != SPACER)
+                            .map(n -> (GateSymbol) n).collect(Collectors.toList())
             );
         });
 
         gateRow.setOnDragOver(event -> {
 
             if (event.getGestureSource() != this &&
-                // only accept gates
-                event.getDragboard().getContent(GateSymbol.DRAGGABLE_GATE) != null) {
+                    // only accept gates
+                    event.getDragboard().getContent(GateSymbol.DRAGGABLE_GATE) != null) {
 
                 // allow both copy(i.e. creation from toolbar) and move(between circuits)
                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
 
 
-                if ( gateRow.getChildren().isEmpty() ) {
+                if (gateRow.getChildren().isEmpty()) {
 
                     gateRow.getChildren().add(SPACER);
 
@@ -154,11 +154,11 @@ public class QubitFlow extends Region {
                         int insertionIndex = (x <= ((GateSymbol) intersectedNode).getWidth() / 2) ? nodeIndex : nodeIndex + 1;
                         gateRow.getChildren().add(insertionIndex, SPACER);
 
-                    } else if ( intersectedNode == gateRow &&
-                                x >= getOccupiedWidth() &&
-                                gateRow.getChildren().indexOf(SPACER) < gateRow.getChildren().size() ) {
-                            removeSpacer();
-                            gateRow.getChildren().add(SPACER);
+                    } else if (intersectedNode == gateRow &&
+                            x >= getOccupiedWidth() &&
+                            gateRow.getChildren().indexOf(SPACER) < gateRow.getChildren().size()) {
+                        removeSpacer();
+                        gateRow.getChildren().add(SPACER);
                     }
                 }
 
@@ -171,21 +171,21 @@ public class QubitFlow extends Region {
         gateRow.setOnDragDropped(e -> {
 
             Dragboard db = e.getDragboard();
-            if ( db.hasContent(GateSymbol.DRAGGABLE_GATE) ) {
+            if (db.hasContent(GateSymbol.DRAGGABLE_GATE)) {
 
                 // retrieve symbol from global storage (only way to keep ref to the node)
                 GateSymbol symbol = (GateSymbol) System.getProperties().get(GateSymbol.DRAGGABLE_GATE);
-                if ( TransferMode.MOVE == e.getTransferMode()) {
+                if (TransferMode.MOVE == e.getTransferMode()) {
                     // move the gate symbol between circuits
                     symbol.removeFromParent();
                     int spacerIndex = gateRow.getChildren().indexOf(SPACER);
-                    gateRow.getChildren().set(spacerIndex,symbol);
+                    gateRow.getChildren().set(spacerIndex, symbol);
                     e.setDropCompleted(true);
                 } else {
                     // re-create gate symbol which was dragged from the toolbar
                     symbol = GateSymbol.of(symbol.getGate());
                     int spacerIndex = gateRow.getChildren().indexOf(SPACER);
-                    gateRow.getChildren().set(spacerIndex,symbol);
+                    gateRow.getChildren().set(spacerIndex, symbol);
                     e.setDropCompleted(true);
                 }
             }
@@ -193,19 +193,28 @@ public class QubitFlow extends Region {
             e.consume();
         });
 
-        gateRow.setOnDragExited( e -> removeSpacer());
+        gateRow.setOnDragExited(e -> removeSpacer());
 
         model.getEndStates().addListener(endStateListener);
 
         gates.addListener((Observable o) -> {
             model.setGatesForCircuit(
-                idx, gates.stream().map(gs -> createGate(gs.getGate())).collect(Collectors.toList()));
+                    idx, gates.stream().map(gs -> createGate(gs.getGate())).collect(Collectors.toList()));
         });
 
     }
 
     private void removeSpacer() {
         gateRow.getChildren().remove(SPACER);
+    }
+
+    public void addGate(Gate gate) {
+        if (gateRow.getChildren().isEmpty()) {
+            gateRow.getChildren().add(SPACER);
+        }
+        GateSymbol symbol = GateSymbol.of(gate);
+        int spacerIndex = gateRow.getChildren().indexOf(SPACER);
+        gateRow.getChildren().set(spacerIndex, symbol);
     }
 
     private double getOccupiedWidth() {

@@ -5,6 +5,7 @@ module com.gluonhq.strangefx {
     requires org.fxyz3d.core;
     // requires fontawesomefx.materialicons;
     // requires charm.cloudlink.client;
+    exports com.gluonhq.strange.ui;
 
     exports com.gluonhq.strangefx.render;
 }

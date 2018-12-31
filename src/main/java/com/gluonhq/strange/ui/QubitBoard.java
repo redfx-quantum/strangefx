@@ -50,6 +50,7 @@ public class QubitBoard extends VBox {
         getChildren().setAll(qubits);
 
         qubits.addListener( (Observable o) -> {
+            System.err.println("ADded qubit");
             getChildren().setAll(qubits);
             model.setNQubits(qubits.size());
             model.refreshRequest().set(true);
