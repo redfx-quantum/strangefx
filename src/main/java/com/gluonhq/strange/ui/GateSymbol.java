@@ -31,6 +31,7 @@
  */
 package com.gluonhq.strange.ui;
 
+import com.gluonhq.strange.gate.*;
 import com.gluonhq.strange.simulator.GateGroup;
 import com.gluonhq.strange.Gate;
 //import de.jensd.fx.glyphs.materialicons.MaterialIcon;
@@ -71,7 +72,11 @@ public class GateSymbol extends Label {
         setText(gate.getCaption());
         setMinWidth(40);
         setAlignment(Pos.CENTER);
-
+        if (gate instanceof Oracle) {
+            Oracle oracle = (Oracle)gate;
+            setMinHeight(oracle.getQubits()* 40);
+            setPrefHeight(oracle.getQubits()* 40);
+        }
         if (movable) {
             setContextMenu(buildContextMenu());
         }

@@ -31,10 +31,11 @@
  */
 package com.gluonhq.strange.ui;
 
+import com.gluonhq.strange.gate.*;
 import com.gluonhq.strange.simulator.Model;
 import com.gluonhq.strange.Gate;
-import com.gluonhq.strange.gate.Identity;
 import com.gluonhq.strange.simulator.local.LocalSimulator;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
@@ -44,7 +45,7 @@ import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
+import javafx.scene.*;
 import javafx.scene.control.Label;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.PickResult;
@@ -53,7 +54,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Line;
+import javafx.scene.paint.*;
+import javafx.scene.shape.*;
 
 import java.util.stream.Collectors;
 
@@ -88,7 +90,7 @@ public class QubitFlow extends Region {
         this.idx = index;
         System.out.println("QUBIT with index " + index + " created");
         title.setText(String.format("q[%d] I0>", idx));
-
+        gateRow.getChildren().add(SPACER);
         getStyleClass().add("qubit");
 
         gateRow.getStyleClass().add("gate-row");
@@ -124,6 +126,7 @@ public class QubitFlow extends Region {
                     gateRow.getChildren()
                             .stream()
                             .filter(g -> g != SPACER)
+                            .filter(g -> g instanceof GateSymbol)
                             .map(n -> (GateSymbol) n).collect(Collectors.toList())
             );
         });
@@ -211,10 +214,28 @@ public class QubitFlow extends Region {
     public void addGate(Gate gate) {
         if (gateRow.getChildren().isEmpty()) {
             gateRow.getChildren().add(SPACER);
+        } else {
+            System.err.println("GATE NOT EMPTY! "+gateRow);
         }
-        GateSymbol symbol = GateSymbol.of(gate);
+        Node symbol = GateSymbol.of(gate);
+        if (gate instanceof Oracle) {
+            // we need to span more wires
+            Oracle oracle = (Oracle)gate;
+            int span = oracle.getQubits();
+            Rectangle r = new Rectangle(0,0,40,40*span);
+            r.setFill(Color.GREEN);
+            symbol = new Group();
+            ((Group) symbol).getChildren().add(r);
+        }
+      //  GateSymbol symbol = GateSymbol.of(gate);
+        System.err.println("GS = "+symbol);
         int spacerIndex = gateRow.getChildren().indexOf(SPACER);
-        gateRow.getChildren().set(spacerIndex, symbol);
+        System.err.println("SI = "+spacerIndex);
+        if (spacerIndex < 0) {
+            gateRow.getChildren().add(symbol);
+        } else {
+            gateRow.getChildren().set(spacerIndex, symbol);
+        }
     }
 
     private double getOccupiedWidth() {
