@@ -40,19 +40,19 @@ import javafx.scene.layout.VBox;
 public class QubitBoard extends VBox {
 
     private Model model = Model.getInstance();
-    private ObservableList<QubitFlow> qubits = FXCollections.observableArrayList();
+    private ObservableList<QubitFlow> wires = FXCollections.observableArrayList();
 
     private final int initialQubitNumber;
 
     public QubitBoard( int initialQubitNumber ) {
 
         this.initialQubitNumber = initialQubitNumber;
-        getChildren().setAll(qubits);
+        getChildren().setAll(wires);
 
-        qubits.addListener( (Observable o) -> {
+        wires.addListener( (Observable o) -> {
             System.err.println("ADded qubit");
-            getChildren().setAll(qubits);
-            model.setNQubits(qubits.size());
+            getChildren().setAll(wires);
+            model.setNQubits(wires.size());
             model.refreshRequest().set(true);
         });
 
@@ -62,16 +62,16 @@ public class QubitBoard extends VBox {
 
     }
 
-    public ObservableList<QubitFlow> getQubits() {
-        return qubits;
+    public ObservableList<QubitFlow> getWires() {
+        return wires;
     }
 
     public void appendQubit() {
-        qubits.add( new QubitFlow(qubits.size()));
+        wires.add( new QubitFlow(wires.size()));
     }
 
     public void clear() {
-        qubits.forEach(QubitFlow::clear);
-        qubits.removeIf(qb -> qb.getIndex() > (initialQubitNumber-1));
+        wires.forEach(QubitFlow::clear);
+        wires.removeIf(qb -> qb.getIndex() > (initialQubitNumber-1));
     }
 }

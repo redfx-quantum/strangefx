@@ -50,14 +50,19 @@ public class Renderer {
         public void start(Stage stage) throws Exception {
             QubitBoard board = new QubitBoard(nQubits);
             System.out.println("START called on stage, board = "+board+", nQubits = "+ nQubits);
-            ObservableList<QubitFlow> qubits = board.getQubits();
+            ObservableList<QubitFlow> wires = board.getWires();
             for (Step s : program.getSteps()) {
                 for (Gate gate : s.getGates()) {
                     int qb = gate.getMainQubitIndex();
-                    QubitFlow wire = qubits.get(qb);
+                    QubitFlow wire = wires.get(qb);
                     wire.addGate(gate);
                 }
             }
+//            for (QubitFlow wire: wires) {
+//                if (wire.wantsOnTop()) {
+//                    wire.toFront();
+//                }
+//            }
 //            for (int i = 0; i < nQubits; i++) {
 //                QubitFlow wire = qubits.get(i);
 //                wire.addGate(new X(i));
