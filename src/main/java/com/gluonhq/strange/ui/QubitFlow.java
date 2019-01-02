@@ -50,10 +50,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.PickResult;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 
@@ -61,6 +58,7 @@ import java.util.stream.Collectors;
 
 public class QubitFlow extends Region {
 
+    private boolean askOnTop = false;
     private static GateSymbol SPACER = new GateSymbol(new Identity(0), false) {{
         getStyleClass().setAll("gate-spacer");
         int SPACER_WIDTH = 5;
@@ -74,7 +72,7 @@ public class QubitFlow extends Region {
     private Label title = new Label();
     private Measurement measurement = new Measurement();
     private HBox gateRow = new HBox();
-
+    private HBox allGates = new HBox();
     private int idx; // the number of the qubit
     private ObservableList<GateSymbol> gates = FXCollections.observableArrayList();
 
@@ -103,7 +101,11 @@ public class QubitFlow extends Region {
         base.getStyleClass().add("base");
         base.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         base.setLeft(title);
-        base.setCenter(gateRow);
+        base.setCenter(allGates);
+        HBox transparent = new HBox();
+        transparent.setOpacity(0.01);
+        allGates.getChildren().addAll(gateRow, transparent);
+        HBox.setHgrow(transparent, Priority.ALWAYS);
         base.setRight(measurement);
 
         BorderPane.setAlignment(title, Pos.CENTER);
@@ -211,6 +213,9 @@ public class QubitFlow extends Region {
         gateRow.getChildren().remove(SPACER);
     }
 
+    public boolean wantsOnTop() {
+        return askOnTop;
+    }
     public void addGate(Gate gate) {
         if (gateRow.getChildren().isEmpty()) {
             gateRow.getChildren().add(SPACER);
@@ -219,13 +224,20 @@ public class QubitFlow extends Region {
         }
         Node symbol = GateSymbol.of(gate);
         if (gate instanceof Oracle) {
-            // we need to span more wires
-            Oracle oracle = (Oracle)gate;
-            int span = oracle.getQubits();
-            Rectangle r = new Rectangle(0,0,40,40*span);
+            this.askOnTop = true;
+//            // we need to span more wires
+//            Oracle oracle = (Oracle)gate;
+//            int span = oracle.getQubits();
+            Rectangle r = new Rectangle(0,0,40,160);
             r.setFill(Color.GREEN);
             symbol = new Group();
-            ((Group) symbol).getChildren().add(r);
+            Group group = (Group)symbol;
+            group.toFront();
+            r.toFront();
+            symbol.setManaged(false);
+            symbol.toFront();
+            group.setTranslateX(50 * gateRow.getChildren().size());
+            group.getChildren().add(r);
         }
       //  GateSymbol symbol = GateSymbol.of(gate);
         System.err.println("GS = "+symbol);

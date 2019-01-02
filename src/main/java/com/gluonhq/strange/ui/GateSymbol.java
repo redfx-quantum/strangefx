@@ -72,11 +72,14 @@ public class GateSymbol extends Label {
         setText(gate.getCaption());
         setMinWidth(40);
         setAlignment(Pos.CENTER);
-        if (gate instanceof Oracle) {
-            Oracle oracle = (Oracle)gate;
-            setMinHeight(oracle.getQubits()* 40);
-            setPrefHeight(oracle.getQubits()* 40);
-        }
+//        if (gate instanceof Oracle) {
+//            Oracle oracle = (Oracle)gate;
+//            this.setManaged(false);
+//            this.setWidth(40);
+//            this.setHeight(80);
+//            setMinHeight(oracle.getQubits()* 40);
+//            setPrefHeight(oracle.getQubits()* 40);
+//        }
         if (movable) {
             setContextMenu(buildContextMenu());
         }
