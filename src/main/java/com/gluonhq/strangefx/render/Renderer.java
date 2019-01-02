@@ -56,6 +56,7 @@ public class Renderer {
 
         @Override
         public void start(Stage stage) throws Exception {
+            stage.setTitle("StrangeFX");
             QubitBoard board = new QubitBoard(nQubits);
             System.out.println("START called on stage, board = "+board+", nQubits = "+ nQubits);
             List<GateSymbol> multiWires = new LinkedList();

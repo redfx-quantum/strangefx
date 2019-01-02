@@ -76,6 +76,7 @@ public class GateSymbol extends Label {
         if (gate instanceof Oracle) {
             Oracle oracle = (Oracle)gate;
             this.spanWires = oracle.getQubits();
+            this.setOpacity(0.9);
 //            this.setManaged(false);
 //            this.setWidth(40);
 //            this.setHeight(80);
