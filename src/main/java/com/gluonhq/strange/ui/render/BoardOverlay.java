@@ -19,10 +19,19 @@ public class BoardOverlay extends Region {
             public void invalidated(Observable observable) {
                 BoardOverlay me = BoardOverlay.this;
                 me.getChildren().clear();
-                Bounds bp = me.getBoundsInParent();
-                Rectangle rect = new Rectangle(bp.getMinX(),bp.getMinY(),40, 40 * symbol.spanWires);
+                Bounds bp = symbol.getBoundsInParent();
+                Point2D base = symbol.localToScene(0, 0);
+                System.out.println("bp = "+bp+" and p2d = "+base);
+                Rectangle rect = new Rectangle(base.getX() ,38 + base.getY(),40, 66 * symbol.spanWires-10);
+                Rectangle rect2 = new Rectangle(base.getX() , base.getY(),40, 66 * symbol.spanWires-10+38);
+
+//                 Rectangle rect = new Rectangle(base.getX() + bp.getMinX(),base.getY()+bp.getMinY(),40, 40 * symbol.spanWires);
                 rect.setFill(Color.YELLOWGREEN);
-                BoardOverlay.this.getChildren().setAll(rect);
+                rect2.setStroke(Color.GREEN);
+                rect2.setStrokeWidth(2);
+                rect2.setFill(Color.TRANSPARENT);
+                BoardOverlay.this.getChildren().setAll(rect, rect2);
+                System.out.println("rect at "+rect);
             }
         });
     }
