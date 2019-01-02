@@ -40,8 +40,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
+
+import javafx.beans.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -75,7 +75,7 @@ public class QubitFlow extends Region {
     private HBox allGates = new HBox();
     private int idx; // the number of the qubit
     private ObservableList<GateSymbol> gates = FXCollections.observableArrayList();
-
+    private Region oldParent = null;
     private final Model model = Model.getInstance();
 
     private InvalidationListener endStateListener = (Observable o) -> {
@@ -104,6 +104,7 @@ public class QubitFlow extends Region {
         base.setCenter(allGates);
         HBox transparent = new HBox();
         transparent.setOpacity(0.01);
+        transparent.setPrefWidth(1024);
         allGates.getChildren().addAll(gateRow, transparent);
         HBox.setHgrow(transparent, Priority.ALWAYS);
         base.setRight(measurement);
@@ -112,6 +113,16 @@ public class QubitFlow extends Region {
         BorderPane.setAlignment(measurement, Pos.CENTER);
 
         StackPane stack = new StackPane(line, base);
+        this.sceneProperty().addListener(
+                new InvalidationListener() {
+                    @Override
+                    public void invalidated(Observable observable) {
+                        if (QubitFlow.this.getScene() != null) {
+                            QubitFlow.this.prefWidthProperty().bind(QubitFlow.this.getScene().widthProperty());
+                        }
+                    }
+                }
+        );
 
         stack.prefWidthProperty().bind(widthProperty());
         stack.prefHeightProperty().bind(heightProperty());
@@ -216,38 +227,35 @@ public class QubitFlow extends Region {
     public boolean wantsOnTop() {
         return askOnTop;
     }
-    public void addGate(Gate gate) {
+    public GateSymbol addGate(Gate gate) {
         if (gateRow.getChildren().isEmpty()) {
             gateRow.getChildren().add(SPACER);
-        } else {
-            System.err.println("GATE NOT EMPTY! "+gateRow);
         }
-        Node symbol = GateSymbol.of(gate);
+        GateSymbol symbol = GateSymbol.of(gate);
         if (gate instanceof Oracle) {
             this.askOnTop = true;
 //            // we need to span more wires
 //            Oracle oracle = (Oracle)gate;
 //            int span = oracle.getQubits();
-            Rectangle r = new Rectangle(0,0,40,160);
-            r.setFill(Color.GREEN);
-            symbol = new Group();
-            Group group = (Group)symbol;
-            group.toFront();
-            r.toFront();
-            symbol.setManaged(false);
-            symbol.toFront();
-            group.setTranslateX(50 * gateRow.getChildren().size());
-            group.getChildren().add(r);
+//            Rectangle r = new Rectangle(0,0,40,160);
+//            r.setFill(Color.GREEN);
+//            symbol = new Group();
+//            Group group = (Group)symbol;
+//            group.toFront();
+//            r.toFront();
+//            symbol.setManaged(false);
+//            symbol.toFront();
+//            group.setTranslateX(50 * gateRow.getChildren().size());
+//            group.getChildren().add(r);
         }
       //  GateSymbol symbol = GateSymbol.of(gate);
-        System.err.println("GS = "+symbol);
         int spacerIndex = gateRow.getChildren().indexOf(SPACER);
-        System.err.println("SI = "+spacerIndex);
         if (spacerIndex < 0) {
             gateRow.getChildren().add(symbol);
         } else {
             gateRow.getChildren().set(spacerIndex, symbol);
         }
+        return symbol;
     }
 
     private double getOccupiedWidth() {
