@@ -54,6 +54,7 @@ public class GateSymbol extends Label {
 
     private final Gate gate;
     private final boolean movable;
+    public int spanWires = 1;
 
     public static GateSymbol of( Gate gate, Boolean movable ) {
         return new GateSymbol(gate, movable);
@@ -72,14 +73,15 @@ public class GateSymbol extends Label {
         setText(gate.getCaption());
         setMinWidth(40);
         setAlignment(Pos.CENTER);
-//        if (gate instanceof Oracle) {
-//            Oracle oracle = (Oracle)gate;
+        if (gate instanceof Oracle) {
+            Oracle oracle = (Oracle)gate;
+            this.spanWires = oracle.getQubits();
 //            this.setManaged(false);
 //            this.setWidth(40);
 //            this.setHeight(80);
 //            setMinHeight(oracle.getQubits()* 40);
 //            setPrefHeight(oracle.getQubits()* 40);
-//        }
+        }
         if (movable) {
             setContextMenu(buildContextMenu());
         }
