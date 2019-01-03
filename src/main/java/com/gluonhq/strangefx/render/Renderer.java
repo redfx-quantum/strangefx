@@ -60,6 +60,8 @@ public class Renderer {
             QubitBoard board = new QubitBoard(nQubits);
             System.out.println("START called on stage, board = "+board+", nQubits = "+ nQubits);
             List<GateSymbol> multiWires = new LinkedList();
+            List<GateSymbol> probabilities = new LinkedList();
+            List<BoardOverlay> boardOverlays = new LinkedList<>();
             ObservableList<QubitFlow> wires = board.getWires();
             for (Step s : program.getSteps()) {
                 for (Gate gate : s.getGates()) {
@@ -69,23 +71,24 @@ public class Renderer {
                     if (symbol.spanWires > 1) {
                         System.err.println("More than 1 gate");
                         multiWires.add(symbol);
+                        BoardOverlay overlay = new BoardOverlay(s, symbol);
+                        boardOverlays.add(overlay);
+                        board.addOverlay(overlay);
+
+                    }
+                    if (symbol.probability) {
+                        probabilities.add(symbol);
+                        BoardOverlay overlay = new BoardOverlay(s, symbol);
+                        boardOverlays.add(overlay);
+                        board.addOverlay(overlay);
                     }
                 }
             }
 
-            for (GateSymbol symbol : multiWires) {
-                BoardOverlay overlay = new BoardOverlay(symbol);
-                board.addOverlay(overlay);
-//                symbol.boundsInParentProperty().addListener(new InvalidationListener() {
-//                    @Override
-//                    public void invalidated(Observable observable) {
-//                        Region region = new Region();
-//                        Bounds parentBounds = symbol.getBoundsInParent();
-//                        System.err.println("visible? "+ symbol.isVisible()+", bounds = "+parentBounds);
-//                    }
-//                });
-
-            }
+//            for (GateSymbol symbol : multiWires) {
+//                BoardOverlay overlay = new BoardOverlay(symbol);
+//                board.addOverlay(overlay);
+//            }
             Scene scene = new Scene(board);
             scene.getStylesheets().add(Main.class.getResource("/styles.css").toExternalForm());
             stage.setScene(scene);
