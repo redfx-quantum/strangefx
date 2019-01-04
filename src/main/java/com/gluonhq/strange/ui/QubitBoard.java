@@ -32,26 +32,34 @@
 package com.gluonhq.strange.ui;
 
 import com.gluonhq.strange.simulator.Model;
+import com.gluonhq.strange.ui.render.*;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.layout.VBox;
+import javafx.scene.*;
+import javafx.scene.layout.*;
 
-public class QubitBoard extends VBox {
+import java.util.*;
+
+public class QubitBoard extends Group {
 
     private Model model = Model.getInstance();
-    private ObservableList<QubitFlow> qubits = FXCollections.observableArrayList();
+    private ObservableList<QubitFlow> wires = FXCollections.observableArrayList();
 
     private final int initialQubitNumber;
+
+    private final VBox wiresBox = new VBox();
+    private final List<Node> overlays = new LinkedList<>();
 
     public QubitBoard( int initialQubitNumber ) {
 
         this.initialQubitNumber = initialQubitNumber;
-        getChildren().setAll(qubits);
+        wiresBox.getChildren().setAll(wires);
 
-        qubits.addListener( (Observable o) -> {
-            getChildren().setAll(qubits);
-            model.setNQubits(qubits.size());
+        wires.addListener( (Observable o) -> {
+            System.err.println("ADded qubit");
+            wiresBox.getChildren().setAll(wires);
+            model.setNQubits(wires.size());
             model.refreshRequest().set(true);
         });
 
@@ -59,18 +67,23 @@ public class QubitBoard extends VBox {
             appendQubit();
         }
 
+        getChildren().add(wiresBox);
+
     }
 
-    public ObservableList<QubitFlow> getQubits() {
-        return qubits;
+    public void addOverlay(BoardOverlay overlay) {
+        this.getChildren().add(overlay);
+    }
+    public ObservableList<QubitFlow> getWires() {
+        return wires;
     }
 
     public void appendQubit() {
-        qubits.add( new QubitFlow(qubits.size()));
+        wires.add( new QubitFlow(wires.size()));
     }
 
     public void clear() {
-        qubits.forEach(QubitFlow::clear);
-        qubits.removeIf(qb -> qb.getIndex() > (initialQubitNumber-1));
+        wires.forEach(QubitFlow::clear);
+        wires.removeIf(qb -> qb.getIndex() > (initialQubitNumber-1));
     }
 }

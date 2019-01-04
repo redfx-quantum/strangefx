@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2017, Gluon Software
+ * Copyright (c) 2018, Gluon Software
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,39 +29,18 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.gluonhq.strange.simulator;
+package com.gluonhq.strange.ui.render;
 
-//import com.gluonhq.cloudlink.client.data.RemoteFunctionBuilder;
-//import com.gluonhq.cloudlink.client.data.RemoteFunctionObject;
-//import com.gluonhq.connect.GluonObservableObject;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
+import javafx.scene.shape.Shape;
 
 /**
  *
  * @author johan
  */
-public class CloudSimulator {
+public class Qubit3D extends Shape {
     
-//    public GluonObservableObject<String> calculateResults(String configuration) {
-//        System.out.println("I will ask results for "+configuration+" from GCL");
-//        RemoteFunctionObject function = RemoteFunctionBuilder.create("calculateResults").object();
-//        function.setRawBody(configuration.getBytes());
-//        GluonObservableObject<String> answer = function.call(String.class);
-//        System.out.println("FUNCTION got answer: "+answer);
-//        answer.stateProperty().addListener(new InvalidationListener() {
-//            @Override
-//            public void invalidated(Observable o) {
-//                System.out.println("NEW ANSWER = "+answer.get());
-//                System.out.println("NEW STATE = "+answer.getState());
-//                if (answer.getException()!= null) {
-//                    answer.getException().printStackTrace();
-//                }
-//            }
-//        });
-//        if (answer != null) {
-//            System.out.println("answer = "+answer.get());
-//        }
-//        return answer;
-//    }
+    public Qubit3D() {
+        
+    }
+    
 }

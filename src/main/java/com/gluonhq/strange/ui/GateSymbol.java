@@ -31,10 +31,11 @@
  */
 package com.gluonhq.strange.ui;
 
+import com.gluonhq.strange.gate.*;
 import com.gluonhq.strange.simulator.GateGroup;
 import com.gluonhq.strange.Gate;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+//import de.jensd.fx.glyphs.materialicons.MaterialIcon;
+//import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -53,6 +54,8 @@ public class GateSymbol extends Label {
 
     private final Gate gate;
     private final boolean movable;
+    public int spanWires = 1;
+    public boolean probability = false;
 
     public static GateSymbol of( Gate gate, Boolean movable ) {
         return new GateSymbol(gate, movable);
@@ -71,7 +74,14 @@ public class GateSymbol extends Label {
         setText(gate.getCaption());
         setMinWidth(40);
         setAlignment(Pos.CENTER);
-
+        if (gate instanceof Oracle) {
+            Oracle oracle = (Oracle)gate;
+            this.spanWires = oracle.getQubits();
+            this.setOpacity(0.9);
+        }
+        if (gate instanceof ProbabilitiesGate) {
+            this.probability = true;
+        }
         if (movable) {
             setContextMenu(buildContextMenu());
         }
@@ -114,7 +124,7 @@ public class GateSymbol extends Label {
 
     private ContextMenu buildContextMenu() {
         ContextMenu menu = new ContextMenu();
-        MenuItem mnRemove = new MenuItem("Remove", MaterialIconFactory.get().createIcon(MaterialIcon.DELETE));
+        MenuItem mnRemove = new MenuItem("Remove");//, MaterialIconFactory.get().createIcon(MaterialIcon.DELETE));
         menu.setOnAction( e -> removeFromParent());
         menu.getItems().addAll(mnRemove);
         return menu;

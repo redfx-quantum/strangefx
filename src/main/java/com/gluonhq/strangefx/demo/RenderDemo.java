@@ -39,8 +39,6 @@ import com.gluonhq.strange.gate.X;
 import com.gluonhq.strange.local.SimpleQuantumExecutionEnvironment;
 import com.gluonhq.strange.ui.Main;
 import com.gluonhq.strangefx.render.RenderEngine;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -85,9 +83,10 @@ public class RenderDemo extends Application {
         RenderEngine sim = RenderEngine.createNode(p);
         borderPane.setCenter(sim);
         
-        Button button =  MaterialIconFactory
-                            .get()
-                            .createIconButton(MaterialIcon.PLAY_ARROW, "", "2em", "", ContentDisplay.GRAPHIC_ONLY);
+        Button button =  new Button("uh?");
+        //MaterialIconFactory
+          //                  .get()
+            //                .createIconButton(MaterialIcon.PLAY_ARROW, "", "2em", "", ContentDisplay.GRAPHIC_ONLY);
         button.setOnAction(e -> sim.animate());
         borderPane.setTop(button);
     }

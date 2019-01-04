@@ -34,8 +34,8 @@ package com.gluonhq.strange.ui;
 import com.gluonhq.strange.simulator.Model;
 import com.gluonhq.strange.gate.*;
 import com.gluonhq.strange.simulator.local.LocalSimulator;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+//import de.jensd.fx.glyphs.materialicons.MaterialIcon;
+//import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -68,8 +68,8 @@ public class Main extends Application {
         logo.setFitWidth(100);
 
         ToolBar toolbar = new ToolBar(
-            createButton( "Append Qubit",  MaterialIcon.PLAYLIST_ADD,       e -> board.appendQubit() ),
-            createButton( "Clear All",     MaterialIcon.DELETE_SWEEP, e -> board.clear() ),
+            createButton( "Append Qubit", e -> board.appendQubit() ),
+            createButton( "Clear All", e -> board.clear() ),
             new Separator(),
             GateSymbol.of(new Identity(0), false),
             GateSymbol.of(new X(0), false),
@@ -97,10 +97,11 @@ public class Main extends Application {
         stage.show();
     }
 
-    private Button createButton( String tooltip, MaterialIcon icon, EventHandler<ActionEvent> eventHandler ) {
-        Button button =  MaterialIconFactory
-                            .get()
-                            .createIconButton(icon, "", "2em", "", ContentDisplay.GRAPHIC_ONLY);
+    private Button createButton( String tooltip, EventHandler<ActionEvent> eventHandler ) {
+        Button button = new Button(tooltip);
+        //MaterialIconFactory
+          //                  .get()
+            //                .createIconButton(icon, "", "2em", "", ContentDisplay.GRAPHIC_ONLY);
         button.setOnAction(eventHandler);
         if ( tooltip != null && !tooltip.trim().isEmpty()) {
             Tooltip t = new Tooltip(tooltip);

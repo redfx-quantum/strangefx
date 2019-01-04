@@ -11,14 +11,18 @@ buildscript {
     }
 }
 
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.5'
+    id 'maven'
+    id 'org.javamodularity.moduleplugin' version '1.2.1'
+}
 
-apply plugin: 'java'
-apply plugin: 'org.junit.platform.gradle.plugin'
-apply plugin: 'application'
-apply from: project.file('gradle/code-quality.gradle')
+group = 'com.gluonhq'
+version = '0.0.1-SNAPSHOT'
 
-// mainClassName = 'com.gluonhq.strange.ui.Main'
-mainClassName = 'com.gluonhq.strangefx.demo.RenderDemo'
+mainClassName = 'com.gluonhq.strange.ui.Main'
+// mainClassName = 'com.gluonhq.strangefx.demo.RenderDemo'
 // mainClassName = 'com.gluonhq.strange.simulator.local.LocalSimulator'
 
 repositories {
@@ -27,15 +31,32 @@ repositories {
     maven {
         url 'http://nexus.gluonhq.com/nexus/content/repositories/releases'
     }
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/comgluonhq-1095'
+    }
+}
+
+javafx {
+    modules = [ 'javafx.controls' ]
+    version = "11.0.+"
+}
+
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'PASSED', 'FAILED', 'SKIPPED'
+    }
 }
 
 dependencies {
-    compile 'de.jensd:fontawesomefx-materialicons:2.2.0-9'
-    compile 'com.gluonhq:charm-cloudlink-client:4.4.4'
-    compile 'com.gluonhq:strange:0.0.2'
-    compile 'org.fxyz3d:fxyz3d:0.2.0'
+    // compile 'de.jensd:fontawesomefx-materialicons:2.2.0-9'
+    // compile 'com.gluonhq:charm-cloudlink-client:4.4.4'
+    compile 'com.gluonhq:strange:0.0.5'
+    compile 'org.fxyz3d:fxyz3d:0.4.0'
     
-    runtime 'com.gluonhq:charm-down-plugin-storage-desktop:3.6.0'
-
-    testCompile 'org.junit.jupiter:junit-jupiter-engine:5.0.0'
+    // runtime 'com.gluonhq:charm-down-plugin-storage-desktop:3.6.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }
