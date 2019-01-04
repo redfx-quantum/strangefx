@@ -21,7 +21,7 @@ apply from: 'gradle/mavenPublish.gradle'
 
 
 group = 'com.gluonhq'
-version = '0.0.1'
+version = '0.0.2-SNAPSHOT'
 
 mainClassName = 'com.gluonhq.strange.ui.Main'
 // mainClassName = 'com.gluonhq.strangefx.demo.RenderDemo'
