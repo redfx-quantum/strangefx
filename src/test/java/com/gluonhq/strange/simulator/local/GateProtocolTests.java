@@ -42,6 +42,13 @@ import org.junit.jupiter.api.Test;
  */
 @DisplayName("Test gate protocols")
 public class GateProtocolTests {
+    /*
+    All those tests moved to Strange.
+     */
+    @Test
+    public void ignore() {
+        assertEquals(1,1);
+    }
 //    
 //    @Test
 //    @DisplayName("I gate")
