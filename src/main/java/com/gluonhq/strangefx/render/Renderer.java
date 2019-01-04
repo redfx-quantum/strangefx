@@ -2,6 +2,7 @@ package com.gluonhq.strangefx.render;
 
 import com.gluonhq.strange.*;
 import com.gluonhq.strange.gate.X;
+import com.gluonhq.strange.simulator.Model;
 import com.gluonhq.strange.ui.*;
 import com.gluonhq.strange.ui.render.*;
 import javafx.application.*;
@@ -84,6 +85,15 @@ public class Renderer {
                     }
                 }
             }
+            ObservableList<Double> endStates = Model.getInstance().getEndStates();
+            Qubit[] qubits = this.program.getResult().getQubits();
+            Complex[] probability = this.program.getResult().getProbability();
+            Double[] endValues = new Double[probability.length];
+            int idx = 0;
+            for (Qubit qubit: qubits) {
+                endValues[idx++] = qubit.getProbability();
+            }
+            endStates.setAll(endValues);
 
 //            for (GateSymbol symbol : multiWires) {
 //                BoardOverlay overlay = new BoardOverlay(symbol);

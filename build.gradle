@@ -17,6 +17,8 @@ plugins {
     id 'maven'
     id 'org.javamodularity.moduleplugin' version '1.2.1'
 }
+apply from: 'gradle/mavenPublish.gradle'
+
 
 group = 'com.gluonhq'
 version = '0.0.1-SNAPSHOT'
@@ -60,3 +62,25 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+ext.publish = !project.version.endsWith('SNAPSHOT')
+
+configurations {
+    published
+}
+
+
+artifacts {
+    archives sourceJar, javadocJar
+}
+
