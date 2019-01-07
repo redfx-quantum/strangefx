@@ -14,12 +14,12 @@ buildscript {
 plugins {
     id 'java-library'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.5'
+    id 'org.openjfx.javafxplugin' version '0.0.6'
 }
 apply from: 'gradle/mavenPublish.gradle'
 
 group = 'com.gluonhq'
-version = '0.0.1'
+version = '0.0.2-SNAPSHOT'
 
 mainClassName = 'com.gluonhq.strangefx/com.gluonhq.strange.ui.Main'
 // mainClassName = 'com.gluonhq.strangefx/com.gluonhq.strangefx.demo.RenderDemo'
