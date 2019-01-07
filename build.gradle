@@ -12,20 +12,18 @@ buildscript {
 }
 
 plugins {
+    id 'java-library'
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.5'
-    id 'maven'
-    id 'org.javamodularity.moduleplugin' version '1.2.1'
 }
 apply from: 'gradle/mavenPublish.gradle'
 
-
 group = 'com.gluonhq'
-version = '0.0.2-SNAPSHOT'
+version = '0.0.1'
 
-mainClassName = 'com.gluonhq.strange.ui.Main'
-// mainClassName = 'com.gluonhq.strangefx.demo.RenderDemo'
-// mainClassName = 'com.gluonhq.strange.simulator.local.LocalSimulator'
+mainClassName = 'com.gluonhq.strangefx/com.gluonhq.strange.ui.Main'
+// mainClassName = 'com.gluonhq.strangefx/com.gluonhq.strangefx.demo.RenderDemo'
+// mainClassName = 'com.gluonhq.strangefx/com.gluonhq.strange.simulator.local.LocalSimulator'
 
 repositories {
     mavenCentral()
@@ -43,7 +41,6 @@ javafx {
     version = "11.0.1"
 }
 
-
 test {
     useJUnitPlatform()
     testLogging {
@@ -54,33 +51,11 @@ test {
 dependencies {
     // compile 'de.jensd:fontawesomefx-materialicons:2.2.0-9'
     // compile 'com.gluonhq:charm-cloudlink-client:4.4.4'
-    compile 'com.gluonhq:strange:0.0.6'
-    compile 'org.fxyz3d:fxyz3d:0.4.0'
-    
+    api 'com.gluonhq:strange:0.0.6'
+    api 'org.fxyz3d:fxyz3d:0.4.0'
+
     // runtime 'com.gluonhq:charm-down-plugin-storage-desktop:3.6.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }
-
-task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
-    classifier = 'sources'
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-ext.publish = !project.version.endsWith('SNAPSHOT')
-
-configurations {
-    published
-}
-
-
-artifacts {
-    archives sourceJar, javadocJar
-}
-
