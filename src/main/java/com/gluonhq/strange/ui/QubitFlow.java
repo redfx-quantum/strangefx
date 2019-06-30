@@ -286,16 +286,17 @@ public class QubitFlow extends Region {
     }
 
     private Gate createGate(Gate g) {
-        Class<? extends Gate> gateClass = g.getClass();
-        try {
-            Constructor<? extends Gate> constructor = gateClass.getConstructor(int.class);
-            Gate copyGate = constructor.newInstance(g.getAffectedQubitIndex().get(0));
-            return copyGate;
-
-        } catch (Exception ex) {
-            Logger.getLogger(LocalSimulator.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+        return g;
+//        Class<? extends Gate> gateClass = g.getClass();
+//        try {
+//            Constructor<? extends Gate> constructor = gateClass.getConstructor(int.class);
+//            Gate copyGate = constructor.newInstance(g.getAffectedQubitIndex().get(0));
+//            return copyGate;
+//
+//        } catch (Exception ex) {
+//            Logger.getLogger(LocalSimulator.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return null;
     }
 
 }

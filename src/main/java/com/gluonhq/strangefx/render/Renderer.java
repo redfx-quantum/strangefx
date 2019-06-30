@@ -1,6 +1,7 @@
 package com.gluonhq.strangefx.render;
 
 import com.gluonhq.strange.*;
+import com.gluonhq.strange.gate.Identity;
 import com.gluonhq.strange.gate.X;
 import com.gluonhq.strange.simulator.Model;
 import com.gluonhq.strange.ui.*;
@@ -65,10 +66,15 @@ public class Renderer {
             List<BoardOverlay> boardOverlays = new LinkedList<>();
             ObservableList<QubitFlow> wires = board.getWires();
             for (Step s : program.getSteps()) {
+                System.err.println("add step "+s);
+                boolean[] gotit = new boolean[nQubits];
                 for (Gate gate : s.getGates()) {
+                    System.err.println("Add gate "+gate);
                     int qb = gate.getMainQubitIndex();
+                    gotit[qb] = true;
                     QubitFlow wire = wires.get(qb);
                     GateSymbol symbol = wire.addGate(gate);
+                    System.err.println("Add symbol "+symbol +" to wire "+wire);
                     if (symbol.spanWires > 1) {
                         System.err.println("More than 1 gate");
                         multiWires.add(symbol);
@@ -82,6 +88,12 @@ public class Renderer {
                         BoardOverlay overlay = new BoardOverlay(s, symbol);
                         boardOverlays.add(overlay);
                         board.addOverlay(overlay);
+                    }
+                }
+                for (int i = 0; i < nQubits; i++) {
+                    if (!gotit[i]) {
+                        QubitFlow wire = wires.get(i);
+                        wire.addGate(new Identity());
                     }
                 }
             }

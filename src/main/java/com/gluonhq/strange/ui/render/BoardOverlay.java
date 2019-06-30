@@ -13,6 +13,7 @@ public class BoardOverlay extends Region {
     private GateSymbol symbol;
 
     public BoardOverlay(Step s, GateSymbol symbol) {
+        System.err.println("Create BO, s = "+s);
         this.symbol = symbol;
         if (symbol.probability) {
             createProbability(s, symbol);

@@ -69,9 +69,11 @@ public class GateSymbol extends Label {
 
         this.gate = Objects.requireNonNull(gate);
         this.movable = movable;
+        if (!(gate instanceof Identity)) {
 
         getStyleClass().setAll("gate-symbol", getStyle(gate.getGroup()));
-        setText(gate.getCaption());
+            setText(gate.getCaption());
+        }
         setMinWidth(40);
         setAlignment(Pos.CENTER);
         if (gate instanceof Oracle) {
