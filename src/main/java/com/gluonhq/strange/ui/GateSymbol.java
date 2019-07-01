@@ -65,14 +65,21 @@ public class GateSymbol extends Label {
         return new GateSymbol(gate, true);
     }
 
-    GateSymbol( Gate gate, boolean movable) {
+    public static GateSymbol of( Gate gate, int idx ) {
+        return new GateSymbol(gate, true);
+    }
 
+    GateSymbol( Gate gate, boolean movable) {
+this.spanWires = gate.getAffectedQubitIndex().size();
         this.gate = Objects.requireNonNull(gate);
         this.movable = movable;
         if (!(gate instanceof Identity)) {
-
-        getStyleClass().setAll("gate-symbol", getStyle(gate.getGroup()));
-            setText(gate.getCaption());
+            if (gate instanceof Cnot) {
+setText("C");
+            } else {
+                getStyleClass().setAll("gate-symbol", getStyle(gate.getGroup()));
+                setText(gate.getCaption());
+            }
         }
         setMinWidth(40);
         setAlignment(Pos.CENTER);
