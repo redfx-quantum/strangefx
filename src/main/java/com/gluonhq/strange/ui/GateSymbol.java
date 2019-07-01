@@ -58,24 +58,32 @@ public class GateSymbol extends Label {
     public boolean probability = false;
 
     public static GateSymbol of( Gate gate, Boolean movable ) {
-        return new GateSymbol(gate, movable);
+        return new GateSymbol(gate, movable, 0);
     }
 
     public static GateSymbol of( Gate gate ) {
-        return new GateSymbol(gate, true);
+        return new GateSymbol(gate, true, 0);
     }
 
     public static GateSymbol of( Gate gate, int idx ) {
-        return new GateSymbol(gate, true);
+        return new GateSymbol(gate, true, idx);
     }
 
     GateSymbol( Gate gate, boolean movable) {
-this.spanWires = gate.getAffectedQubitIndex().size();
+        this (gate, movable, 0);
+    }
+
+    GateSymbol( Gate gate, boolean movable, int idx) {
+        this.spanWires = gate.getAffectedQubitIndex().size();
         this.gate = Objects.requireNonNull(gate);
         this.movable = movable;
         if (!(gate instanceof Identity)) {
             if (gate instanceof Cnot) {
-setText("C");
+                if (idx > 0) {
+                    setText("X");
+                } else {
+                    setText("C");
+                }
             } else {
                 getStyleClass().setAll("gate-symbol", getStyle(gate.getGroup()));
                 setText(gate.getCaption());

@@ -87,7 +87,7 @@ public class Renderer {
                             gate.getAffectedQubitIndex().stream().filter(e -> e!= qb).
                                     forEach(a -> {
                                         QubitFlow q = wires.get(a);
-                                        q.addGate(gate);
+                                        q.addAdditonalGateSymbol(gate, 1);
                                     });
                         }
 
