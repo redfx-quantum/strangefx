@@ -37,6 +37,8 @@ import com.gluonhq.strange.Gate;
 //import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 //import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -45,6 +47,9 @@ import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 
 import java.util.Objects;
 
@@ -80,9 +85,24 @@ public class GateSymbol extends Label {
         if (!(gate instanceof Identity)) {
             if (gate instanceof Cnot) {
                 if (idx > 0) {
-                    setText("X");
+                    Group g = new Group();
+                    Circle c = new Circle(0,0,5, Color.DARKGREY);
+                    g.getChildren().add(c);
+                    setContentDisplay(ContentDisplay.CENTER);
+                    setGraphic(g);
+                    setText("");
                 } else {
-                    setText("C");
+                    Group g = new Group();
+                    Circle c = new Circle(0,0,10, Color.TRANSPARENT);
+                    c.setStroke(Color.DARKGRAY);
+                    c.setStrokeWidth(2);
+                    Line l = new Line (0,-10,0,10);
+                    l.setStrokeWidth(2);
+                    l.setStroke(Color.DARKGRAY);
+                    g.getChildren().addAll(c,l);
+                    setContentDisplay(ContentDisplay.CENTER);
+                    setGraphic(g);
+                    setText("");
                 }
             } else {
                 getStyleClass().setAll("gate-symbol", getStyle(gate.getGroup()));
