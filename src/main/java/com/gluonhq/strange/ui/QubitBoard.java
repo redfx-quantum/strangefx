@@ -57,7 +57,6 @@ public class QubitBoard extends Group {
         wiresBox.getChildren().setAll(wires);
 
         wires.addListener( (Observable o) -> {
-            System.err.println("ADded qubit");
             wiresBox.getChildren().setAll(wires);
             model.setNQubits(wires.size());
             model.refreshRequest().set(true);
