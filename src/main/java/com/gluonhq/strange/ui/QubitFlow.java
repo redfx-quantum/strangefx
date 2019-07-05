@@ -86,6 +86,7 @@ public class QubitFlow extends Region {
     public QubitFlow(int index) {
 
         this.idx = index;
+        title.setText(String.format("q[%d] I0>", idx));
         gateRow.getChildren().add(SPACER);
         getStyleClass().add("qubit");
 
