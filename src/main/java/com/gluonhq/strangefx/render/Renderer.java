@@ -30,7 +30,6 @@ public class Renderer {
 
     public Renderer(Program p) {
         int nq = p.getNumberQubits();
-        System.err.println("Renderer created nQubits = "+nq);
         this.application = new RenderApplication(nq, p);
     }
 
@@ -61,23 +60,18 @@ public class Renderer {
         public void start(Stage stage) throws Exception {
             stage.setTitle("StrangeFX");
             QubitBoard board = new QubitBoard(nQubits);
-            System.out.println("START called on stage, board = "+board+", nQubits = "+ nQubits);
             List<GateSymbol> multiWires = new LinkedList();
             List<GateSymbol> probabilities = new LinkedList();
             List<BoardOverlay> boardOverlays = new LinkedList<>();
             ObservableList<QubitFlow> wires = board.getWires();
             for (Step s : program.getSteps()) {
-                System.err.println("add step "+s);
                 boolean[] gotit = new boolean[nQubits];
                 for (Gate gate : s.getGates()) {
-                    System.err.println("Add gate "+gate);
                     int qb = gate.getMainQubitIndex();
                     gotit[qb] = true;
                     QubitFlow wire = wires.get(qb);
                     GateSymbol symbol = wire.addGate(gate);
-                    System.err.println("Add symbol "+symbol +" to wire "+wire);
                     if (symbol.spanWires > 1) {
-                        System.err.println("More than 1 gate");
                         if (gate instanceof Oracle) {
                             multiWires.add(symbol);
                             BoardOverlay overlay = new BoardOverlay(s, symbol);
