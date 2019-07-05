@@ -2,6 +2,7 @@ package com.gluonhq.strangefx.render;
 
 import com.gluonhq.strange.*;
 import com.gluonhq.strange.gate.Identity;
+import com.gluonhq.strange.gate.Oracle;
 import com.gluonhq.strange.gate.X;
 import com.gluonhq.strange.simulator.Model;
 import com.gluonhq.strange.ui.*;
@@ -77,10 +78,21 @@ public class Renderer {
                     System.err.println("Add symbol "+symbol +" to wire "+wire);
                     if (symbol.spanWires > 1) {
                         System.err.println("More than 1 gate");
-                        multiWires.add(symbol);
-                        BoardOverlay overlay = new BoardOverlay(s, symbol);
-                        boardOverlays.add(overlay);
-                        board.addOverlay(overlay);
+                        if (gate instanceof Oracle) {
+                            multiWires.add(symbol);
+                            BoardOverlay overlay = new BoardOverlay(s, symbol);
+                            boardOverlays.add(overlay);
+                            board.addOverlay(overlay);
+                        } else {
+                            gate.getAffectedQubitIndex().stream().filter(e -> e!= qb).
+                                    forEach(a -> {
+                                        QubitFlow q = wires.get(a);
+                                        GateSymbol symbol2 = q.addAdditonalGateSymbol(gate, 1);
+                                        BoardOverlay overlay = new BoardOverlay(s, symbol, symbol2);
+                                        boardOverlays.add(overlay);
+                                        board.addOverlay(overlay);
+                                    });
+                        }
 
                     }
                     if (symbol.probability) {

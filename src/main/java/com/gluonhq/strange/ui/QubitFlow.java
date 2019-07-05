@@ -258,6 +258,46 @@ public class QubitFlow extends Region {
         return symbol;
     }
 
+    /**
+     * Add the additional symbol for the gate
+     * @param gate
+     * @param idx the index of the additional qubit (0 = main index, 1 = first additional index)
+     * @return
+     */
+    public GateSymbol addAddtionalGateSymbol(Gate gate, int idx) {
+        if (gateRow.getChildren().isEmpty()) {
+            gateRow.getChildren().add(SPACER);
+        }
+        GateSymbol symbol = GateSymbol.of(gate, idx);
+        int spacerIndex = gateRow.getChildren().indexOf(SPACER);
+        if (spacerIndex < 0) {
+            gateRow.getChildren().add(symbol);
+        } else {
+            gateRow.getChildren().set(spacerIndex, symbol);
+        }
+        return symbol;
+    }
+
+    /**
+     * Add the additional symbol for the gate
+     * @param gate
+     * @param idx the index of the additional qubit (0 = main index, 1 = first additional index)
+     * @return
+     */
+    public GateSymbol addAdditonalGateSymbol(Gate gate, int idx) {
+        if (gateRow.getChildren().isEmpty()) {
+            gateRow.getChildren().add(SPACER);
+        }
+        GateSymbol symbol = GateSymbol.of(gate, idx);
+        int spacerIndex = gateRow.getChildren().indexOf(SPACER);
+        if (spacerIndex < 0) {
+            gateRow.getChildren().add(symbol);
+        } else {
+            gateRow.getChildren().set(spacerIndex, symbol);
+        }
+        return symbol;
+    }
+
     private double getOccupiedWidth() {
 
         double width = 0;
