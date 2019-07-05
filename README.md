@@ -1,4 +1,5 @@
-# strangefx [![Build Status](https://travis-ci.org/gluonhq/strangefx.svg?branch=master)](https://travis-ci.org/gluonhq/strangefx)
+# strangefx [![Build Status](https://api.travis-ci.org/gluonhq/strangefx.svg?branch=master)](https://travis-ci.org/gluonhq/strangefx)
+
 StrangeFX is a Java(FX) based Quantum computer visual editor.
 It leverages the Quantum computer simulator software exported by the [Strange](https://github.com/gluonhq/strange) project.
 
