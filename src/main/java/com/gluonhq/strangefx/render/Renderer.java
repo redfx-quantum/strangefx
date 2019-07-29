@@ -3,10 +3,13 @@ package com.gluonhq.strangefx.render;
 import com.gluonhq.strange.Complex;
 import com.gluonhq.strange.Gate;
 import com.gluonhq.strange.Program;
+import com.gluonhq.strange.QuantumExecutionEnvironment;
 import com.gluonhq.strange.Qubit;
+import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.Identity;
 import com.gluonhq.strange.gate.Oracle;
+import com.gluonhq.strange.local.SimpleQuantumExecutionEnvironment;
 import com.gluonhq.strange.simulator.Model;
 import com.gluonhq.strange.ui.GateSymbol;
 import com.gluonhq.strange.ui.Main;
@@ -18,6 +21,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,8 +37,19 @@ public class Renderer {
         Platform.runLater(() -> showProgram(p));
     }
 
-    public static void showProbabilities (Program p, int count) {
-
+    public static void showProbabilities(Program p, int count) {
+        QuantumExecutionEnvironment simulator = new SimpleQuantumExecutionEnvironment();
+        int nq = p.getNumberQubits();
+        int[] counter = new int[1 << nq];
+        for (int i = 0; i < count; i++) {
+            Result result = simulator.runProgram(p);
+            int prob = result.getMeasuredProbability();
+            counter[prob]++;
+           // System.err.println("prob = " + prob);
+        }
+        for (int i = 0; i < counter.length; i++) {
+            System.err.println("cnt ["+i+"]: "+counter[i]);
+        }
     }
 
     public static void showProgram(Program program)  {
