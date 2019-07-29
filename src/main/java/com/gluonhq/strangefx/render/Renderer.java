@@ -1,63 +1,45 @@
 package com.gluonhq.strangefx.render;
 
-import com.gluonhq.strange.*;
+import com.gluonhq.strange.Complex;
+import com.gluonhq.strange.Gate;
+import com.gluonhq.strange.Program;
+import com.gluonhq.strange.Qubit;
+import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.Identity;
 import com.gluonhq.strange.gate.Oracle;
-import com.gluonhq.strange.gate.X;
 import com.gluonhq.strange.simulator.Model;
-import com.gluonhq.strange.ui.*;
-import com.gluonhq.strange.ui.render.*;
-import javafx.application.*;
-import javafx.beans.*;
-import javafx.beans.Observable;
-import javafx.collections.*;
-import javafx.geometry.*;
-import javafx.scene.*;
-import javafx.scene.layout.*;
-import javafx.scene.shape.*;
-import javafx.stage.*;
+import com.gluonhq.strange.ui.GateSymbol;
+import com.gluonhq.strange.ui.Main;
+import com.gluonhq.strange.ui.QubitBoard;
+import com.gluonhq.strange.ui.QubitFlow;
+import com.gluonhq.strange.ui.render.BoardOverlay;
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Renderer {
 
-    private RenderApplication application;
+    static {
+        Platform.startup(() -> {
+            System.err.println("JavaFX Platform initialized");
+        });
+   }
 
     public static void renderProgram (Program p) {
-        Renderer renderer = new Renderer(p);
-        renderer.show();
+        Platform.runLater(() -> showProgram(p));
     }
 
-    public Renderer(Program p) {
-        int nq = p.getNumberQubits();
-        this.application = new RenderApplication(nq, p);
+    public static void showProbabilities (Program p, int count) {
+
     }
 
-    public void show() {
-        Application.launch(RenderApplication.class);
-    }
-
-
-
-    public static class RenderApplication extends Application {
-
-        private static int nQubits;
-        private static QubitBoard board;
-        private static Program program;
-
-        public RenderApplication() {}
-
-        public RenderApplication(int nq, Program p) {
-            this.nQubits = nq;
-            this.program = p;
-        }
-
-        public void setBoard(QubitBoard qb) {
-            this.board = qb;
-        }
-
-        @Override
-        public void start(Stage stage) throws Exception {
+    public static void showProgram(Program program)  {
+        int nQubits = program.getNumberQubits();
+        Stage stage = new Stage();
             stage.setTitle("StrangeFX");
             QubitBoard board = new QubitBoard(nQubits);
             List<GateSymbol> multiWires = new LinkedList();
@@ -70,6 +52,7 @@ public class Renderer {
                     int qb = gate.getMainQubitIndex();
                     gotit[qb] = true;
                     QubitFlow wire = wires.get(qb);
+                    wire.setMinWidth(480);
                     GateSymbol symbol = wire.addGate(gate);
                     if (symbol.spanWires > 1) {
                         if (gate instanceof Oracle) {
@@ -104,8 +87,8 @@ public class Renderer {
                 }
             }
             ObservableList<Double> endStates = Model.getInstance().getEndStates();
-            Qubit[] qubits = this.program.getResult().getQubits();
-            Complex[] probability = this.program.getResult().getProbability();
+            Qubit[] qubits = program.getResult().getQubits();
+            Complex[] probability = program.getResult().getProbability();
             Double[] endValues = new Double[probability.length];
             int idx = 0;
             for (Qubit qubit: qubits) {
@@ -123,9 +106,9 @@ public class Renderer {
             stage.show();
         }
 
-        public void launchMe() {
-            RenderApplication.launch();
-        }
-    }
+//        public void launchMe() {
+//            RenderApplication.launch();
+//        }
+   // }
 
 }
