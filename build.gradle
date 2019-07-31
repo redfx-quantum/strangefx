@@ -26,7 +26,6 @@ mainClassName = 'com.gluonhq.strangefx/com.gluonhq.strange.ui.Main'
 // mainClassName = 'com.gluonhq.strangefx/com.gluonhq.strange.simulator.local.LocalSimulator'
 
 repositories {
-mavenLocal()
     mavenCentral()
     jcenter()
     maven {
@@ -49,7 +48,7 @@ test {
 dependencies {
     // compile 'de.jensd:fontawesomefx-materialicons:2.2.0-9'
     // compile 'com.gluonhq:charm-cloudlink-client:4.4.4'
-    api 'com.gluonhq:strange:0.0.7-SNAPSHOT'
+    api 'com.gluonhq:strange:0.0.7'
     api 'org.fxyz3d:fxyz3d:0.4.0'
 
     // runtime 'com.gluonhq:charm-down-plugin-storage-desktop:3.6.0'
