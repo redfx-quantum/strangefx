@@ -1,0 +1,30 @@
+***************
+*** 31,43 ****
+          Platform.startup(() -> {
+              System.err.println("JavaFX Platform initialized");
+          });
+-    }
+  
+-     public static void renderProgram (Program p) {
+          Platform.runLater(() -> showProgram(p));
+      }
+  
+      public static void showProbabilities(Program p, int count) {
+          QuantumExecutionEnvironment simulator = new SimpleQuantumExecutionEnvironment();
+          int nq = p.getNumberQubits();
+          int[] counter = new int[1 << nq];
+--- 37,50 ----
+          Platform.startup(() -> {
+              System.err.println("JavaFX Platform initialized");
+          });
++     }
+  
++     public static void renderProgram(Program p) {
+          Platform.runLater(() -> showProgram(p));
+      }
+  
+      public static void showProbabilities(Program p, int count) {
++         System.err.println("SHOWPROB, count = " + count);
+          QuantumExecutionEnvironment simulator = new SimpleQuantumExecutionEnvironment();
+          int nq = p.getNumberQubits();
+          int[] counter = new int[1 << nq];
