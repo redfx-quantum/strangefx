@@ -92,6 +92,7 @@ public class QubitFlow extends Region {
 
         gateRow.getStyleClass().add("gate-row");
         title.getStyleClass().add("title");
+        title.setPrefWidth(85);
 
         line.endXProperty().bind(widthProperty());
         line.getStyleClass().add("wire");
