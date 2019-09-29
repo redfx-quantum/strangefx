@@ -21,6 +21,7 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
@@ -45,7 +46,11 @@ public class Renderer {
                 System.err.println("JavaFX Platform initialized");
             }
         };
-        Platform.startup(r);
+        try {
+            Platform.startup(r);
+        } catch (java.lang.IllegalStateException e) {
+            System.err.println("Toolkit already initialized, ignore");
+        }
     }
 
     public static void renderProgram(Program p) {
@@ -68,11 +73,9 @@ public class Renderer {
         Platform.runLater(() -> renderMeasuredProbabilities(counter));
     }
 
-    public static void showProgram(Program program) {
+    public static Group getRenderGroup(Program program) {
         int nQubits = program.getNumberQubits();
-        Stage stage = new Stage();
-        myStage = stage;
-        stage.setTitle("StrangeFX");
+
         QubitBoard board = new QubitBoard(nQubits);
         List<GateSymbol> multiWires = new LinkedList();
         List<GateSymbol> probabilities = new LinkedList();
@@ -127,11 +130,18 @@ public class Renderer {
             endValues[idx++] = qubit.getProbability();
         }
         endStates.setAll(endValues);
+        return board;
 
 //            for (GateSymbol symbol : multiWires) {
 //                BoardOverlay overlay = new BoardOverlay(symbol);
 //                board.addOverlay(overlay);
 //            }
+    }
+    public static void showProgram(Program program) {
+        Stage stage = new Stage();
+        myStage = stage;
+        stage.setTitle("StrangeFX");
+        Group board = getRenderGroup(program);
         VBox vbox = new VBox(40);
         vbox.getChildren().add(board);
         Scene scene = new Scene(vbox);

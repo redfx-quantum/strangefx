@@ -32,10 +32,10 @@ public class BoardOverlay extends Region {
                 me.getChildren().clear();
                 Bounds bp = symbol.getBoundsInParent();
                 Point2D beginPoint = symbol.localToScene(symbol.getWidth()/2, symbol.getHeight()/2);
-
+                System.err.println("bp = "+beginPoint);
                 Point2D endPoint = symbol2.localToScene(symbol2.getWidth()/2, symbol2.getHeight()/2);
                 Line line = new Line(beginPoint.getX(), beginPoint.getY(), endPoint.getX(), endPoint.getY());
-
+                System.err.println("ep = "+endPoint);
                 line.setStroke(Color.BLUE);
                 line.setStrokeWidth(1);
                 BoardOverlay.this.getChildren().add(line);
