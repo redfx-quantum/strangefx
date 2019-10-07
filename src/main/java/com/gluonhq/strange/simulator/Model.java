@@ -96,8 +96,9 @@ public class Model {
     public List<List<Gate>> getGates() {
         return gates;
     }
-    
+
     public void setGatesForCircuit(int n, List<Gate> gates) {
+        /*
         for (Gate gate: gates) {
             gate.setMainQubit(n);
         }
@@ -115,9 +116,10 @@ public class Model {
         if (!similar) {
             this.gates.set(n, gates);
             refreshRequest.set(true);
-        } 
+        }
+        */
     }
-    
+
     public int getNumberOfSteps() {
         return this.gates.get(0).size();
     }
