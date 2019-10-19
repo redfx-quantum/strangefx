@@ -11,6 +11,7 @@ import javafx.scene.shape.*;
 public class BoardOverlay extends Region {
 
     private GateSymbol symbol;
+    private GateSymbol symbol2;
 
     public BoardOverlay(Step s, GateSymbol symbol) {
         System.err.println("Create BO, s = "+s);
@@ -24,23 +25,29 @@ public class BoardOverlay extends Region {
 
     public BoardOverlay(Step s, GateSymbol symbol1, GateSymbol symbol2) {
         this.symbol = symbol1;
-        this.symbol.boundsInParentProperty().addListener(new InvalidationListener() {
+        this.symbol2 = symbol2;
+        InvalidationListener il = createLineInvalidationListener();
+        this.symbol.boundsInParentProperty().addListener(il);
+        this.symbol2.boundsInParentProperty().addListener(il);
+    }
 
+    private InvalidationListener createLineInvalidationListener() {
+        InvalidationListener answer = new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
                 BoardOverlay me = BoardOverlay.this;
                 me.getChildren().clear();
                 Bounds bp = symbol.getBoundsInParent();
+                Bounds bp2 = symbol2.getBoundsInParent();
                 Point2D beginPoint = symbol.localToScene(symbol.getWidth()/2, symbol.getHeight()/2);
-
                 Point2D endPoint = symbol2.localToScene(symbol2.getWidth()/2, symbol2.getHeight()/2);
                 Line line = new Line(beginPoint.getX(), beginPoint.getY(), endPoint.getX(), endPoint.getY());
-
                 line.setStroke(Color.BLUE);
                 line.setStrokeWidth(1);
                 BoardOverlay.this.getChildren().add(line);
             }
-        });
+        };
+        return answer;
     }
 
     private void createProbability(Step s, GateSymbol symbol) {
