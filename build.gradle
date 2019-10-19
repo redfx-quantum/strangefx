@@ -26,7 +26,6 @@ mainClassName = 'com.gluonhq.strangefx/com.gluonhq.strange.ui.Main'
 // mainClassName = 'com.gluonhq.strangefx/com.gluonhq.strange.simulator.local.LocalSimulator'
 
 repositories {
-mavenLocal()
     mavenCentral()
     jcenter()
     maven {
