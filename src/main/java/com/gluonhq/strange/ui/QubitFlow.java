@@ -84,7 +84,6 @@ public class QubitFlow extends Region {
     };
 
     public QubitFlow(int index) {
-
         this.idx = index;
         title.setText(String.format("q[%d] I0>", idx));
         gateRow.getChildren().add(SPACER);
@@ -217,7 +216,10 @@ public class QubitFlow extends Region {
             model.setGatesForCircuit(
                     idx, gates.stream().map(gs -> createGate(gs.getGate())).collect(Collectors.toList()));
         });
+    }
 
+    public void cleanup() {
+        model.getEndStates().removeListener(endStateListener);
     }
 
     private void removeSpacer() {
