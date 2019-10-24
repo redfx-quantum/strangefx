@@ -73,7 +73,7 @@ public class Renderer {
         Platform.runLater(() -> renderMeasuredProbabilities(counter));
     }
 
-    public static Group getRenderGroup(Program program) {
+    public static QubitBoard getRenderGroup(Program program) {
         int nQubits = program.getNumberQubits();
 
         QubitBoard board = new QubitBoard(nQubits);
@@ -131,12 +131,16 @@ public class Renderer {
         }
         endStates.setAll(endValues);
         return board;
-
-//            for (GateSymbol symbol : multiWires) {
-//                BoardOverlay overlay = new BoardOverlay(symbol);
-//                board.addOverlay(overlay);
-//            }
     }
+
+    /**
+     * Release resources associated with this particular QubitBoard
+     * @param board
+     */
+    public static void disable(QubitBoard board) {
+        board.getWires().stream().forEach(flow -> flow.cleanup());
+    }
+
     public static void showProgram(Program program) {
         Stage stage = new Stage();
         myStage = stage;
