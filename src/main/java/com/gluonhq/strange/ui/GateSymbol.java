@@ -84,7 +84,8 @@ public class GateSymbol extends Label {
         this.movable = movable;
         if (!(gate instanceof Identity)) {
             if (gate instanceof Cnot) {
-                if (idx > 0) {
+                if (idx == 0) {
+                    // first symbol of Cnot is dot
                     Group g = new Group();
                     Circle c = new Circle(0,0,5, Color.DARKGREY);
                     g.getChildren().add(c);
