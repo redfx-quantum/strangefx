@@ -19,7 +19,7 @@ plugins {
 apply from: 'gradle/mavenPublish.gradle'
 
 group = 'com.gluonhq'
-version = '0.0.6'
+version = '0.0.7-SNAPSHOT'
 
 mainClassName = 'com.gluonhq.strangefx/com.gluonhq.strange.ui.Main'
 // mainClassName = 'com.gluonhq.strangefx/com.gluonhq.strangefx.demo.RenderDemo'
@@ -35,7 +35,7 @@ repositories {
 
 javafx {
     modules = [ 'javafx.controls' ]
-    version = "11.0.1"
+    version = "13.0.1"
 }
 
 test {
