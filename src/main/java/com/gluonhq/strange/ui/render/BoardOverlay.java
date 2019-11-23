@@ -26,25 +26,27 @@ public class BoardOverlay extends Region {
     public BoardOverlay(Step s, GateSymbol symbol1, GateSymbol symbol2) {
         this.symbol = symbol1;
         this.symbol2 = symbol2;
-        InvalidationListener il = createLineInvalidationListener();
+        Line line = new Line(0,0,0,0);
+        this.getChildren().add(line);
+        line.setStroke(Color.BLUE);
+        line.setStrokeWidth(1);
+        InvalidationListener il = createLineInvalidationListener(line);
         this.symbol.boundsInParentProperty().addListener(il);
         this.symbol2.boundsInParentProperty().addListener(il);
     }
 
-    private InvalidationListener createLineInvalidationListener() {
+    private InvalidationListener createLineInvalidationListener(final Line line) {
         InvalidationListener answer = new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
-                BoardOverlay me = BoardOverlay.this;
-                me.getChildren().clear();
                 Bounds bp = symbol.getBoundsInParent();
                 Bounds bp2 = symbol2.getBoundsInParent();
                 Point2D beginPoint = symbol.localToScene(symbol.getWidth()/2, symbol.getHeight()/2);
                 Point2D endPoint = symbol2.localToScene(symbol2.getWidth()/2, symbol2.getHeight()/2);
-                Line line = new Line(beginPoint.getX(), beginPoint.getY(), endPoint.getX(), endPoint.getY());
-                line.setStroke(Color.BLUE);
-                line.setStrokeWidth(1);
-                BoardOverlay.this.getChildren().add(line);
+                line.setStartX(beginPoint.getX());
+                line.setStartY(beginPoint.getY());
+                line.setEndX(endPoint.getX());
+                line.setEndY( endPoint.getY());
             }
         };
         return answer;
