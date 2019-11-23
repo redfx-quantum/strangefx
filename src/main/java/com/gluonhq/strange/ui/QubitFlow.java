@@ -68,6 +68,7 @@ public class QubitFlow extends Region {
     }};
 
     private Line line = new Line();
+    private Line measuredLine = new Line();
 
     private Label title = new Label();
     private Measurement measurement = new Measurement();
@@ -95,6 +96,9 @@ public class QubitFlow extends Region {
 
         line.endXProperty().bind(widthProperty());
         line.getStyleClass().add("wire");
+        measuredLine.endXProperty().bind(widthProperty());
+        measuredLine.getStyleClass().add("wire");
+        measuredLine.setVisible(false);
 
         BorderPane base = new BorderPane();
         base.getStyleClass().add("base");
@@ -111,7 +115,8 @@ public class QubitFlow extends Region {
         BorderPane.setAlignment(title, Pos.CENTER);
         BorderPane.setAlignment(measurement, Pos.CENTER);
 
-        StackPane stack = new StackPane(line, base);
+        measuredLine.setTranslateY(10);
+        StackPane stack = new StackPane(line, measuredLine, base);
         this.sceneProperty().addListener(
                 new InvalidationListener() {
                     @Override
@@ -233,7 +238,7 @@ public class QubitFlow extends Region {
         if (gateRow.getChildren().isEmpty()) {
             gateRow.getChildren().add(SPACER);
         }
-        GateSymbol symbol = GateSymbol.of(gate);
+        GateSymbol symbol = GateSymbol.of(gate);;
         if (gate instanceof Oracle) {
             this.askOnTop = true;
 //            // we need to span more wires
@@ -257,25 +262,9 @@ public class QubitFlow extends Region {
         } else {
             gateRow.getChildren().set(spacerIndex, symbol);
         }
-        return symbol;
-    }
-
-    /**
-     * Add the additional symbol for the gate
-     * @param gate
-     * @param idx the index of the additional qubit (0 = main index, 1 = first additional index)
-     * @return
-     */
-    public GateSymbol addAddtionalGateSymbol(Gate gate, int idx) {
-        if (gateRow.getChildren().isEmpty()) {
-            gateRow.getChildren().add(SPACER);
-        }
-        GateSymbol symbol = GateSymbol.of(gate, idx);
-        int spacerIndex = gateRow.getChildren().indexOf(SPACER);
-        if (spacerIndex < 0) {
-            gateRow.getChildren().add(symbol);
-        } else {
-            gateRow.getChildren().set(spacerIndex, symbol);
+        if (gate instanceof com.gluonhq.strange.gate.Measurement) {
+            measuredLine.translateXProperty().bind(symbol.layoutXProperty().add(allGates.layoutXProperty()));
+            measuredLine.setVisible(true);
         }
         return symbol;
     }
@@ -283,14 +272,14 @@ public class QubitFlow extends Region {
     /**
      * Add the additional symbol for the gate
      * @param gate
-     * @param idx the index of the additional qubit (0 = main index, 1 = first additional index)
+     * @param gateidx the index of the additional qubit (0 = main index, 1 = first additional index)
      * @return
      */
-    public GateSymbol addAdditonalGateSymbol(Gate gate, int idx) {
+    public GateSymbol addAdditonalGateSymbol(Gate gate, int gateidx) {
         if (gateRow.getChildren().isEmpty()) {
             gateRow.getChildren().add(SPACER);
         }
-        GateSymbol symbol = GateSymbol.of(gate, idx);
+        GateSymbol symbol = GateSymbol.of(gate, gateidx);
         int spacerIndex = gateRow.getChildren().indexOf(SPACER);
         if (spacerIndex < 0) {
             gateRow.getChildren().add(symbol);

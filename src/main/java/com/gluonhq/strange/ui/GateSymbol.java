@@ -78,6 +78,15 @@ public class GateSymbol extends Label {
         this (gate, movable, 0);
     }
 
+    void setDot() {
+        Group g = new Group();
+        Circle c = new Circle(0,0,5, Color.DARKGREY);
+        g.getChildren().add(c);
+        setContentDisplay(ContentDisplay.CENTER);
+        setGraphic(g);
+        setText("");
+    }
+
     GateSymbol( Gate gate, boolean movable, int idx) {
         this.spanWires = gate.getAffectedQubitIndex().size();
         this.gate = Objects.requireNonNull(gate);
@@ -86,25 +95,22 @@ public class GateSymbol extends Label {
             if (gate instanceof Cnot) {
                 if (idx == 0) {
                     // first symbol of Cnot is dot
-                    Group g = new Group();
-                    Circle c = new Circle(0,0,5, Color.DARKGREY);
-                    g.getChildren().add(c);
-                    setContentDisplay(ContentDisplay.CENTER);
-                    setGraphic(g);
-                    setText("");
+                    setDot();
                 } else {
                     Group g = new Group();
-                    Circle c = new Circle(0,0,10, Color.TRANSPARENT);
+                    Circle c = new Circle(0, 0, 10, Color.TRANSPARENT);
                     c.setStroke(Color.DARKGRAY);
                     c.setStrokeWidth(2);
-                    Line l = new Line (0,-10,0,10);
+                    Line l = new Line(0, -10, 0, 10);
                     l.setStrokeWidth(2);
                     l.setStroke(Color.DARKGRAY);
-                    g.getChildren().addAll(c,l);
+                    g.getChildren().addAll(c, l);
                     setContentDisplay(ContentDisplay.CENTER);
                     setGraphic(g);
                     setText("");
                 }
+            } else if (idx == 0 && gate instanceof Cz) {
+                setDot();
             } else {
                 getStyleClass().setAll("gate-symbol", getStyle(gate.getGroup()));
                 setText(gate.getCaption());

@@ -100,6 +100,7 @@ public class Renderer {
                                 forEach(a -> {
                                     QubitFlow q = wires.get(a);
                                     GateSymbol symbol2 = q.addAdditonalGateSymbol(gate, 1);
+                                    gotit[a] = true;
                                     BoardOverlay overlay = new BoardOverlay(s, symbol, symbol2);
                                     boardOverlays.add(overlay);
                                     board.addOverlay(overlay);
