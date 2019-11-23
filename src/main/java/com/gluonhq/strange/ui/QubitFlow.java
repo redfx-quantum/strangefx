@@ -68,6 +68,7 @@ public class QubitFlow extends Region {
     }};
 
     private Line line = new Line();
+    private Line measuredLine = new Line();
 
     private Label title = new Label();
     private Measurement measurement = new Measurement();
@@ -95,6 +96,9 @@ public class QubitFlow extends Region {
 
         line.endXProperty().bind(widthProperty());
         line.getStyleClass().add("wire");
+        measuredLine.endXProperty().bind(widthProperty());
+        measuredLine.getStyleClass().add("wire");
+        measuredLine.setVisible(false);
 
         BorderPane base = new BorderPane();
         base.getStyleClass().add("base");
@@ -111,7 +115,8 @@ public class QubitFlow extends Region {
         BorderPane.setAlignment(title, Pos.CENTER);
         BorderPane.setAlignment(measurement, Pos.CENTER);
 
-        StackPane stack = new StackPane(line, base);
+        measuredLine.setTranslateY(10);
+        StackPane stack = new StackPane(line, measuredLine, base);
         this.sceneProperty().addListener(
                 new InvalidationListener() {
                     @Override
@@ -256,6 +261,10 @@ public class QubitFlow extends Region {
             gateRow.getChildren().add(symbol);
         } else {
             gateRow.getChildren().set(spacerIndex, symbol);
+        }
+        if (gate instanceof com.gluonhq.strange.gate.Measurement) {
+            measuredLine.translateXProperty().bind(symbol.layoutXProperty().add(allGates.layoutXProperty()));
+            measuredLine.setVisible(true);
         }
         return symbol;
     }

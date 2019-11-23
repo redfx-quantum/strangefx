@@ -28,6 +28,7 @@ mainClassName = 'com.gluonhq.strangefx/com.gluonhq.strange.ui.Main'
 repositories {
     mavenCentral()
     jcenter()
+    mavenLocal()
     maven {
         url 'http://nexus.gluonhq.com/nexus/content/repositories/releases'
     }
@@ -48,7 +49,7 @@ test {
 dependencies {
     // compile 'de.jensd:fontawesomefx-materialicons:2.2.0-9'
     // compile 'com.gluonhq:charm-cloudlink-client:4.4.4'
-    api 'com.gluonhq:strange:0.0.9'
+    api 'com.gluonhq:strange:0.0.10-SNAPSHOT'
     api 'org.fxyz3d:fxyz3d:0.4.0'
 
     // runtime 'com.gluonhq:charm-down-plugin-storage-desktop:3.6.0'
