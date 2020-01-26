@@ -96,7 +96,7 @@ public class Renderer {
                         boardOverlays.add(overlay);
                         board.addOverlay(overlay);
                     } else {
-                        gate.getAffectedQubitIndex().stream().filter(e -> e != qb).
+                        gate.getAffectedQubitIndexes().stream().filter(e -> e != qb).
                                 forEach(a -> {
                                     QubitFlow q = wires.get(a);
                                     GateSymbol symbol2 = q.addAdditonalGateSymbol(gate, 1);
