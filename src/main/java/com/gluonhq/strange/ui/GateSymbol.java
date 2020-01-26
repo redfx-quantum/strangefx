@@ -88,7 +88,7 @@ public class GateSymbol extends Label {
     }
 
     GateSymbol( Gate gate, boolean movable, int idx) {
-        this.spanWires = gate.getAffectedQubitIndex().size();
+        this.spanWires = gate.getAffectedQubitIndexes().size();
         this.gate = Objects.requireNonNull(gate);
         this.movable = movable;
         if (!(gate instanceof Identity)) {
