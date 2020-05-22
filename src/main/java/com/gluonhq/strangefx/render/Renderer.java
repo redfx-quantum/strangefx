@@ -34,6 +34,7 @@ import javafx.stage.Stage;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Renderer {
 
@@ -96,15 +97,18 @@ public class Renderer {
                         boardOverlays.add(overlay);
                         board.addOverlay(overlay);
                     } else {
-                        gate.getAffectedQubitIndexes().stream().filter(e -> e != qb).
-                                forEach(a -> {
+                        int idx = 0;
+                        List<Integer> aff = gate.getAffectedQubitIndexes().stream()
+                                .filter(e -> e != qb).collect(Collectors.toList());
+;
+                        for (int a : aff){
                                     QubitFlow q = wires.get(a);
-                                    GateSymbol symbol2 = q.addAdditonalGateSymbol(gate, 1);
+                                    GateSymbol symbol2 = q.addAdditonalGateSymbol(gate, ++idx);
                                     gotit[a] = true;
                                     BoardOverlay overlay = new BoardOverlay(s, symbol, symbol2);
                                     boardOverlays.add(overlay);
                                     board.addOverlay(overlay);
-                                });
+                                };
                     }
 
                 }

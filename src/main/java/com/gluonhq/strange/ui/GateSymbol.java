@@ -109,7 +109,25 @@ public class GateSymbol extends Label {
                     setGraphic(g);
                     setText("");
                 }
-            } else if (idx == 0 && gate instanceof Cz) {
+            } else if (gate instanceof Toffoli) {
+                if (idx == 0 || idx == 1) {
+                    // first symbol of Cnot is dot
+                    setDot();
+                } else {
+                    Group g = new Group();
+                    Circle c = new Circle(0, 0, 10, Color.TRANSPARENT);
+                    c.setStroke(Color.DARKGRAY);
+                    c.setStrokeWidth(2);
+                    Line l = new Line(0, -10, 0, 10);
+                    l.setStrokeWidth(2);
+                    l.setStroke(Color.DARKGRAY);
+                    g.getChildren().addAll(c, l);
+                    setContentDisplay(ContentDisplay.CENTER);
+                    setGraphic(g);
+                    setText(""); 
+                }
+            } 
+            else if (idx == 0 && gate instanceof Cz) {
                 setDot();
             } else {
                 getStyleClass().setAll("gate-symbol", getStyle(gate.getGroup()));
