@@ -29,10 +29,39 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.gluonhq.strange.simulator;
+package org.redfx.strange.simulator;
 
-public enum GateGroup {
-    IDENTITY,
-    BIT_FLIP,
-    SUPERPOSITION
+//import org.redfx.cloudlink.client.data.RemoteFunctionBuilder;
+//import org.redfx.cloudlink.client.data.RemoteFunctionObject;
+//import org.redfx.connect.GluonObservableObject;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+
+/**
+ *
+ * @author johan
+ */
+public class CloudSimulator {
+    
+//    public GluonObservableObject<String> calculateResults(String configuration) {
+//        System.out.println("I will ask results for "+configuration+" from GCL");
+//        RemoteFunctionObject function = RemoteFunctionBuilder.create("calculateResults").object();
+//        function.setRawBody(configuration.getBytes());
+//        GluonObservableObject<String> answer = function.call(String.class);
+//        System.out.println("FUNCTION got answer: "+answer);
+//        answer.stateProperty().addListener(new InvalidationListener() {
+//            @Override
+//            public void invalidated(Observable o) {
+//                System.out.println("NEW ANSWER = "+answer.get());
+//                System.out.println("NEW STATE = "+answer.getState());
+//                if (answer.getException()!= null) {
+//                    answer.getException().printStackTrace();
+//                }
+//            }
+//        });
+//        if (answer != null) {
+//            System.out.println("answer = "+answer.get());
+//        }
+//        return answer;
+//    }
 }

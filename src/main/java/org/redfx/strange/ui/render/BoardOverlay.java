@@ -1,7 +1,7 @@
-package com.gluonhq.strange.ui.render;
+package org.redfx.strange.ui.render;
 
-import com.gluonhq.strange.*;
-import com.gluonhq.strange.ui.*;
+import org.redfx.strange.*;
+import org.redfx.strange.ui.*;
 import javafx.beans.*;
 import javafx.geometry.*;
 import javafx.scene.layout.*;

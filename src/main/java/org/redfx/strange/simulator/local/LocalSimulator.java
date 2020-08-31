@@ -34,18 +34,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.gluonhq.strange.simulator.local;
+package org.redfx.strange.simulator.local;
 
-import com.gluonhq.strange.Gate;
-import com.gluonhq.strange.Program;
-import com.gluonhq.strange.Qubit;
-import com.gluonhq.strange.Result;
-import com.gluonhq.strange.Step;
-import com.gluonhq.strange.simulator.Simulator;
-import com.gluonhq.strange.simulator.Model;
-import com.gluonhq.strange.Complex;
-import com.gluonhq.strange.simulator.CloudSimulator;
-import com.gluonhq.strange.local.SimpleQuantumExecutionEnvironment;
+import org.redfx.strange.Gate;
+import org.redfx.strange.Program;
+import org.redfx.strange.Qubit;
+import org.redfx.strange.Result;
+import org.redfx.strange.Step;
+import org.redfx.strange.simulator.Simulator;
+import org.redfx.strange.simulator.Model;
+import org.redfx.strange.Complex;
+import org.redfx.strange.simulator.CloudSimulator;
+import org.redfx.strange.local.SimpleQuantumExecutionEnvironment;
 
 
 import java.util.ArrayList;

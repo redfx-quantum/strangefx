@@ -29,13 +29,13 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.gluonhq.strangefx.render;
+package org.redfx.strangefx.render;
 
-import com.gluonhq.strange.Gate;
-import com.gluonhq.strange.Program;
-import com.gluonhq.strange.Step;
-import com.gluonhq.strange.ui.GateSymbol;
-import com.gluonhq.strange.ui.Main;
+import org.redfx.strange.Gate;
+import org.redfx.strange.Program;
+import org.redfx.strange.Step;
+import org.redfx.strange.ui.GateSymbol;
+import org.redfx.strange.ui.Main;
 import java.util.LinkedList;
 import java.util.List;
 import javafx.animation.TranslateTransition;

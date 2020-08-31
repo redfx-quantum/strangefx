@@ -29,16 +29,16 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.gluonhq.strangefx.demo;
+package org.redfx.strangefx.demo;
 
-import com.gluonhq.strange.Program;
-import com.gluonhq.strange.Qubit;
-import com.gluonhq.strange.Result;
-import com.gluonhq.strange.Step;
-import com.gluonhq.strange.gate.X;
-import com.gluonhq.strange.local.SimpleQuantumExecutionEnvironment;
-import com.gluonhq.strange.ui.Main;
-import com.gluonhq.strangefx.render.RenderEngine;
+import org.redfx.strange.Program;
+import org.redfx.strange.Qubit;
+import org.redfx.strange.Result;
+import org.redfx.strange.Step;
+import org.redfx.strange.gate.X;
+import org.redfx.strange.local.SimpleQuantumExecutionEnvironment;
+import org.redfx.strange.ui.Main;
+import org.redfx.strangefx.render.RenderEngine;
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.Scene;

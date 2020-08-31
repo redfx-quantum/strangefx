@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2018, Gluon Software
+ * Copyright (c) 2017, Gluon Software
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,18 +29,10 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.gluonhq.strange.ui.render;
+package org.redfx.strange.simulator;
 
-import javafx.scene.shape.Shape;
-
-/**
- *
- * @author johan
- */
-public class Qubit3D extends Shape {
-    
-    public Qubit3D() {
-        
-    }
-    
+public enum GateGroup {
+    IDENTITY,
+    BIT_FLIP,
+    SUPERPOSITION
 }

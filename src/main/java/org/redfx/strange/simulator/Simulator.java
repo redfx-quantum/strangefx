@@ -29,39 +29,26 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.gluonhq.strange.simulator;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.redfx.strange.simulator;
 
-//import com.gluonhq.cloudlink.client.data.RemoteFunctionBuilder;
-//import com.gluonhq.cloudlink.client.data.RemoteFunctionObject;
-//import com.gluonhq.connect.GluonObservableObject;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
+import org.redfx.strange.Complex;
+import org.redfx.strange.Gate;
 
 /**
  *
  * @author johan
  */
-public class CloudSimulator {
+public interface Simulator {
     
-//    public GluonObservableObject<String> calculateResults(String configuration) {
-//        System.out.println("I will ask results for "+configuration+" from GCL");
-//        RemoteFunctionObject function = RemoteFunctionBuilder.create("calculateResults").object();
-//        function.setRawBody(configuration.getBytes());
-//        GluonObservableObject<String> answer = function.call(String.class);
-//        System.out.println("FUNCTION got answer: "+answer);
-//        answer.stateProperty().addListener(new InvalidationListener() {
-//            @Override
-//            public void invalidated(Observable o) {
-//                System.out.println("NEW ANSWER = "+answer.get());
-//                System.out.println("NEW STATE = "+answer.getState());
-//                if (answer.getException()!= null) {
-//                    answer.getException().printStackTrace();
-//                }
-//            }
-//        });
-//        if (answer != null) {
-//            System.out.println("answer = "+answer.get());
-//        }
-//        return answer;
-//    }
+    public Complex[] calculateResults(Gate[][] gates);
+    
+    public Complex[] calculateResults(Model m);
+    
+    public double[] calculateQubitStates(Model m);
+    
 }

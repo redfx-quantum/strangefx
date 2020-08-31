@@ -34,10 +34,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.gluonhq.strange.simulator;
+package org.redfx.strange.simulator;
 
-import com.gluonhq.strange.Gate;
-import com.gluonhq.strange.gate.Identity;
+import org.redfx.strange.Gate;
+import org.redfx.strange.gate.Identity;
 import java.util.ArrayList;
 import java.util.LinkedList;
 

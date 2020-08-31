@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2017, Gluon Software
+ * Copyright (c) 2018, Gluon Software
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,26 +29,18 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.gluonhq.strange.simulator;
+package org.redfx.strange.ui.render;
 
-import com.gluonhq.strange.Complex;
-import com.gluonhq.strange.Gate;
+import javafx.scene.shape.Shape;
 
 /**
  *
  * @author johan
  */
-public interface Simulator {
+public class Qubit3D extends Shape {
     
-    public Complex[] calculateResults(Gate[][] gates);
-    
-    public Complex[] calculateResults(Model m);
-    
-    public double[] calculateQubitStates(Model m);
+    public Qubit3D() {
+        
+    }
     
 }
