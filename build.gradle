@@ -18,12 +18,10 @@ plugins {
 }
 apply from: 'gradle/mavenPublish.gradle'
 
-group = 'com.gluonhq'
+group = 'org.redfx'
 version = '0.0.9-SNAPSHOT'
 
-mainClassName = 'com.gluonhq.strangefx/com.gluonhq.strange.ui.Main'
-// mainClassName = 'com.gluonhq.strangefx/com.gluonhq.strangefx.demo.RenderDemo'
-// mainClassName = 'com.gluonhq.strangefx/com.gluonhq.strange.simulator.local.LocalSimulator'
+mainClassName = 'org.redfx.strangefx/org.redfx.strange.ui.Main'
 
 repositories {
     mavenCentral()
@@ -44,11 +42,9 @@ test {
 
 dependencies {
     // compile 'de.jensd:fontawesomefx-materialicons:2.2.0-9'
-    // compile 'com.gluonhq:charm-cloudlink-client:4.4.4'
     api 'org.redfx:strange:0.0.16'
     api 'org.fxyz3d:fxyz3d:0.4.0'
 
-    // runtime 'com.gluonhq:charm-down-plugin-storage-desktop:3.6.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
