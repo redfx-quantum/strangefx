@@ -21,7 +21,7 @@ publishing {
             pom {
                 name = 'Strange FX'
                 description = 'JavaFX API for Quantum Computing'
-                url = 'https://github.com/gluonhq/strangefx'
+                url = 'https://github.com/redfx-quantum/strangefx'
 
                 developers {
                     developer {
@@ -40,9 +40,9 @@ publishing {
                 }
 
                 scm {
-                    connection = 'scm:git:https://github.com/gluonhq/strangefx.git'
-                    developerConnection = 'scm:git:ssh://git@github.com:gluonhq/strangefx.git'
-                    url = 'https://github.com/gluonhq/strangefx'
+                    connection = 'scm:git:https://github.com/redfx-quantum/strangefx.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:redfx-quantum/strangefx.git'
+                    url = 'https://github.com/redfx-quantum/strangefx'
                 }
             }
 
