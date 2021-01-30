@@ -35,8 +35,6 @@ package org.redfx.strange.ui;
 import org.redfx.strange.simulator.Model;
 import org.redfx.strange.gate.*;
 import org.redfx.strange.simulator.local.LocalSimulator;
-//import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-//import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -64,7 +62,7 @@ public class Main extends Application {
         HBox toolbarFiller = new HBox();
         HBox.setHgrow( toolbarFiller, Priority.ALWAYS);
 
-        ImageView logo = new ImageView("/Gluon_combined_logo_300px.png");
+        ImageView logo = new ImageView("/strangelogo.png");
         logo.setPreserveRatio(true);
         logo.setFitWidth(100);
 
@@ -100,9 +98,6 @@ public class Main extends Application {
 
     private Button createButton( String tooltip, EventHandler<ActionEvent> eventHandler ) {
         Button button = new Button(tooltip);
-        //MaterialIconFactory
-          //                  .get()
-            //                .createIconButton(icon, "", "2em", "", ContentDisplay.GRAPHIC_ONLY);
         button.setOnAction(eventHandler);
         if ( tooltip != null && !tooltip.trim().isEmpty()) {
             Tooltip t = new Tooltip(tooltip);
