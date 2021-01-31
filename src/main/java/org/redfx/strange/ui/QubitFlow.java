@@ -32,52 +32,48 @@
  */
 package org.redfx.strange.ui;
 
+import java.util.ArrayList;
 import org.redfx.strange.gate.*;
 import org.redfx.strange.simulator.Model;
 import org.redfx.strange.Gate;
-import org.redfx.strange.simulator.local.LocalSimulator;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javafx.beans.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.control.Label;
 import javafx.scene.input.Dragboard;
-import javafx.scene.input.PickResult;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
-import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 
-import java.util.stream.Collectors;
+import javafx.geometry.Insets;
 
 public class QubitFlow extends Region {
 
+    private final int STEP_WIDTH = 44;
     private boolean askOnTop = false;
-    private static GateSymbol SPACER = new GateSymbol(new Identity(0), false) {{
-        getStyleClass().setAll("gate-spacer");
-        int SPACER_WIDTH = 5;
-        setMaxWidth(SPACER_WIDTH);
-        setMinWidth(SPACER_WIDTH);
-        setText(null);
-    }};
+    private final static GateSymbol SPACER = new GateSymbol(new Identity(0), false) {
+        {
+            getStyleClass().setAll("gate-spacer");
+            int SPACER_WIDTH = 5;
+            setMaxWidth(SPACER_WIDTH);
+            setMinWidth(SPACER_WIDTH);
+            setText(null);
+        }
+    };
 
     private Line line = new Line();
     private Line measuredLine = new Line();
 
     private Label title = new Label();
     private Measurement measurement = new Measurement();
-    private HBox gateRow = new HBox();
+
+    private Pane gateRow = new Pane();
     private HBox allGates = new HBox();
     private int idx; // the number of the qubit
-    private ObservableList<GateSymbol> gates = FXCollections.observableArrayList();
+  //  private ObservableList<GateSymbol> gates = FXCollections.observableArrayList();
     private Region oldParent = null;
+    private ArrayList<GateSymbol> gateList = new ArrayList<>();
     private final Model model = Model.getInstance();
 
     private InvalidationListener endStateListener = (Observable o) -> {
@@ -106,11 +102,8 @@ public class QubitFlow extends Region {
         base.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         base.setLeft(title);
         base.setCenter(allGates);
-        HBox transparent = new HBox();
-        transparent.setOpacity(0.01);
-        transparent.setPrefWidth(1024);
-        allGates.getChildren().addAll(gateRow, transparent);
-        HBox.setHgrow(transparent, Priority.ALWAYS);
+        allGates.getChildren().addAll(gateRow);
+        HBox.setHgrow(gateRow, Priority.ALWAYS);
         base.setRight(measurement);
 
         BorderPane.setAlignment(title, Pos.CENTER);
@@ -120,13 +113,13 @@ public class QubitFlow extends Region {
         StackPane stack = new StackPane(line, measuredLine, base);
         this.sceneProperty().addListener(
                 new InvalidationListener() {
-                    @Override
-                    public void invalidated(Observable observable) {
-                        if (QubitFlow.this.getScene() != null) {
-                            QubitFlow.this.prefWidthProperty().bind(QubitFlow.this.getScene().widthProperty());
-                        }
-                    }
+            @Override
+            public void invalidated(Observable observable) {
+                if (QubitFlow.this.getScene() != null) {
+                    QubitFlow.this.prefWidthProperty().bind(QubitFlow.this.getScene().widthProperty());
                 }
+            }
+        }
         );
 
         stack.prefWidthProperty().bind(widthProperty());
@@ -134,94 +127,67 @@ public class QubitFlow extends Region {
 
         getChildren().add(stack);
 
-
-        // initial update from control's gates
-        gateRow.getChildren().setAll(getGateSymbols());
-
         //ensure all updates from the skin go back to control
-        gateRow.getChildren().addListener((Observable observable) -> {
-            getGateSymbols().setAll(
-                    gateRow.getChildren()
-                            .stream()
-                            .filter(g -> g != SPACER)
-                            .filter(g -> g instanceof GateSymbol)
-                            .map(n -> (GateSymbol) n).collect(Collectors.toList())
-            );
-        });
+//        gateRow.getChildren().addListener((Observable observable) -> {
+//            getGateSymbols().setAll(
+//                    gateRow.getChildren()
+//                            .stream()
+//                            .filter(g -> g != SPACER)
+//                            .filter(g -> g instanceof GateSymbol)
+//                            .map(n -> (GateSymbol) n).collect(Collectors.toList())
+//            );
+//        });
 
-        gateRow.setOnDragOver(event -> {
+        this.setOnDragOver(event -> {
 
-            if (event.getGestureSource() != this &&
-                    // only accept gates
+            if (event.getGestureSource() != this
+                    && // only accept gates
                     event.getDragboard().getContent(GateSymbol.DRAGGABLE_GATE) != null) {
 
                 // allow both copy(i.e. creation from toolbar) and move(between circuits)
                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-
-
-                if (gateRow.getChildren().isEmpty()) {
-
-                    gateRow.getChildren().add(SPACER);
-
-                } else {
-
-                    PickResult pickResult = event.getPickResult();
-                    Node intersectedNode = pickResult.getIntersectedNode();
-                    double x = pickResult.getIntersectedPoint().getX();
-
-                    if (intersectedNode instanceof GateSymbol && intersectedNode != SPACER) {
-                        removeSpacer();
-                        int nodeIndex = gateRow.getChildren().indexOf(intersectedNode);
-                        int insertionIndex = (x <= ((GateSymbol) intersectedNode).getWidth() / 2) ? nodeIndex : nodeIndex + 1;
-                        gateRow.getChildren().add(insertionIndex, SPACER);
-
-                    } else if (intersectedNode == gateRow &&
-                            x >= getOccupiedWidth() &&
-                            gateRow.getChildren().indexOf(SPACER) < gateRow.getChildren().size()) {
-                        removeSpacer();
-                        gateRow.getChildren().add(SPACER);
-                    }
-                }
-
+                int intidx = getInternalIndex(event.getX());
+                removeSpacer();
+                SPACER.setTranslateX(intidx * STEP_WIDTH);
+                gateRow.getChildren().add(SPACER);
             }
-
             event.consume();
-
         });
 
-        gateRow.setOnDragDropped(e -> {
-
+        this.setOnDragDropped(e -> {
+            double xzero = allGates.getLayoutX();
+            double xtrans = e.getX() - xzero;
             Dragboard db = e.getDragboard();
             if (db.hasContent(GateSymbol.DRAGGABLE_GATE)) {
-
+                int spacerIndex = getInternalIndex(e.getX());
                 // retrieve symbol from global storage (only way to keep ref to the node)
                 GateSymbol symbol = (GateSymbol) System.getProperties().get(GateSymbol.DRAGGABLE_GATE);
+                GridPane.setMargin(symbol, new Insets(2, 0, 2, 0));
+                removeSpacer();
+
                 if (TransferMode.MOVE == e.getTransferMode()) {
                     // move the gate symbol between circuits
                     symbol.removeFromParent();
-                    int spacerIndex = gateRow.getChildren().indexOf(SPACER);
-                    gateRow.getChildren().set(spacerIndex, symbol);
+                    symbol.setTranslateX(spacerIndex * STEP_WIDTH);
+                    insert(symbol,spacerIndex);
+                    gateRow.getChildren().add(symbol);
                     e.setDropCompleted(true);
                 } else {
                     // re-create gate symbol which was dragged from the toolbar
                     symbol = GateSymbol.of(symbol.getGate());
-                    int spacerIndex = gateRow.getChildren().indexOf(SPACER);
-                    gateRow.getChildren().set(spacerIndex, symbol);
+                    symbol.setTranslateX(spacerIndex * STEP_WIDTH);
+                    gateRow.getChildren().add(symbol);
+                                        insert(symbol,spacerIndex);
+
                     e.setDropCompleted(true);
                 }
             }
-
+            redraw();
             e.consume();
         });
 
         gateRow.setOnDragExited(e -> removeSpacer());
-
         model.getEndStates().addListener(endStateListener);
-
-        gates.addListener((Observable o) -> {
-            model.setGatesForCircuit(
-                    idx, gates.stream().map(gs -> createGate(gs.getGate())).collect(Collectors.toList()));
-        });
     }
 
     public void cleanup() {
@@ -235,6 +201,7 @@ public class QubitFlow extends Region {
     public boolean wantsOnTop() {
         return askOnTop;
     }
+
     public GateSymbol addGate(Gate gate) {
         if (gateRow.getChildren().isEmpty()) {
             gateRow.getChildren().add(SPACER);
@@ -256,7 +223,7 @@ public class QubitFlow extends Region {
 //            group.setTranslateX(50 * gateRow.getChildren().size());
 //            group.getChildren().add(r);
         }
-      //  GateSymbol symbol = GateSymbol.of(gate);
+        //  GateSymbol symbol = GateSymbol.of(gate);
         int spacerIndex = gateRow.getChildren().indexOf(SPACER);
         if (spacerIndex < 0) {
             gateRow.getChildren().add(symbol);
@@ -272,8 +239,10 @@ public class QubitFlow extends Region {
 
     /**
      * Add the additional symbol for the gate
+     *
      * @param gate
-     * @param gateidx the index of the additional qubit (0 = main index, 1 = first additional index)
+     * @param gateidx the index of the additional qubit (0 = main index, 1 =
+     * first additional index)
      * @return
      */
     public GateSymbol addAdditonalGateSymbol(Gate gate, int gateidx) {
@@ -293,20 +262,31 @@ public class QubitFlow extends Region {
     private double getOccupiedWidth() {
 
         double width = 0;
-        for ( Node node: gateRow.getChildren()) {
-            width += ((GateSymbol)node).getWidth();
+        int cnt = 0;
+        for (Node node : gateRow.getChildren()) {
+            GateSymbol gs = (GateSymbol) node;
+            if (!gs.isIdentity()) {
+                width += ((GateSymbol) node).getWidth();
+                cnt++;
+            }
         }
-        return width + gateRow.getSpacing() * gateRow.getChildren().size();
+        return width + STEP_WIDTH * cnt;
 
+    }
+
+    private int getInternalIndex(double x) {
+        double dist = x - this.allGates.getLayoutX();
+        double div = dist / STEP_WIDTH;
+        return (int) (div);
     }
 
     public int getIndex() {
         return this.idx;
     }
-
-    public ObservableList<GateSymbol> getGateSymbols() {
-        return this.gates;
-    }
+//
+//    public ObservableList<GateSymbol> getGateSymbols() {
+//        return this.gates;
+//    }
 
     public void clear() {
         model.getEndStates().removeListener(endStateListener);
@@ -315,6 +295,38 @@ public class QubitFlow extends Region {
 
     public Measurement getOutput() {
         return measurement;
+    }
+    
+    private void insert(GateSymbol g, int idx) {
+        while (gateList.size() < idx ) gateList.add(gateList.size(), null);
+        // now gateList.size is at least idx. Are we adding at the end?
+        if (gateList.size() == idx) {
+            gateList.add(gateList.size(), g);
+            return;
+        }
+        // we are adding before the end of this row. If we have a null value on
+        // the target place, we replave it.
+        if (gateList.get(idx) == null) {
+            gateList.set(idx, g);
+            return;
+        }
+        // the desired element has an element already we need to right-shift all 
+        gateList.add(idx, g);
+    }
+    
+    /*
+     * use the <code>gateList</code> list to recreate the gateRow
+    */
+    private void redraw() {
+        gateRow.getChildren().clear();
+        for (int i = 0; i < gateList.size(); i++) {
+            if (gateList.get(i) != null) {
+                double tx = i * STEP_WIDTH;
+                GateSymbol s = (GateSymbol)(gateList.get(i));
+                s.setTranslateX(tx);
+                gateRow.getChildren().add(s);
+            }
+        }
     }
 
     private Gate createGate(Gate g) {
