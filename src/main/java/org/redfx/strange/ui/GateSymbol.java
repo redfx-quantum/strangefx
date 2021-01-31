@@ -35,8 +35,6 @@ package org.redfx.strange.ui;
 import org.redfx.strange.gate.*;
 import org.redfx.strange.simulator.GateGroup;
 import org.redfx.strange.Gate;
-//import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-//import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.ContentDisplay;
@@ -79,6 +77,10 @@ public class GateSymbol extends Label {
         this (gate, movable, 0);
     }
 
+    public boolean isIdentity() {
+        return (this.gate instanceof Identity);
+    }
+    
     void setDot() {
         Group g = new Group();
         Circle c = new Circle(0,0,5, Color.DARKGREY);
@@ -136,6 +138,7 @@ public class GateSymbol extends Label {
             }
         }
         setMinWidth(40);
+        setMinHeight(40);
         setAlignment(Pos.CENTER);
         if (gate instanceof Oracle) {
             Oracle oracle = (Oracle)gate;
@@ -150,10 +153,11 @@ public class GateSymbol extends Label {
         }
 
         setOnDragDetected(e -> {
-
+            System.err.println("Drag detected");
             System.getProperties().put(DRAGGABLE_GATE, this);
 
-            Dragboard db = this.startDragAndDrop(  isMovable()? TransferMode.MOVE: TransferMode.COPY);
+          //  Dragboard db = this.startDragAndDrop(  isMovable()? TransferMode.MOVE: TransferMode.COPY);
+            Dragboard db = this.startDragAndDrop(TransferMode.ANY);
             db.setDragView(this.snapshot(null, null));
             ClipboardContent content = new ClipboardContent();
             content.putString(gate.getName());
@@ -161,8 +165,10 @@ public class GateSymbol extends Label {
             db.setContent(content);
             e.consume();
         });
-        
+        System.err.println("CREATED GATESYMBOL with idx = "+idx);
+this.setOnMouseClicked(e -> System.err.println("clicked on gatesymbol!"));
         this.setOnDragDone(e -> {
+            System.err.println("DRag done");
             // clear out the ref to the dragged node
             System.getProperties().remove(DRAGGABLE_GATE);
         });
@@ -198,5 +204,10 @@ public class GateSymbol extends Label {
         if (parent != null) {
             parent.getChildren().remove(this);
         }
+    }
+
+    @Override 
+    public String toString() {
+        return "GateSymbol for gate "+gate;
     }
 }
