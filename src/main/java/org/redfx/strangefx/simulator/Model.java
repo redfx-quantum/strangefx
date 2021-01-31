@@ -45,9 +45,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.redfx.strange.Step;
 
 /**
  *
@@ -61,6 +64,8 @@ public class Model {
 
     private ObservableList<Double> endStates = FXCollections.observableArrayList();
     private BooleanProperty refreshRequest = new SimpleBooleanProperty();
+    
+    private ObjectProperty<ArrayList<Step>> stepsProperty = new SimpleObjectProperty<>();
 
     private static Model instance = new Model();
     
@@ -97,8 +102,40 @@ public class Model {
     public List<List<Gate>> getGates() {
         return gates;
     }
+    
+    public ArrayList<Step> getSteps() {
+        int maxSteps = 0;
+        int nqubits = gates.size();
+        for (int i = 0; i < gates.size(); i++) {
+            List<Gate> qubitOps = gates.get(i);
+            if (qubitOps.size() > maxSteps) {maxSteps = qubitOps.size();}
+        }
+        ArrayList<Step> answer = new ArrayList<>();
+        for (int i = 0; i < maxSteps; i++) {
+            Step s = new Step();
+            answer.add(s);
+            for (int j =0; j < nqubits;j++) {
+                List<Gate> qubitOps = gates.get(j);
+                if ((qubitOps != null) && (qubitOps.size() > i) && (qubitOps.get(i) != null)) {
+                    s.addGate(gates.get(j).get(i));
+                }
+            }
+        }
+        this.stepsProperty.set(answer);
+        return answer;
+    }
+    
+    public ObjectProperty<ArrayList<Step>> stepsProperty() {
+        return stepsProperty;
+    }
 
-    public void setGatesForCircuit(int n, List<Gate> gates) {
+    public void setGatesForCircuit(int n, List<Gate> qgates) {
+        if (gates.size() > n) {
+            gates.set(n, qgates);
+        } else {
+            gates.add(n, qgates);
+        }
+
         /*
         for (Gate gate: gates) {
             gate.setMainQubit(n);

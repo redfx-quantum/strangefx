@@ -153,7 +153,6 @@ public class GateSymbol extends Label {
         }
 
         setOnDragDetected(e -> {
-            System.err.println("Drag detected");
             System.getProperties().put(DRAGGABLE_GATE, this);
 
           //  Dragboard db = this.startDragAndDrop(  isMovable()? TransferMode.MOVE: TransferMode.COPY);
