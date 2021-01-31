@@ -30,7 +30,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package org.redfx.strange.ui;
+package org.redfx.strangefx.ui;
 
 import org.redfx.strange.simulator.Model;
 import org.redfx.strange.ui.render.*;

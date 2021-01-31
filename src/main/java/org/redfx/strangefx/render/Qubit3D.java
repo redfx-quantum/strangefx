@@ -32,7 +32,7 @@
  */
 package org.redfx.strangefx.render;
 
-import org.redfx.strange.ui.Main;
+import org.redfx.strangefx.ui.Main;
 import javafx.scene.AmbientLight;
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;

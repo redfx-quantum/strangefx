@@ -38,7 +38,7 @@ import org.redfx.strange.Result;
 import org.redfx.strange.Step;
 import org.redfx.strange.gate.X;
 import org.redfx.strange.local.SimpleQuantumExecutionEnvironment;
-import org.redfx.strange.ui.Main;
+import org.redfx.strangefx.ui.Main;
 import org.redfx.strangefx.render.RenderEngine;
 import javafx.application.Application;
 import javafx.scene.Node;

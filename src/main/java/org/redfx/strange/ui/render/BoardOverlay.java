@@ -32,8 +32,8 @@
  */
 package org.redfx.strange.ui.render;
 
+import org.redfx.strangefx.ui.GateSymbol;
 import org.redfx.strange.*;
-import org.redfx.strange.ui.*;
 import javafx.beans.*;
 import javafx.geometry.*;
 import javafx.scene.layout.*;

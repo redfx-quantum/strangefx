@@ -30,7 +30,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package org.redfx.strange.ui;
+package org.redfx.strangefx.ui;
 
 import org.redfx.strange.gate.*;
 import org.redfx.strange.simulator.GateGroup;
@@ -165,16 +165,12 @@ public class GateSymbol extends Label {
             db.setContent(content);
             e.consume();
         });
-        System.err.println("CREATED GATESYMBOL with idx = "+idx);
-this.setOnMouseClicked(e -> System.err.println("clicked on gatesymbol!"));
         this.setOnDragDone(e -> {
-            System.err.println("DRag done");
             // clear out the ref to the dragged node
             System.getProperties().remove(DRAGGABLE_GATE);
         });
         
         this.setOnDragDropped(e -> {
-            System.out.println("Drag dropped");
         });
 
     }

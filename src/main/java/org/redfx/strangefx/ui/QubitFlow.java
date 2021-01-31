@@ -30,7 +30,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package org.redfx.strange.ui;
+package org.redfx.strangefx.ui;
 
 import java.util.ArrayList;
 import org.redfx.strange.gate.*;
