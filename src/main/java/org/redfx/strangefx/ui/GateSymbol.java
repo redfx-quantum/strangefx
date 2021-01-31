@@ -33,7 +33,7 @@
 package org.redfx.strangefx.ui;
 
 import org.redfx.strange.gate.*;
-import org.redfx.strange.simulator.GateGroup;
+import org.redfx.strangefx.simulator.GateGroup;
 import org.redfx.strange.Gate;
 import javafx.geometry.Pos;
 import javafx.scene.Group;

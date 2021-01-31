@@ -35,7 +35,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.redfx.strange.simulator;
+package org.redfx.strangefx.simulator;
 
 import org.redfx.strange.Gate;
 import org.redfx.strange.gate.Identity;

@@ -42,10 +42,10 @@ import org.redfx.strange.Program;
 import org.redfx.strange.Qubit;
 import org.redfx.strange.Result;
 import org.redfx.strange.Step;
-import org.redfx.strange.simulator.Simulator;
-import org.redfx.strange.simulator.Model;
+import org.redfx.strangefx.simulator.Simulator;
+import org.redfx.strangefx.simulator.Model;
 import org.redfx.strange.Complex;
-import org.redfx.strange.simulator.CloudSimulator;
+import org.redfx.strangefx.simulator.CloudSimulator;
 import org.redfx.strange.local.SimpleQuantumExecutionEnvironment;
 
 

@@ -30,26 +30,10 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.redfx.strange.simulator;
+package org.redfx.strangefx.simulator;
 
-import org.redfx.strange.Complex;
-import org.redfx.strange.Gate;
-
-/**
- *
- * @author johan
- */
-public interface Simulator {
-    
-    public Complex[] calculateResults(Gate[][] gates);
-    
-    public Complex[] calculateResults(Model m);
-    
-    public double[] calculateQubitStates(Model m);
-    
+public enum GateGroup {
+    IDENTITY,
+    BIT_FLIP,
+    SUPERPOSITION
 }

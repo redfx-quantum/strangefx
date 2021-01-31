@@ -34,7 +34,7 @@ package org.redfx.strangefx.ui;
 
 import java.util.ArrayList;
 import org.redfx.strange.gate.*;
-import org.redfx.strange.simulator.Model;
+import org.redfx.strangefx.simulator.Model;
 import org.redfx.strange.Gate;
 
 import javafx.beans.*;

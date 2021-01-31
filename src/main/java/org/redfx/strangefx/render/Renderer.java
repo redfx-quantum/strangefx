@@ -42,7 +42,7 @@ import org.redfx.strange.Step;
 import org.redfx.strange.gate.Identity;
 import org.redfx.strange.gate.Oracle;
 import org.redfx.strange.local.SimpleQuantumExecutionEnvironment;
-import org.redfx.strange.simulator.Model;
+import org.redfx.strangefx.simulator.Model;
 import org.redfx.strangefx.ui.GateSymbol;
 import org.redfx.strangefx.ui.Main;
 import org.redfx.strangefx.ui.QubitBoard;
