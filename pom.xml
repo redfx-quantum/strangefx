@@ -58,7 +58,7 @@
         <artifactId>javafx-maven-plugin</artifactId>
         <version>0.0.5</version>
         <configuration>
-            <mainClass>org.redfx.strange.ui.Main</mainClass>
+            <mainClass>org.redfx.strangefx.ui.Main</mainClass>
         </configuration>
       </plugin>
       <plugin>

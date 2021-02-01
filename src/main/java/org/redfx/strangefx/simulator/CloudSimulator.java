@@ -30,7 +30,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package org.redfx.strange.simulator;
+package org.redfx.strangefx.simulator;
 
 //import org.redfx.cloudlink.client.data.RemoteFunctionBuilder;
 //import org.redfx.cloudlink.client.data.RemoteFunctionObject;

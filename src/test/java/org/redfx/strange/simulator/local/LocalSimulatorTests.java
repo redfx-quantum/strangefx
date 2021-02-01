@@ -32,7 +32,7 @@
  */
 package org.redfx.strange.simulator.local;
 
-import org.redfx.strange.simulator.Model;
+import org.redfx.strangefx.simulator.Model;
 import org.redfx.strange.Complex;
 import org.redfx.strange.Gate;
 import org.junit.jupiter.api.DisplayName;
