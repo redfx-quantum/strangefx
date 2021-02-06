@@ -51,6 +51,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
 import java.util.Objects;
+import javafx.scene.Parent;
 
 public class GateSymbol extends Label {
 
@@ -60,6 +61,7 @@ public class GateSymbol extends Label {
     private final boolean movable;
     public int spanWires = 1;
     public boolean probability = false;
+    private QubitFlow qubitFlow;
 
     public static GateSymbol of( Gate gate, Boolean movable ) {
         return new GateSymbol(gate, movable, 0);
@@ -79,6 +81,10 @@ public class GateSymbol extends Label {
 
     public boolean isIdentity() {
         return (this.gate instanceof Identity);
+    }
+    
+    public void setQubitFlow(QubitFlow qf) {
+        this.qubitFlow = qf;
     }
     
     void setDot() {
@@ -195,10 +201,18 @@ public class GateSymbol extends Label {
     }
 
     public void removeFromParent() {
-        Pane parent = (Pane) getParent();
-        if (parent != null) {
-            parent.getChildren().remove(this);
+        if (qubitFlow != null) {
+            qubitFlow.removeGateSymbol(this);
         }
+//        Parent parent = getParent();
+//        System.err.println("remove,. parent = "+parent);
+//        if (parent instanceof QubitFlow) {
+//            ((QubitFlow)parent).removeGateSymbol(this);
+//        }
+//       Pane parent = (Pane) getParent();
+//        if (parent != null) {
+//            parent.getChildren().remove(this);
+//        }
     }
 
     @Override 

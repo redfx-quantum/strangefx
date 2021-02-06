@@ -36,6 +36,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.redfx.strange.gate.*;
@@ -177,7 +178,7 @@ public class QubitFlow extends Region {
                     // move the gate symbol between circuits
                     symbol.removeFromParent();
                     symbol.setTranslateX(spacerIndex * STEP_WIDTH);
-                    insert(symbol,spacerIndex);
+                    insertGateSymbol(symbol,spacerIndex);
                     gateRow.getChildren().add(symbol);
                     e.setDropCompleted(true);
                 } else {
@@ -185,10 +186,11 @@ public class QubitFlow extends Region {
                     symbol = GateSymbol.of(symbol.getGate());
                     symbol.setTranslateX(spacerIndex * STEP_WIDTH);
                     gateRow.getChildren().add(symbol);
-                                        insert(symbol,spacerIndex);
+                    insertGateSymbol(symbol,spacerIndex);
 
                     e.setDropCompleted(true);
                 }
+                symbol.setQubitFlow(this);
             }
             redraw();
             updateModel();
@@ -306,7 +308,7 @@ public class QubitFlow extends Region {
         return measurement;
     }
     
-    private void insert(GateSymbol g, int idx) {
+    private void insertGateSymbol(GateSymbol g, int idx) {
         while (gateList.size() < idx ) gateList.add(gateList.size(), null);
         // now gateList.size is at least idx. Are we adding at the end?
         if (gateList.size() == idx) {
@@ -323,6 +325,20 @@ public class QubitFlow extends Region {
         gateList.add(idx, g);
     }
     
+    public void removeGateSymbol(GateSymbol g) {
+        gateList.remove(g);
+        gateRow.getChildren().remove(g);
+        updateModel();
+
+//        int i = 0;
+//        int target = -1;
+//        while (i < gateList.size()) {
+//            GateSymbol candidate = gateList.get(i);
+//            if (g.equals(candidate)) {
+//                gateList.remove(i)
+//            }
+//        }
+    }
     /*
      * use the <code>gateList</code> list to recreate the gateRow
     */
@@ -356,6 +372,7 @@ public class QubitFlow extends Region {
         }
         model.setGatesForCircuit(idx, qgates);
         ArrayList<Step> steps = model.getSteps();
+        System.err.println("qg = "+qgates+", steps = "+steps);
     }
     
     private Gate createGate(Gate g) {
