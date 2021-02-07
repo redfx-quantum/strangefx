@@ -42,7 +42,7 @@ import org.redfx.strange.Step;
 import org.redfx.strange.gate.Identity;
 import org.redfx.strange.gate.Oracle;
 import org.redfx.strange.local.SimpleQuantumExecutionEnvironment;
-import org.redfx.strangefx.simulator.Model;
+import org.redfx.strangefx.simulator.RenderModel;
 import org.redfx.strangefx.ui.GateSymbol;
 import org.redfx.strangefx.ui.Main;
 import org.redfx.strangefx.ui.QubitBoard;
@@ -71,6 +71,7 @@ import java.util.stream.Collectors;
 public class Renderer {
 
     private static Stage myStage;
+    private RenderModel model;
 
     static {
         Runnable r = new Runnable() {
@@ -107,9 +108,16 @@ public class Renderer {
     }
 
     public static QubitBoard getRenderGroup(Program program) {
+        Renderer renderer = new Renderer();
+        return renderer.getQubitBoard(program);
+    }
+    
+    QubitBoard getQubitBoard(Program program) {
+        this.model = new RenderModel(program);
         int nQubits = program.getNumberQubits();
-
-        QubitBoard board = new QubitBoard(nQubits);
+        System.err.println("NQ = "+nQubits);
+        System.err.println("MQ = "+model.getNQubits());
+        QubitBoard board = new QubitBoard(model);
         List<GateSymbol> multiWires = new LinkedList();
         List<GateSymbol> probabilities = new LinkedList();
         List<BoardOverlay> boardOverlays = new LinkedList<>();
@@ -118,38 +126,38 @@ public class Renderer {
             boolean[] gotit = new boolean[nQubits];
             for (Gate gate : s.getGates()) {
                 int qb = gate.getMainQubitIndex();
+                System.err.println("qb = "+qb);
                 gotit[qb] = true;
                 QubitFlow wire = wires.get(qb);
                 wire.setMinWidth(480);
                 GateSymbol symbol = wire.addGate(gate);
-                if (symbol.spanWires > 1) {
-                    if (gate instanceof Oracle) {
-                        multiWires.add(symbol);
-                        BoardOverlay overlay = new BoardOverlay(s, symbol);
-                        boardOverlays.add(overlay);
-                        board.addOverlay(overlay);
-                    } else {
-                        int idx = 0;
-                        List<Integer> aff = gate.getAffectedQubitIndexes().stream()
-                                .filter(e -> e != qb).collect(Collectors.toList());
-;
-                        for (int a : aff){
-                                    QubitFlow q = wires.get(a);
-                                    GateSymbol symbol2 = q.addAdditonalGateSymbol(gate, ++idx);
-                                    gotit[a] = true;
-                                    BoardOverlay overlay = new BoardOverlay(s, symbol, symbol2);
-                                    boardOverlays.add(overlay);
-                                    board.addOverlay(overlay);
-                                };
-                    }
-
-                }
-                if (symbol.probability) {
-                    probabilities.add(symbol);
-                    BoardOverlay overlay = new BoardOverlay(s, symbol);
-                    boardOverlays.add(overlay);
-                    board.addOverlay(overlay);
-                }
+//                if (symbol.spanWires > 1) {
+//                    if (gate instanceof Oracle) {
+//                        multiWires.add(symbol);
+//                        BoardOverlay overlay = new BoardOverlay(s, symbol);
+//                        boardOverlays.add(overlay);
+//                        board.addOverlay(overlay);
+//                    } else {
+//                        int idx = 0;
+//                        List<Integer> aff = gate.getAffectedQubitIndexes().stream()
+//                                .filter(e -> e != qb).collect(Collectors.toList());
+//                        for (int a : aff) {
+//                            QubitFlow q = wires.get(a);
+//                            GateSymbol symbol2 = q.addAdditonalGateSymbol(gate, ++idx);
+//                            gotit[a] = true;
+//                            BoardOverlay overlay = new BoardOverlay(s, symbol, symbol2);
+//                            boardOverlays.add(overlay);
+//                            board.addOverlay(overlay);
+//                        };
+//                    }
+//
+//                }
+//                if (symbol.probability) {
+//                    probabilities.add(symbol);
+//                    BoardOverlay overlay = new BoardOverlay(s, symbol);
+//                    boardOverlays.add(overlay);
+//                    board.addOverlay(overlay);
+//                }
             }
             for (int i = 0; i < nQubits; i++) {
                 if (!gotit[i]) {
@@ -158,12 +166,13 @@ public class Renderer {
                 }
             }
         }
-        ObservableList<Double> endStates = Model.getInstance().getEndStates();
+        ObservableList<Double> endStates = model.getEndStates();
         Qubit[] qubits = program.getResult().getQubits();
         Complex[] probability = program.getResult().getProbability();
         Double[] endValues = new Double[probability.length];
         int idx = 0;
         for (Qubit qubit : qubits) {
+            System.err.println("[GRP] prob["+idx+"] = "+ qubit.getProbability());
             endValues[idx++] = qubit.getProbability();
         }
         endStates.setAll(endValues);

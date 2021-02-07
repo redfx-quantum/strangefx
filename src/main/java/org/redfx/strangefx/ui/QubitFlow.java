@@ -33,13 +33,11 @@
 package org.redfx.strangefx.ui;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.redfx.strange.gate.*;
-import org.redfx.strangefx.simulator.Model;
+import org.redfx.strangefx.simulator.RenderModel;
 import org.redfx.strange.Gate;
 
 import javafx.beans.*;
@@ -80,17 +78,13 @@ public class QubitFlow extends Region {
 
     private Region oldParent = null;
     private ArrayList<GateSymbol> gateList = new ArrayList<>();
-    private final Model model = Model.getInstance();
-
-    private InvalidationListener endStateListener = (Observable o) -> {
-        if (model.getEndStates().size() > idx) {
-            double mv = model.getEndStates().get(idx);
-            measurement.setMeasuredChance(mv);
-        }
-    };
-
-    public QubitFlow(int index) {
+    private final RenderModel model;
+    private InvalidationListener endStateListener;
+    
+    public QubitFlow(int index, RenderModel model) {
+        this.model = model;
         this.idx = index;
+        System.err.println("CREATED qubitflow for idx = "+idx);
         title.setText(String.format("q[%d] I0>", idx));
         gateRow.getChildren().add(SPACER);
         getStyleClass().add("qubit");
@@ -196,7 +190,20 @@ public class QubitFlow extends Region {
         });
 
         gateRow.setOnDragExited(e -> removeSpacer());
+        this.endStateListener = createEndStateListener();
         model.getEndStates().addListener(endStateListener);
+    }
+
+    private InvalidationListener createEndStateListener() {
+        InvalidationListener answer = (Observable o) -> {
+            if ((model != null) && (model.getEndStates().size() > idx)) {
+                System.err.println("model = "+model);
+                System.err.println("endstates = "+model.getEndStates());
+                double mv = model.getEndStates().get(idx);
+                measurement.setMeasuredChance(mv);
+            }
+        };
+        return answer;
     }
 
     public void cleanup() {
@@ -211,6 +218,8 @@ public class QubitFlow extends Region {
         return askOnTop;
     }
 
+   // private int stepIndex = 0;
+    
     public GateSymbol addGate(Gate gate) {
         if (gateRow.getChildren().isEmpty()) {
             gateRow.getChildren().add(SPACER);
@@ -243,6 +252,7 @@ public class QubitFlow extends Region {
             measuredLine.translateXProperty().bind(symbol.layoutXProperty().add(allGates.layoutXProperty()));
             measuredLine.setVisible(true);
         }
+        redraw();
         return symbol;
     }
 
@@ -268,6 +278,14 @@ public class QubitFlow extends Region {
         return symbol;
     }
 
+    /**
+     * For testing only!
+     * @return 
+     */
+    public Pane getGateRow() {
+        return this.gateRow;
+    }
+    
     private double getOccupiedWidth() {
 
         double width = 0;
@@ -327,37 +345,43 @@ public class QubitFlow extends Region {
      * use the <code>gateList</code> list to recreate the gateRow
     */
     private void redraw() {
+        System.err.println("REDRAW qubitflow "+idx);
         gateRow.getChildren().clear();
         for (int i = 0; i < gateList.size(); i++) {
             if (gateList.get(i) != null) {
                 double tx = i * STEP_WIDTH;
                 GateSymbol s = (GateSymbol)(gateList.get(i));
                 s.setTranslateX(tx);
+                System.err.println("add gatesymbol "+s+" at x = "+tx);
                 gateRow.getChildren().add(s);
             }
         }
     }
-
-    private void updateModel() {
-        ArrayList<Gate> qgates = new ArrayList();
-        for (GateSymbol gs : gateList) {
-            Gate gate = null;
-            if (gs != null) {
-                Class gateClass = gs.getGate().getClass();
-                try {
-                    Constructor<Gate> c = gateClass.getConstructor(int.class);
-                    gate = c.newInstance(idx);
-                } catch (Throwable ex) {
-                    Logger.getLogger(QubitFlow.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                gate.setMainQubitIndex(idx);
-            }
-            qgates.add(gate);
-        }
-        model.setGatesForCircuit(idx, qgates);
-        ArrayList<Step> steps = model.getSteps();
-    }
     
+    private void updateModel() {
+        System.err.println("UPDATE MODEL");
+    }
+//
+//    private void updateModel() {
+//        ArrayList<Gate> qgates = new ArrayList();
+//        for (GateSymbol gs : gateList) {
+//            Gate gate = null;
+//            if (gs != null) {
+//                Class gateClass = gs.getGate().getClass();
+//                try {
+//                    Constructor<Gate> c = gateClass.getConstructor(int.class);
+//                    gate = c.newInstance(idx);
+//                } catch (Throwable ex) {
+//                    Logger.getLogger(QubitFlow.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//                gate.setMainQubitIndex(idx);
+//            }
+//            qgates.add(gate);
+//        }
+//        model.setGatesForCircuit(idx, qgates);
+//        ArrayList<Step> steps = model.getSteps();
+//    }
+//    
     private Gate createGate(Gate g) {
         return g;
 //        Class<? extends Gate> gateClass = g.getClass();

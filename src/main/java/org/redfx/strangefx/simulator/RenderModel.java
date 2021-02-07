@@ -50,13 +50,14 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.redfx.strange.Program;
 import org.redfx.strange.Step;
 
 /**
  *
  * @author johan
  */
-public class Model {
+public class RenderModel {
     
     private int nqubits;
     
@@ -67,16 +68,29 @@ public class Model {
     
     private ObjectProperty<ArrayList<Step>> stepsProperty = new SimpleObjectProperty<>();
 
-    private static Model instance = new Model();
+    private static RenderModel instance = new RenderModel();
     
-    private List<List<Gate>> gates = new LinkedList<>();
+//    private List<List<Gate>> gates = new LinkedList<>();
+    private ArrayList<Step> steps = new ArrayList<>();
     
-    private Model() {        
+    /**
+     * Create a new, empty Model
+     */
+    public RenderModel() {        
     }
     
-    public static Model getInstance() {
-        return instance;
+    /**
+     * Create a Model based on an existing Program
+     */
+    public RenderModel(Program p) {
+        this.nqubits = p.getNumberQubits();
+        this.steps = new ArrayList(p.getNumberQubits());
+        this.steps.addAll(p.getSteps());
     }
+    
+//    public static Model getInstance() {
+//        return instance;
+//    }
 
     public BooleanProperty refreshRequest() {
         return refreshRequest;
@@ -86,24 +100,30 @@ public class Model {
         return endStates;
     }
     
+    /**
+     * Set the number of qubits in this Model. This erases all previous information
+     * @param n 
+     */
     public void setNQubits(int n) {
         this.nqubits = n;
         this.beginState = new double[n];
-        this.gates = new LinkedList();
+        this.steps = new ArrayList(n);
         for (int i = 0; i < n; i++) {
-            this.gates.add(new LinkedList<Gate>());
+            this.steps.add(new Step());
         }
     }
     
     public int getNQubits() {
         return this.nqubits;
     }
-    
-    public List<List<Gate>> getGates() {
-        return gates;
-    }
+//    
+//    public List<Step> getGates() {
+//        return gates;
+//    }
     
     public ArrayList<Step> getSteps() {
+        return steps;
+        /*
         int maxSteps = 0;
         int nqubits = gates.size();
         for (int i = 0; i < gates.size(); i++) {
@@ -123,90 +143,92 @@ public class Model {
         }
         this.stepsProperty.set(answer);
         return answer;
+        */
     }
     
     public ObjectProperty<ArrayList<Step>> stepsProperty() {
         return stepsProperty;
     }
 
-    public void setGatesForCircuit(int n, List<Gate> qgates) {
-        if (gates.size() > n) {
-            gates.set(n, qgates);
-        } else {
-            gates.add(n, qgates);
-        }
-
-        /*
-        for (Gate gate: gates) {
-            gate.setMainQubit(n);
-        }
-        List<Gate> old = this.gates.get(n);
-        boolean similar = true;
-        if (gates.size() == old.size()) {
-            for (int i = 0; i < gates.size(); i++) {
-                if (!gates.get(i).equals(old.get(i))) {
-                    similar = false; i = gates.size();
-                }
-            }
-        } else {
-            similar = false;
-        }
-        if (!similar) {
-            this.gates.set(n, gates);
-            refreshRequest.set(true);
-        }
-        */
-    }
+//    public void setGatesForCircuit(int n, List<Gate> qgates) {
+//        if (gates.size() > n) {
+//            gates.set(n, qgates);
+//        } else {
+//            gates.add(n, qgates);
+//        }
+//
+//        /*
+//        for (Gate gate: gates) {
+//            gate.setMainQubit(n);
+//        }
+//        List<Gate> old = this.gates.get(n);
+//        boolean similar = true;
+//        if (gates.size() == old.size()) {
+//            for (int i = 0; i < gates.size(); i++) {
+//                if (!gates.get(i).equals(old.get(i))) {
+//                    similar = false; i = gates.size();
+//                }
+//            }
+//        } else {
+//            similar = false;
+//        }
+//        if (!similar) {
+//            this.gates.set(n, gates);
+//            refreshRequest.set(true);
+//        }
+//        */
+//    }
 
     public int getNumberOfSteps() {
-        return this.gates.get(0).size();
+        return this.steps.size();
+//        return this.gates.get(0).size();
     }
     
-    public List<Gate> getStepsByCircuit(int idx) {
-        return this.gates.get(idx);
-    }
+//    public List<Gate> getStepsByCircuit(int idx) {
+//        return this.gates.get(idx);
+//    }
     
-    public Gate[] getGatesByStep(int idx) {
-        int nq = this.gates.size();
-        Gate[] answer = new Gate[nq];
-        for (int i = 0; i < nq; i++) {
-            // if this gate didn't have a step, we'll add an I gate to it.
-            if (this.gates.get(i).size() < (idx+1)) {
-                List<Gate> old = this.gates.get(i);
-                ArrayList<Gate> newList = new ArrayList<>();
-                newList.addAll(old);
-                newList.add(new Identity(i));
-                this.gates.set(i, newList);
-            }
-            answer[i] = this.gates.get(i).get(idx);
-        }
-        return answer;
-    }
-    
-    public String getGateDescription() {
-        StringBuffer answer = new StringBuffer("[");
-        int nq = this.getNQubits();
-        for (int i = 0; i < getNumberOfSteps(); i++) {
-            answer.append("[");
-            for (int j = 0; j < nq;j++) {
-                List<Gate> row = getGates().get(j);
-                Gate target = new Identity(j);
-                if (row.size() > i ) {
-                    target = row.get(i);
-                }
-                answer.append(target.getName());
-                if (j < nq-1) answer.append(",");
-            }
-            answer.append("]");
-        }
-        answer.append("]");
-        return answer.toString();
-    }
-    
-    public void printGates() {
-        for (int i = 0; i < getNumberOfSteps(); i++) {
-            System.out.println("step "+i+": "+getGatesByStep(i));
-        }
-    }
+//    public Gate[] getGatesByStep(int idx) {
+//        int nq = this.gates.size();
+//        Gate[] answer = new Gate[nq];
+//        for (int i = 0; i < nq; i++) {
+//            // if this gate didn't have a step, we'll add an I gate to it.
+//            if (this.gates.get(i).size() < (idx+1)) {
+//                List<Gate> old = this.gates.get(i);
+//                ArrayList<Gate> newList = new ArrayList<>();
+//                newList.addAll(old);
+//                newList.add(new Identity(i));
+//                this.gates.set(i, newList);
+//            }
+//            answer[i] = this.gates.get(i).get(idx);
+//        }
+//        return answer;
+//    }
+//    
+//    public String getGateDescription() {
+//        StringBuffer answer = new StringBuffer("[");
+//        int nq = this.getNQubits();
+//        for (int i = 0; i < getNumberOfSteps(); i++) {
+//            answer.append("[");
+//            for (int j = 0; j < nq;j++) {
+//                List<Gate> row = getGates().get(j);
+//                Gate target = new Identity(j);
+//                if (row.size() > i ) {
+//                    target = row.get(i);
+//                }
+//                answer.append(target.getName());
+//                if (j < nq-1) answer.append(",");
+//            }
+//            answer.append("]");
+//        }
+//        answer.append("]");
+//        return answer.toString();
+//    }
+//    
+//    public void printGates() {
+//        for (int i = 0; i < getNumberOfSteps(); i++) {
+//            System.out.println("step "+i+": "+getGatesByStep(i));
+//        }
+//    }
     
 }

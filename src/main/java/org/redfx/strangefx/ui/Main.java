@@ -32,7 +32,7 @@
  */
 package org.redfx.strangefx.ui;
 
-import org.redfx.strangefx.simulator.Model;
+import org.redfx.strangefx.simulator.RenderModel;
 import org.redfx.strange.gate.*;
 import org.redfx.strange.simulator.local.LocalSimulator;
 import javafx.application.Application;
@@ -47,6 +47,8 @@ import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+    
+    private RenderModel model = new RenderModel();
 
     public static void main(String[] args) {
         System.out.println("hello, strange");
@@ -55,9 +57,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        LocalSimulator sim = new LocalSimulator();
-        
-        QubitBoard board = new QubitBoard(2);
+        LocalSimulator sim = new LocalSimulator(model);
+        model.setNQubits(2);
+        QubitBoard board = new QubitBoard(model);
 
         HBox toolbarFiller = new HBox();
         HBox.setHgrow( toolbarFiller, Priority.ALWAYS);
@@ -79,7 +81,7 @@ public class Main extends Application {
             logo
         );
 
-        Model.getInstance().refreshRequest().set(true);
+        model.refreshRequest().set(true);
 
         ScrollPane scroller = new ScrollPane(board);
         scroller.setPannable(true);
