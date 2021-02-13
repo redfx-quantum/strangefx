@@ -56,6 +56,7 @@ public class GateSymbol extends Label {
 
     static final DataFormat DRAGGABLE_GATE = new DataFormat("draggable-gate");
 
+    public static final int HEIGHT = 40;
     private final Gate gate;
     private final boolean movable;
     public int spanWires = 1;
@@ -138,7 +139,7 @@ public class GateSymbol extends Label {
             }
         }
         setMinWidth(40);
-        setMinHeight(40);
+        setMinHeight(HEIGHT);
         setAlignment(Pos.CENTER);
         if (gate instanceof Oracle) {
             Oracle oracle = (Oracle)gate;

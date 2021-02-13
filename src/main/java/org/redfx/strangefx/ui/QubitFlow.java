@@ -34,6 +34,7 @@ package org.redfx.strangefx.ui;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.redfx.strange.gate.*;
@@ -77,14 +78,15 @@ public class QubitFlow extends Region {
     private int idx; // the number of the qubit
 
     private Region oldParent = null;
-    private ArrayList<GateSymbol> gateList = new ArrayList<>();
+    private ArrayList<Gate> gateList = new ArrayList<>();
     private final RenderModel model;
     private InvalidationListener endStateListener;
-    
+
     public QubitFlow(int index, RenderModel model) {
         this.model = model;
         this.idx = index;
         System.err.println("CREATED qubitflow for idx = "+idx);
+        fillGatesFromModel(model);
         title.setText(String.format("q[%d] I0>", idx));
         gateRow.getChildren().add(SPACER);
         getStyleClass().add("qubit");
@@ -192,6 +194,7 @@ public class QubitFlow extends Region {
         gateRow.setOnDragExited(e -> removeSpacer());
         this.endStateListener = createEndStateListener();
         model.getEndStates().addListener(endStateListener);
+        redraw();
     }
 
     private InvalidationListener createEndStateListener() {
@@ -324,7 +327,8 @@ public class QubitFlow extends Region {
         return measurement;
     }
     
-    private void insert(GateSymbol g, int idx) {
+    private void insert(GateSymbol gs, int idx) {
+        Gate g = gs.getGate();
         while (gateList.size() < idx ) gateList.add(gateList.size(), null);
         // now gateList.size is at least idx. Are we adding at the end?
         if (gateList.size() == idx) {
@@ -347,14 +351,14 @@ public class QubitFlow extends Region {
     private void redraw() {
         System.err.println("REDRAW qubitflow "+idx);
         gateRow.getChildren().clear();
-        for (int i = 0; i < gateList.size(); i++) {
-            if (gateList.get(i) != null) {
-                double tx = i * STEP_WIDTH;
-                GateSymbol s = (GateSymbol)(gateList.get(i));
-                s.setTranslateX(tx);
-                System.err.println("add gatesymbol "+s+" at x = "+tx);
-                gateRow.getChildren().add(s);
-            }
+        double deltax = 0;
+        for (Gate gate : gateList) {
+            GateSymbol symbol = GateSymbol.of(gate);
+            symbol.setTranslateX(deltax);
+            symbol.translateYProperty().bind(gateRow.heightProperty().add(-1*GateSymbol.HEIGHT).divide(2));
+            deltax += STEP_WIDTH;
+            gateRow.getChildren().add(symbol);
+            BorderPane.setAlignment(symbol, Pos.CENTER);
         }
     }
     
@@ -396,4 +400,20 @@ public class QubitFlow extends Region {
 //        return null;
     }
 
+    /**
+     * Given the provided model, add Gate instances to this qubit. If a Step has no Gate for
+     * this qubit, add the Identity.
+     * @param model 
+     */
+    private void fillGatesFromModel(RenderModel model) {
+        gateList.clear();
+        for (Step s : model.getSteps()) {
+            Optional<Gate> hasGate = s.getGates().stream().filter(g -> g.getMainQubitIndex() == this.idx).findFirst();
+            if (hasGate.isPresent()) {
+                this.gateList.add(hasGate.get());
+            } else {
+                this.gateList.add(new Identity(this.idx));
+            }
+        }
+    }
 }

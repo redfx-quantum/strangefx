@@ -104,6 +104,7 @@ class RenderTests {
         p.addStep(s);
         RenderModel model = new RenderModel(p);
         QubitBoard qb = new QubitBoard(model);
+        qb.layout();
         List<QubitFlow> flows = qb.getQubitFlows();
         assertNotNull(flows);
         assertEquals(flows.size(), 1);
