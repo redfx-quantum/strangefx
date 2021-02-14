@@ -70,7 +70,6 @@ public class QubitBoard extends Group {
 
         wires.addListener((Observable o) -> {
             wiresBox.getChildren().setAll(wires);
-            model.setNQubits(wires.size());
             model.refreshRequest().set(true);
         });
 
@@ -95,7 +94,8 @@ public class QubitBoard extends Group {
     }
 
     public void appendQubit() {
-        wires.add(new QubitFlow(wires.size(), model));
+        QubitFlow flow = new QubitFlow(wires.size(), model);
+        wires.add(flow);
     }
 
     public void clear() {

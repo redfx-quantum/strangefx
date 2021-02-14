@@ -94,7 +94,7 @@ class RenderTests {
         RenderModel model = new RenderModel(p);
         QubitBoard qb = new QubitBoard(model);
     }
-    
+
     @Test
     void createSingleStep() {
         startFX();
@@ -117,6 +117,32 @@ class RenderTests {
         assertTrue (gateNode instanceof GateSymbol);
         GateSymbol symbol = (GateSymbol)gateNode;
         Gate gate = symbol.getGate();
+        assertTrue (gate instanceof X);
+    }
+
+    @Test
+    void createSingleStepTwoqubits() {
+        startFX();
+        Program p = new Program(2);
+        Step s = new Step();
+        s.addGate(new X(1));
+        p.addStep(s);
+        RenderModel model = new RenderModel(p);
+        QubitBoard qb = new QubitBoard(model);
+        qb.layout();
+        List<QubitFlow> flows = qb.getQubitFlows();
+        assertNotNull(flows);
+        assertEquals(flows.size(), 2);
+        QubitFlow flow = flows.get(1);
+        assertEquals(flow.getIndex(), 1);
+        Pane gateRow = flow.getGateRow();
+        assertNotNull(gateRow);
+        assertEquals(gateRow.getChildren().size(), 1);
+        Node gateNode = gateRow.getChildren().get(0);
+        assertTrue (gateNode instanceof GateSymbol);
+        GateSymbol symbol = (GateSymbol)gateNode;
+        Gate gate = symbol.getGate();
+        System.err.println("GATE = "+gate);
         assertTrue (gate instanceof X);
     }
 //    private final LocalSimulator sim = new LocalSimulator(new Model());

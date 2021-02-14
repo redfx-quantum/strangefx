@@ -37,6 +37,7 @@ import org.redfx.strangefx.simulator.GateGroup;
 import org.redfx.strange.Gate;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -45,6 +46,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -57,6 +59,7 @@ public class GateSymbol extends Label {
     static final DataFormat DRAGGABLE_GATE = new DataFormat("draggable-gate");
 
     public static final int HEIGHT = 40;
+    public static final int SEP = 77;
     private final Gate gate;
     private final boolean movable;
     public int spanWires = 1;
@@ -97,22 +100,7 @@ public class GateSymbol extends Label {
         this.movable = movable;
         if (!(gate instanceof Identity)) {
             if (gate instanceof Cnot) {
-                if (idx == 0) {
-                    // first symbol of Cnot is dot
-                    setDot();
-                } else {
-                    Group g = new Group();
-                    Circle c = new Circle(0, 0, 10, Color.TRANSPARENT);
-                    c.setStroke(Color.DARKGRAY);
-                    c.setStrokeWidth(2);
-                    Line l = new Line(0, -10, 0, 10);
-                    l.setStrokeWidth(2);
-                    l.setStroke(Color.DARKGRAY);
-                    g.getChildren().addAll(c, l);
-                    setContentDisplay(ContentDisplay.CENTER);
-                    setGraphic(g);
-                    setText("");
-                }
+                setGraphic(createCNotNode((Cnot)gate));
             } else if (gate instanceof Toffoli) {
                 if (idx == 0 || idx == 1) {
                     // first symbol of Cnot is dot
@@ -200,6 +188,32 @@ public class GateSymbol extends Label {
         if (parent != null) {
             parent.getChildren().remove(this);
         }
+    }
+
+    private Parent createCNotNode(Cnot cnot) {
+        double div2 =  HEIGHT/2;
+        int midx = cnot.getMainQubitIndex();
+        int sidx = cnot.getSecondQubitIndex();
+        AnchorPane answer = new AnchorPane();
+        Circle con = new Circle(0, 0, 5, Color.DARKGREY);
+        con.setTranslateY(-5);
+        Circle c = new Circle(0, 0, 10, Color.TRANSPARENT);
+        c.setTranslateY(-10);
+        c.setLayoutY(SEP * (sidx - midx));
+        c.setStroke(Color.DARKGRAY);
+        c.setStrokeWidth(2);
+        Line l = new Line(0,0, 0, SEP* (sidx-midx) + 10);
+        l.setStrokeWidth(2);
+        l.setStroke(Color.DARKGRAY);
+        AnchorPane.setTopAnchor(con, (double)HEIGHT/2);
+        AnchorPane.setTopAnchor(l, (double)HEIGHT/2);
+        AnchorPane.setTopAnchor(c, (double)(SEP * (sidx-midx)+HEIGHT/2));
+        AnchorPane.setLeftAnchor(con, div2-5);
+        AnchorPane.setLeftAnchor(l, div2);
+        AnchorPane.setLeftAnchor(c, div2-10);
+        answer.getChildren().addAll(con, c, l);
+        answer.setPrefWidth(40);
+        return answer;
     }
 
     @Override 

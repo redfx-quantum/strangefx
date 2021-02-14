@@ -85,11 +85,11 @@ public class QubitFlow extends Region {
     public QubitFlow(int index, RenderModel model) {
         this.model = model;
         this.idx = index;
-        System.err.println("CREATED qubitflow for idx = "+idx);
         fillGatesFromModel(model);
         title.setText(String.format("q[%d] I0>", idx));
         gateRow.getChildren().add(SPACER);
         getStyleClass().add("qubit");
+        this.setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
 
         gateRow.getStyleClass().add("gate-row");
         title.getStyleClass().add("title");
@@ -349,7 +349,6 @@ public class QubitFlow extends Region {
      * use the <code>gateList</code> list to recreate the gateRow
     */
     private void redraw() {
-        System.err.println("REDRAW qubitflow "+idx);
         gateRow.getChildren().clear();
         double deltax = 0;
         for (Gate gate : gateList) {
