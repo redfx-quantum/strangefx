@@ -105,12 +105,13 @@ public class RenderModel {
      * @param n 
      */
     public void setNQubits(int n) {
+        System.err.println("RENDERMODEL, set n to "+n);
         this.nqubits = n;
         this.beginState = new double[n];
         this.steps = new ArrayList(n);
-        for (int i = 0; i < n; i++) {
-            this.steps.add(new Step());
-        }
+//        for (int i = 0; i < n; i++) {
+//            this.steps.add(new Step());
+//        }
     }
     
     public int getNQubits() {
@@ -230,5 +231,31 @@ public class RenderModel {
 //            System.out.println("step "+i+": "+getGatesByStep(i));
 //        }
 //    }
+
+    public void updateGatesForQubit(int idx, ArrayList<Gate> gateList) {
+        System.err.println("[RenderModel] update qubit "+idx+" with gates: "+gateList);
+        int length = gateList.size();
+        for (int i = 0; i < length; i++) {
+            Gate g = gateList.get(i);
+            if (g != null) {
+                while (steps.size() < i+1) {
+                    steps.add(new Step(new Identity(idx)));
+                }
+                Step step = steps.get(i);
+                List<Gate> exists = step.getGates();
+                Gate removeMe = null;
+                for (Gate exist : exists) {
+                    if (exist.getMainQubitIndex() == idx) {
+                        removeMe = exist;
+                    }
+                }
+                if (removeMe != null) {
+                    step.removeGate(removeMe);
+                }
+                step.addGate(g);
+            }
+        }
+        
+    }
     
 }

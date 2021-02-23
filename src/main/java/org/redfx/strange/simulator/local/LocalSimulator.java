@@ -65,12 +65,15 @@ public class LocalSimulator implements Simulator {
     public LocalSimulator(RenderModel model) {
         this.model = model;
         model.refreshRequest().addListener((obs, oldv, newv) -> {
-            calculate();
+            if (newv) {
+                calculate();
+            }
             model.refreshRequest().set(false);
         });
     }
     
     private void calculate() {
+        System.err.println("CALCULATE...");
         int nq = model.getNQubits();
         Program p = new Program(nq);
         int nsteps = model.getNumberOfSteps();

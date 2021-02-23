@@ -350,19 +350,25 @@ public class QubitFlow extends Region {
     */
     private void redraw() {
         gateRow.getChildren().clear();
+        System.err.println("redraw qubitflow "+idx+", gatelist = "+gateList);
         double deltax = 0;
         for (Gate gate : gateList) {
-            GateSymbol symbol = GateSymbol.of(gate);
-            symbol.setTranslateX(deltax);
-            symbol.translateYProperty().bind(gateRow.heightProperty().add(-1*GateSymbol.HEIGHT).divide(2));
+            System.err.println("redraw gate " + gate);
+            if (gate != null) {
+                GateSymbol symbol = GateSymbol.of(gate);
+                symbol.setTranslateX(deltax);
+                symbol.translateYProperty().bind(gateRow.heightProperty().add(-1 * GateSymbol.HEIGHT).divide(2));
+                gateRow.getChildren().add(symbol);
+                BorderPane.setAlignment(symbol, Pos.CENTER);
+            }
             deltax += STEP_WIDTH;
-            gateRow.getChildren().add(symbol);
-            BorderPane.setAlignment(symbol, Pos.CENTER);
         }
     }
     
     private void updateModel() {
         System.err.println("UPDATE MODEL");
+        model.updateGatesForQubit(idx, gateList);
+        model.refreshRequest().set(true);
     }
 //
 //    private void updateModel() {
