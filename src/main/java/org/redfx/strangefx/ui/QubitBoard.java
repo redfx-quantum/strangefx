@@ -125,8 +125,10 @@ public class QubitBoard extends Group {
     }
     
     private void processCircuit(ArrayList<Step> steps) {
+        System.err.println("Process circuit with "+wires.size()+" qubits and "+steps.size()+" steps.");
         Program p = new Program(wires.size());
         for (Step step : steps) {
+            System.err.println("Step: "+step);
             p.addStep(step);
         }
         QuantumExecutionEnvironment qee = new SimpleQuantumExecutionEnvironment();

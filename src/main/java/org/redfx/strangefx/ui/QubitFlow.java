@@ -75,7 +75,7 @@ public class QubitFlow extends Region {
 
     private Pane gateRow = new Pane();
     private HBox allGates = new HBox();
-    private int idx; // the number of the qubit
+    private final int idx; // the number of the qubit
 
     private Region oldParent = null;
     private ArrayList<Gate> gateList = new ArrayList<>();
@@ -178,10 +178,10 @@ public class QubitFlow extends Region {
                     e.setDropCompleted(true);
                 } else {
                     // re-create gate symbol which was dragged from the toolbar
-                    symbol = GateSymbol.of(symbol.getGate());
+                    symbol = GateSymbol.of(symbol.getGate().getClass(), idx);
                     symbol.setTranslateX(spacerIndex * STEP_WIDTH);
                     gateRow.getChildren().add(symbol);
-                                        insert(symbol,spacerIndex);
+                    insert(symbol,spacerIndex);
 
                     e.setDropCompleted(true);
                 }
@@ -327,22 +327,30 @@ public class QubitFlow extends Region {
         return measurement;
     }
     
-    private void insert(GateSymbol gs, int idx) {
+    /** 
+     * Insert a gate with the given symbol at the index specified by locationIndex
+     * Note that locationIndex is NOT the index of this qubit, which is represented
+     * by idx
+     * @param gs
+     * @param locationIndex 
+     */
+    private void insert(GateSymbol gs, int locationIndex) {
         Gate g = gs.getGate();
-        while (gateList.size() < idx ) gateList.add(gateList.size(), null);
+        g.setMainQubitIndex(idx);
+        while (gateList.size() < locationIndex ) gateList.add(gateList.size(), null);
         // now gateList.size is at least idx. Are we adding at the end?
-        if (gateList.size() == idx) {
+        if (gateList.size() == locationIndex) {
             gateList.add(gateList.size(), g);
             return;
         }
         // we are adding before the end of this row. If we have a null value on
         // the target place, we replave it.
-        if (gateList.get(idx) == null) {
-            gateList.set(idx, g);
+        if (gateList.get(locationIndex) == null) {
+            gateList.set(locationIndex, g);
             return;
         }
         // the desired element has an element already we need to right-shift all 
-        gateList.add(idx, g);
+        gateList.add(locationIndex, g);
     }
     
     /*

@@ -53,6 +53,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GateSymbol extends Label {
 
@@ -65,6 +67,27 @@ public class GateSymbol extends Label {
     public int spanWires = 1;
     public boolean probability = false;
 
+    /**
+     * Create a new GateSymbol instance, and a new instance of the provided Gate class.
+     * No parameters are set on this gate.
+     * @param clazz
+     * @param movable
+     * @return 
+     */
+    public static GateSymbol of( Class<? extends Gate> clazz, int idx) {
+        return GateSymbol.of(clazz, idx,true);
+    }
+    
+    public static GateSymbol of( Class<? extends Gate> clazz, int idx, Boolean movable ) {
+        GateSymbol answer = null;
+        try {
+            answer = new GateSymbol(clazz.getDeclaredConstructor(int.class).newInstance(idx), movable, 0);
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("Can't create gatesymbol for class "+clazz, ex);
+        }
+        return answer;
+    }
+        
     public static GateSymbol of( Gate gate, Boolean movable ) {
         return new GateSymbol(gate, movable, 0);
     }
@@ -218,6 +241,6 @@ public class GateSymbol extends Label {
 
     @Override 
     public String toString() {
-        return "GateSymbol for gate "+gate;
+        return "GateSymbol for gate "+gate+" add address "+super.toString();
     }
 }
