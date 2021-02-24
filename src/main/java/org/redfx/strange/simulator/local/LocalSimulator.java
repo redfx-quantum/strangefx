@@ -2,7 +2,7 @@
  * #%L
  * StrangeFX
  * %%
- * Copyright (C) 2020 Johan Vos
+ * Copyright (C) 2020, 2021 Johan Vos
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -73,13 +73,10 @@ public class LocalSimulator implements Simulator {
     }
     
     private void calculate() {
-        System.err.println("CALCULATE...");
         int nq = model.getNQubits();
         Program p = new Program(nq);
         int nsteps = model.getNumberOfSteps();
-        System.err.println("[LS] program with "+nq+" qubits and "+nsteps+" steps.");
         for (Step step : model.getSteps()) { 
-            System.err.println("process step: "+step);
             p.addStep(step);
             SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
             Result res = sqee.runProgram(p);

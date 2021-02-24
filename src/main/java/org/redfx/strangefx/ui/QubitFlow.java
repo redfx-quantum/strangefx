@@ -200,8 +200,6 @@ public class QubitFlow extends Region {
     private InvalidationListener createEndStateListener() {
         InvalidationListener answer = (Observable o) -> {
             if ((model != null) && (model.getEndStates().size() > idx)) {
-                System.err.println("model = "+model);
-                System.err.println("endstates = "+model.getEndStates());
                 double mv = model.getEndStates().get(idx);
                 measurement.setMeasuredChance(mv);
             }
@@ -358,10 +356,8 @@ public class QubitFlow extends Region {
     */
     private void redraw() {
         gateRow.getChildren().clear();
-        System.err.println("redraw qubitflow "+idx+", gatelist = "+gateList);
         double deltax = 0;
         for (Gate gate : gateList) {
-            System.err.println("redraw gate " + gate);
             if (gate != null) {
                 GateSymbol symbol = GateSymbol.of(gate);
                 symbol.setTranslateX(deltax);
@@ -374,7 +370,6 @@ public class QubitFlow extends Region {
     }
     
     private void updateModel() {
-        System.err.println("UPDATE MODEL");
         model.updateGatesForQubit(idx, gateList);
         model.refreshRequest().set(true);
     }

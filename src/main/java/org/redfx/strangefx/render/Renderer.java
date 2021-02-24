@@ -40,7 +40,6 @@ import org.redfx.strange.Qubit;
 import org.redfx.strange.Result;
 import org.redfx.strange.Step;
 import org.redfx.strange.gate.Identity;
-import org.redfx.strange.gate.Oracle;
 import org.redfx.strange.local.SimpleQuantumExecutionEnvironment;
 import org.redfx.strangefx.simulator.RenderModel;
 import org.redfx.strangefx.ui.GateSymbol;
@@ -49,8 +48,6 @@ import org.redfx.strangefx.ui.QubitBoard;
 import org.redfx.strangefx.ui.QubitFlow;
 import org.redfx.strange.ui.render.BoardOverlay;
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
@@ -63,10 +60,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Renderer {
 
@@ -92,7 +87,6 @@ public class Renderer {
     }
 
     public static void showProbabilities(Program p, int count) {
-        System.err.println("SHOWPROB, count = " + count);
         QuantumExecutionEnvironment simulator = new SimpleQuantumExecutionEnvironment();
         int nq = p.getNumberQubits();
         int[] counter = new int[1 << nq];
@@ -100,9 +94,6 @@ public class Renderer {
             Result result = simulator.runProgram(p);
             int prob = result.getMeasuredProbability();
             counter[prob]++;
-        }
-        for (int i = 0; i < counter.length; i++) {
-            System.err.println("cnt [" + i + "]: " + counter[i]);
         }
         Platform.runLater(() -> renderMeasuredProbabilities(counter));
     }
@@ -115,8 +106,6 @@ public class Renderer {
     QubitBoard getQubitBoard(Program program) {
         this.model = new RenderModel(program);
         int nQubits = program.getNumberQubits();
-        System.err.println("NQ = "+nQubits);
-        System.err.println("MQ = "+model.getNQubits());
         QubitBoard board = new QubitBoard(model);
         List<GateSymbol> multiWires = new LinkedList();
         List<GateSymbol> probabilities = new LinkedList();
@@ -126,7 +115,6 @@ public class Renderer {
             boolean[] gotit = new boolean[nQubits];
             for (Gate gate : s.getGates()) {
                 int qb = gate.getMainQubitIndex();
-                System.err.println("qb = "+qb);
                 gotit[qb] = true;
                 QubitFlow wire = wires.get(qb);
                 wire.setMinWidth(480);
@@ -172,7 +160,6 @@ public class Renderer {
         Double[] endValues = new Double[probability.length];
         int idx = 0;
         for (Qubit qubit : qubits) {
-            System.err.println("[GRP] prob["+idx+"] = "+ qubit.getProbability());
             endValues[idx++] = qubit.getProbability();
         }
         endStates.setAll(endValues);
