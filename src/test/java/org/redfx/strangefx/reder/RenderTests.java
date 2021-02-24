@@ -30,24 +30,124 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package org.redfx.strange.simulator.local;
-
-import org.redfx.strangefx.simulator.RenderModel;
-import org.redfx.strange.Complex;
-import org.redfx.strange.Gate;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+package org.redfx.strangefx.reder;
 
 import java.util.List;
+import javafx.application.Platform;
+import javafx.scene.Node;
+import javafx.scene.layout.Pane;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.redfx.strange.Gate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("Local simulator tests")
-class LocalSimulatorTests {
+import org.redfx.strange.Program;
+import org.redfx.strange.Step;
+import org.redfx.strange.gate.X;
+import org.redfx.strangefx.simulator.RenderModel;
+import org.redfx.strangefx.ui.GateSymbol;
 
-    private final LocalSimulator sim = new LocalSimulator(new RenderModel());
-    private final double DELTA = .0001;
-    private final double SQRT2 = Math.sqrt(2.d)/2.d;
+import org.redfx.strangefx.ui.QubitBoard;
+import org.redfx.strangefx.ui.QubitFlow;
+
+@DisplayName("Rendertests")
+class RenderTests {
+
+    private void startFX() {
+
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                System.err.println("JavaFX Platform initialized");
+            }
+        };
+        try {
+            Platform.startup(r);
+        } catch (java.lang.IllegalStateException e) {
+            System.err.println("Toolkit already initialized, ignore");
+        }
+    
+    }
+    
+    @Test
+    @DisplayName("createQubitBoard") 
+    void createQubitBoard() {
+        RenderModel model = new RenderModel();
+        QubitBoard qb = new QubitBoard(model);
+    }
+    
+    @Test
+    void modelProgramConstructor() {
+        int origQubits = 3;
+        Program p = new Program(origQubits);
+        RenderModel model = new RenderModel(p);
+        int modelQubits = model.getNQubits();
+        assertEquals(origQubits, modelQubits, "Model and created program need to have same amount of qubits");
+    }
+    
+    @Test
+    void createQubitBoardWithQubits() {
+        startFX();
+        int origQubits = 3;
+        Program p = new Program(origQubits);
+        RenderModel model = new RenderModel(p);
+        QubitBoard qb = new QubitBoard(model);
+    }
+
+    @Test
+    void createSingleStep() {
+        startFX();
+        Program p = new Program(1);
+        Step s = new Step();
+        s.addGate(new X(0));
+        p.addStep(s);
+        RenderModel model = new RenderModel(p);
+        QubitBoard qb = new QubitBoard(model);
+        qb.layout();
+        List<QubitFlow> flows = qb.getQubitFlows();
+        assertNotNull(flows);
+        assertEquals(flows.size(), 1);
+        QubitFlow flow = flows.get(0);
+        assertEquals(flow.getIndex(), 0);
+        Pane gateRow = flow.getGateRow();
+        assertNotNull(gateRow);
+        assertEquals(gateRow.getChildren().size(), 1);
+        Node gateNode = gateRow.getChildren().get(0);
+        assertTrue (gateNode instanceof GateSymbol);
+        GateSymbol symbol = (GateSymbol)gateNode;
+        Gate gate = symbol.getGate();
+        assertTrue (gate instanceof X);
+    }
+
+    @Test
+    void createSingleStepTwoqubits() {
+        startFX();
+        Program p = new Program(2);
+        Step s = new Step();
+        s.addGate(new X(1));
+        p.addStep(s);
+        RenderModel model = new RenderModel(p);
+        QubitBoard qb = new QubitBoard(model);
+        qb.layout();
+        List<QubitFlow> flows = qb.getQubitFlows();
+        assertNotNull(flows);
+        assertEquals(flows.size(), 2);
+        QubitFlow flow = flows.get(1);
+        assertEquals(flow.getIndex(), 1);
+        Pane gateRow = flow.getGateRow();
+        assertNotNull(gateRow);
+        assertEquals(gateRow.getChildren().size(), 1);
+        Node gateNode = gateRow.getChildren().get(0);
+        assertTrue (gateNode instanceof GateSymbol);
+        GateSymbol symbol = (GateSymbol)gateNode;
+        Gate gate = symbol.getGate();
+        System.err.println("GATE = "+gate);
+        assertTrue (gate instanceof X);
+    }
+//    private final LocalSimulator sim = new LocalSimulator(new Model());
+//    private final double DELTA = .0001;
+//    private final double SQRT2 = Math.sqrt(2.d)/2.d;
 //
 //    @Test
 //    @DisplayName("Simple: One qubit, no gates")

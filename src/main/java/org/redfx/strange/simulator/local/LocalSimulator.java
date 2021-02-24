@@ -2,7 +2,7 @@
  * #%L
  * StrangeFX
  * %%
- * Copyright (C) 2020 Johan Vos
+ * Copyright (C) 2020, 2021 Johan Vos
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -43,7 +43,7 @@ import org.redfx.strange.Qubit;
 import org.redfx.strange.Result;
 import org.redfx.strange.Step;
 import org.redfx.strangefx.simulator.Simulator;
-import org.redfx.strangefx.simulator.Model;
+import org.redfx.strangefx.simulator.RenderModel;
 import org.redfx.strange.Complex;
 import org.redfx.strangefx.simulator.CloudSimulator;
 import org.redfx.strange.local.SimpleQuantumExecutionEnvironment;
@@ -60,11 +60,14 @@ import javafx.collections.ObservableList;
 public class LocalSimulator implements Simulator {
 
     private final int LOCAL_TRESHOLD = 1;
-    private final Model model = Model.getInstance();
+    private final RenderModel model;
     CloudSimulator cloudSimulator = new CloudSimulator();
-    public LocalSimulator() {
+    public LocalSimulator(RenderModel model) {
+        this.model = model;
         model.refreshRequest().addListener((obs, oldv, newv) -> {
-            calculate();
+            if (newv) {
+                calculate();
+            }
             model.refreshRequest().set(false);
         });
     }
@@ -73,13 +76,8 @@ public class LocalSimulator implements Simulator {
         int nq = model.getNQubits();
         Program p = new Program(nq);
         int nsteps = model.getNumberOfSteps();
-        for (int step = 0; step < nsteps; step++) {
-            Step s = new Step();
-            Gate[] gate = model.getGatesByStep(step);
-            for (Gate g : gate) {
-                s.addGate(g);
-            }
-            p.addStep(s);
+        for (Step step : model.getSteps()) { 
+            p.addStep(step);
             SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
             Result res = sqee.runProgram(p);
             Qubit[] qubits = res.getQubits();
@@ -101,12 +99,12 @@ public class LocalSimulator implements Simulator {
     }
 
     @Override
-    public Complex[] calculateResults(Model m) {
+    public Complex[] calculateResults(RenderModel m) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public double[] calculateQubitStates(Model m) {
+    public double[] calculateQubitStates(RenderModel m) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

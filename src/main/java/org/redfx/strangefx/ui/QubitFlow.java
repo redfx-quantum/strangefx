@@ -33,13 +33,12 @@
 package org.redfx.strangefx.ui;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.redfx.strange.gate.*;
-import org.redfx.strangefx.simulator.Model;
+import org.redfx.strangefx.simulator.RenderModel;
 import org.redfx.strange.Gate;
 
 import javafx.beans.*;
@@ -76,24 +75,21 @@ public class QubitFlow extends Region {
 
     private Pane gateRow = new Pane();
     private HBox allGates = new HBox();
-    private int idx; // the number of the qubit
+    private final int idx; // the number of the qubit
 
     private Region oldParent = null;
-    private ArrayList<GateSymbol> gateList = new ArrayList<>();
-    private final Model model = Model.getInstance();
+    private ArrayList<Gate> gateList = new ArrayList<>();
+    private final RenderModel model;
+    private InvalidationListener endStateListener;
 
-    private InvalidationListener endStateListener = (Observable o) -> {
-        if (model.getEndStates().size() > idx) {
-            double mv = model.getEndStates().get(idx);
-            measurement.setMeasuredChance(mv);
-        }
-    };
-
-    public QubitFlow(int index) {
+    public QubitFlow(int index, RenderModel model) {
+        this.model = model;
         this.idx = index;
+        fillGatesFromModel(model);
         title.setText(String.format("q[%d] I0>", idx));
         gateRow.getChildren().add(SPACER);
         getStyleClass().add("qubit");
+        this.setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
 
         gateRow.getStyleClass().add("gate-row");
         title.getStyleClass().add("title");
@@ -182,10 +178,10 @@ public class QubitFlow extends Region {
                     e.setDropCompleted(true);
                 } else {
                     // re-create gate symbol which was dragged from the toolbar
-                    symbol = GateSymbol.of(symbol.getGate());
+                    symbol = GateSymbol.of(symbol.getGate().getClass(), idx);
                     symbol.setTranslateX(spacerIndex * STEP_WIDTH);
                     gateRow.getChildren().add(symbol);
-                                        insert(symbol,spacerIndex);
+                    insert(symbol,spacerIndex);
 
                     e.setDropCompleted(true);
                 }
@@ -196,7 +192,19 @@ public class QubitFlow extends Region {
         });
 
         gateRow.setOnDragExited(e -> removeSpacer());
+        this.endStateListener = createEndStateListener();
         model.getEndStates().addListener(endStateListener);
+        redraw();
+    }
+
+    private InvalidationListener createEndStateListener() {
+        InvalidationListener answer = (Observable o) -> {
+            if ((model != null) && (model.getEndStates().size() > idx)) {
+                double mv = model.getEndStates().get(idx);
+                measurement.setMeasuredChance(mv);
+            }
+        };
+        return answer;
     }
 
     public void cleanup() {
@@ -211,6 +219,8 @@ public class QubitFlow extends Region {
         return askOnTop;
     }
 
+   // private int stepIndex = 0;
+    
     public GateSymbol addGate(Gate gate) {
         if (gateRow.getChildren().isEmpty()) {
             gateRow.getChildren().add(SPACER);
@@ -243,6 +253,7 @@ public class QubitFlow extends Region {
             measuredLine.translateXProperty().bind(symbol.layoutXProperty().add(allGates.layoutXProperty()));
             measuredLine.setVisible(true);
         }
+        redraw();
         return symbol;
     }
 
@@ -268,6 +279,14 @@ public class QubitFlow extends Region {
         return symbol;
     }
 
+    /**
+     * For testing only!
+     * @return 
+     */
+    public Pane getGateRow() {
+        return this.gateRow;
+    }
+    
     private double getOccupiedWidth() {
 
         double width = 0;
@@ -306,21 +325,30 @@ public class QubitFlow extends Region {
         return measurement;
     }
     
-    private void insert(GateSymbol g, int idx) {
-        while (gateList.size() < idx ) gateList.add(gateList.size(), null);
+    /** 
+     * Insert a gate with the given symbol at the index specified by locationIndex
+     * Note that locationIndex is NOT the index of this qubit, which is represented
+     * by idx
+     * @param gs
+     * @param locationIndex 
+     */
+    private void insert(GateSymbol gs, int locationIndex) {
+        Gate g = gs.getGate();
+        g.setMainQubitIndex(idx);
+        while (gateList.size() < locationIndex ) gateList.add(gateList.size(), null);
         // now gateList.size is at least idx. Are we adding at the end?
-        if (gateList.size() == idx) {
+        if (gateList.size() == locationIndex) {
             gateList.add(gateList.size(), g);
             return;
         }
         // we are adding before the end of this row. If we have a null value on
         // the target place, we replave it.
-        if (gateList.get(idx) == null) {
-            gateList.set(idx, g);
+        if (gateList.get(locationIndex) == null) {
+            gateList.set(locationIndex, g);
             return;
         }
         // the desired element has an element already we need to right-shift all 
-        gateList.add(idx, g);
+        gateList.add(locationIndex, g);
     }
     
     /*
@@ -328,36 +356,44 @@ public class QubitFlow extends Region {
     */
     private void redraw() {
         gateRow.getChildren().clear();
-        for (int i = 0; i < gateList.size(); i++) {
-            if (gateList.get(i) != null) {
-                double tx = i * STEP_WIDTH;
-                GateSymbol s = (GateSymbol)(gateList.get(i));
-                s.setTranslateX(tx);
-                gateRow.getChildren().add(s);
+        double deltax = 0;
+        for (Gate gate : gateList) {
+            if (gate != null) {
+                GateSymbol symbol = GateSymbol.of(gate);
+                symbol.setTranslateX(deltax);
+                symbol.translateYProperty().bind(gateRow.heightProperty().add(-1 * GateSymbol.HEIGHT).divide(2));
+                gateRow.getChildren().add(symbol);
+                BorderPane.setAlignment(symbol, Pos.CENTER);
             }
+            deltax += STEP_WIDTH;
         }
-    }
-
-    private void updateModel() {
-        ArrayList<Gate> qgates = new ArrayList();
-        for (GateSymbol gs : gateList) {
-            Gate gate = null;
-            if (gs != null) {
-                Class gateClass = gs.getGate().getClass();
-                try {
-                    Constructor<Gate> c = gateClass.getConstructor(int.class);
-                    gate = c.newInstance(idx);
-                } catch (Throwable ex) {
-                    Logger.getLogger(QubitFlow.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                gate.setMainQubitIndex(idx);
-            }
-            qgates.add(gate);
-        }
-        model.setGatesForCircuit(idx, qgates);
-        ArrayList<Step> steps = model.getSteps();
     }
     
+    private void updateModel() {
+        model.updateGatesForQubit(idx, gateList);
+        model.refreshRequest().set(true);
+    }
+//
+//    private void updateModel() {
+//        ArrayList<Gate> qgates = new ArrayList();
+//        for (GateSymbol gs : gateList) {
+//            Gate gate = null;
+//            if (gs != null) {
+//                Class gateClass = gs.getGate().getClass();
+//                try {
+//                    Constructor<Gate> c = gateClass.getConstructor(int.class);
+//                    gate = c.newInstance(idx);
+//                } catch (Throwable ex) {
+//                    Logger.getLogger(QubitFlow.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//                gate.setMainQubitIndex(idx);
+//            }
+//            qgates.add(gate);
+//        }
+//        model.setGatesForCircuit(idx, qgates);
+//        ArrayList<Step> steps = model.getSteps();
+//    }
+//    
     private Gate createGate(Gate g) {
         return g;
 //        Class<? extends Gate> gateClass = g.getClass();
@@ -372,4 +408,20 @@ public class QubitFlow extends Region {
 //        return null;
     }
 
+    /**
+     * Given the provided model, add Gate instances to this qubit. If a Step has no Gate for
+     * this qubit, add the Identity.
+     * @param model 
+     */
+    private void fillGatesFromModel(RenderModel model) {
+        gateList.clear();
+        for (Step s : model.getSteps()) {
+            Optional<Gate> hasGate = s.getGates().stream().filter(g -> g.getMainQubitIndex() == this.idx).findFirst();
+            if (hasGate.isPresent()) {
+                this.gateList.add(hasGate.get());
+            } else {
+                this.gateList.add(new Identity(this.idx));
+            }
+        }
+    }
 }

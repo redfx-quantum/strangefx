@@ -48,8 +48,8 @@ public interface Simulator {
     
     public Complex[] calculateResults(Gate[][] gates);
     
-    public Complex[] calculateResults(Model m);
+    public Complex[] calculateResults(RenderModel m);
     
-    public double[] calculateQubitStates(Model m);
+    public double[] calculateQubitStates(RenderModel m);
     
 }

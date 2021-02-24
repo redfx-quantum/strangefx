@@ -32,7 +32,7 @@
  */
 package org.redfx.strangefx.ui;
 
-import org.redfx.strangefx.simulator.Model;
+import org.redfx.strangefx.simulator.RenderModel;
 import org.redfx.strange.ui.render.*;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
@@ -44,6 +44,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
+import org.redfx.strange.Gate;
 import org.redfx.strange.Program;
 import org.redfx.strange.QuantumExecutionEnvironment;
 import org.redfx.strange.Qubit;
@@ -52,40 +53,37 @@ import org.redfx.strange.Step;
 import org.redfx.strange.local.SimpleQuantumExecutionEnvironment;
 
 public class QubitBoard extends Group {
-
-    private Model model = Model.getInstance();
+    
+    private RenderModel model;
     private ObservableList<QubitFlow> wires = FXCollections.observableArrayList();
 
-    private final int initialQubitNumber;
+    private final int nQubits;
 
     private final VBox wiresBox = new VBox();
     private final List<Node> overlays = new LinkedList<>();
 
-    public QubitBoard(int initialQubitNumber) {
-
-        this.initialQubitNumber = initialQubitNumber;
+    public QubitBoard(RenderModel model) {
+        this.model = model;
+        this.nQubits = model.getNQubits();
+            
         wiresBox.getChildren().setAll(wires);
 
         wires.addListener((Observable o) -> {
             wiresBox.getChildren().setAll(wires);
-            model.setNQubits(wires.size());
             model.refreshRequest().set(true);
         });
 
-        model.stepsProperty().addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable observable) {
-                processCircuit(model.stepsProperty().get());
-            }
+        model.stepsProperty().addListener((Observable observable) -> {
+            processCircuit(model.stepsProperty().get());
+            renderCircuit();
         });
 
-        for (int i = 0; i < initialQubitNumber; i++) {
+        for (int i = 0; i < nQubits; i++) {
             appendQubit();
         }
-
         getChildren().add(wiresBox);
-
     }
+
 
     public void addOverlay(BoardOverlay overlay) {
         this.getChildren().add(overlay);
@@ -96,17 +94,41 @@ public class QubitBoard extends Group {
     }
 
     public void appendQubit() {
-        wires.add(new QubitFlow(wires.size()));
+        QubitFlow flow = new QubitFlow(wires.size(), model);
+        wires.add(flow);
     }
 
     public void clear() {
         wires.forEach(QubitFlow::clear);
-        wires.removeIf(qb -> qb.getIndex() > (initialQubitNumber - 1));
+        wires.removeIf(qb -> qb.getIndex() > (nQubits - 1));
     }
-
+    
+    private void renderCircuit() {
+        clear();
+        for (Step step: model.getSteps()) {
+            List<Gate> gates = step.getGates();
+            boolean[] gotit = new boolean[nQubits];
+            for (Gate gate : gates) {
+                int qb = gate.getMainQubitIndex();
+                System.err.println("qb = "+qb);
+                gotit[qb] = true;
+                QubitFlow wire = wires.get(qb);
+                wire.setMinWidth(480);
+                System.err.println("Calling addGate");
+                GateSymbol symbol = wire.addGate(gate);
+            }
+        }
+    }
+    
+    public List<QubitFlow> getQubitFlows() {
+        return this.wires;
+    }
+    
     private void processCircuit(ArrayList<Step> steps) {
+        System.err.println("Process circuit with "+wires.size()+" qubits and "+steps.size()+" steps.");
         Program p = new Program(wires.size());
         for (Step step : steps) {
+            System.err.println("Step: "+step);
             p.addStep(step);
         }
         QuantumExecutionEnvironment qee = new SimpleQuantumExecutionEnvironment();
