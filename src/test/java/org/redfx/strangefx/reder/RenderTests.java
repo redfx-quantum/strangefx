@@ -55,7 +55,7 @@ import org.redfx.strangefx.ui.QubitFlow;
 class RenderTests {
 
     private void startFX() {
-
+        System.err.println("Start JavaFX framework...");
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -63,7 +63,9 @@ class RenderTests {
             }
         };
         try {
+            System.err.println("Startup JavaFX Platform");
             Platform.startup(r);
+            System.err.println("Startup JavaFX Platform done");
         } catch (java.lang.IllegalStateException e) {
             System.err.println("Toolkit already initialized, ignore");
         }
@@ -73,6 +75,7 @@ class RenderTests {
     @Test
     @DisplayName("createQubitBoard") 
     void createQubitBoard() {
+        System.err.println("CreateQubitBoard");
         RenderModel model = new RenderModel();
         QubitBoard qb = new QubitBoard(model);
     }
