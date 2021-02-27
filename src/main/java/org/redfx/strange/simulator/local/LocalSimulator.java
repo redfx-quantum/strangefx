@@ -111,7 +111,6 @@ public class LocalSimulator implements Simulator {
                 }
             }
         }
-        System.err.println("converted steps: "+answer);
         return answer;
     }
     

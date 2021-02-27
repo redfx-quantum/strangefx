@@ -67,6 +67,9 @@ public class GateSymbol extends Label {
     public int spanWires = 1;
     public boolean probability = false;
 
+    private int index = -1;
+    private QubitFlow wire;
+    
     /**
      * Create a new GateSymbol instance, and a new instance of the provided Gate class.
      * No parameters are set on this gate.
@@ -120,6 +123,7 @@ public class GateSymbol extends Label {
     }
     
     GateSymbol( Gate gate, boolean movable, int idx) {
+        this.index = idx;
         this.spanWires = gate.getAffectedQubitIndexes().size();
         this.gate = Objects.requireNonNull(gate);
         this.movable = movable;
@@ -197,6 +201,10 @@ public class GateSymbol extends Label {
         prepareDrag();
     }
     
+    public void setWire(QubitFlow f) {
+        this.wire = f;
+    }
+    
     public String getName() {
         return (gate == null ? "NOT" : gate.getName());
     }
@@ -227,9 +235,11 @@ public class GateSymbol extends Label {
 
     public void removeFromParent() {
         Pane parent = (Pane) getParent();
-        System.err.println("PANE: "+parent);
         if (parent != null) {
             parent.getChildren().remove(this);
+        }
+        if (this.wire != null) {
+            this.wire.gateSymbolRemoved(this);
         }
     }
 

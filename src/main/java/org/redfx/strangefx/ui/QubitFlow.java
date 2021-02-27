@@ -344,15 +344,15 @@ public class QubitFlow extends Region {
 //            return;
 //        }
         g.setMainQubitIndex(idx);
-        while (gateList.size() < locationIndex ) gateList.add(gateList.size(), null);
+        while (gateList.size() < locationIndex ) gateList.add(gateList.size(), new Identity(idx));
         // now gateList.size is at least idx. Are we adding at the end?
         if (gateList.size() == locationIndex) {
             gateList.add(gateList.size(), g);
             return;
         }
-        // we are adding before the end of this row. If we have a null value on
+        // we are adding before the end of this row. If we have an Identiy value on
         // the target place, we replave it.
-        if (gateList.get(locationIndex) == null) {
+        if (gateList.get(locationIndex) instanceof Identity) {
             gateList.set(locationIndex, g);
             return;
         }
@@ -369,6 +369,7 @@ public class QubitFlow extends Region {
         for (Gate gate : gateList) {
             if (gate != null) {
                 GateSymbol symbol = GateSymbol.of(gate);
+                symbol.setWire(this);
                 symbol.setTranslateX(deltax);
                 symbol.translateYProperty().bind(gateRow.heightProperty().add(-1 * GateSymbol.HEIGHT).divide(2));
                 gateRow.getChildren().add(symbol);
@@ -376,6 +377,18 @@ public class QubitFlow extends Region {
             }
             deltax += STEP_WIDTH;
         }
+    }
+    
+    public void gateSymbolRemoved(GateSymbol symbol) {
+        Optional<Gate> target = gateList.stream().filter(g -> g.equals(symbol.getGate())).findFirst();
+        if (target.isPresent()) {
+            int stepidx = gateList.indexOf(target.get());
+            gateList.remove(stepidx);
+            gateList.add(stepidx, new Identity(idx));
+        } else {
+            System.err.println("Didn't find gate");
+        }
+        updateModel();
     }
     
     private void updateModel() {
