@@ -2,7 +2,7 @@
  * #%L
  * StrangeFX
  * %%
- * Copyright (C) 2020 Johan Vos
+ * Copyright (C) 2020, 2021 Johan Vos
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -45,10 +45,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
+import org.redfx.strangefx.ui.GateSymbol.ControlQubit;
 
 public class Main extends Application {
     
-    private RenderModel model = new RenderModel();
+    private final RenderModel model = new RenderModel();
 
     public static void main(String[] args) {
         System.out.println("hello, strange");
@@ -77,6 +78,8 @@ public class Main extends Application {
             GateSymbol.of(new Y(0), false),
             GateSymbol.of(new Z(0), false),
             GateSymbol.of(new Hadamard(0), false),
+            new Separator(),
+            GateSymbol.of(new PartialGate(PartialGate.ControlQubit.ON)),
             toolbarFiller,
             logo
         );

@@ -71,13 +71,19 @@ public class GateSymbol extends Label {
      * Create a new GateSymbol instance, and a new instance of the provided Gate class.
      * No parameters are set on this gate.
      * @param clazz
-     * @param movable
      * @return 
      */
     public static GateSymbol of( Class<? extends Gate> clazz, int idx) {
-        return GateSymbol.of(clazz, idx,true);
+        return GateSymbol.of(clazz, idx, true);
     }
     
+    /**
+     * Create a new GateSymbol instance, and a new instance of the provided Gate class.
+     * No parameters are set on this gate.
+     * @param clazz
+     * @param movable
+     * @return 
+     */
     public static GateSymbol of( Class<? extends Gate> clazz, int idx, Boolean movable ) {
         GateSymbol answer = null;
         try {
@@ -99,24 +105,20 @@ public class GateSymbol extends Label {
     public static GateSymbol of( Gate gate, int idx ) {
         return new GateSymbol(gate, true, idx);
     }
+    
+    public static GateSymbol of (ControlQubit ctrl) {
+        return new GateSymbol(ctrl);
+    }
+    
+    public enum ControlQubit {
+        ON,
+        OFF
+    }
 
     GateSymbol( Gate gate, boolean movable) {
         this (gate, movable, 0);
     }
-
-    public boolean isIdentity() {
-        return (this.gate instanceof Identity);
-    }
     
-    void setDot() {
-        Group g = new Group();
-        Circle c = new Circle(0,0,5, Color.DARKGREY);
-        g.getChildren().add(c);
-        setContentDisplay(ContentDisplay.CENTER);
-        setGraphic(g);
-        setText("");
-    }
-
     GateSymbol( Gate gate, boolean movable, int idx) {
         this.spanWires = gate.getAffectedQubitIndexes().size();
         this.gate = Objects.requireNonNull(gate);
@@ -163,15 +165,18 @@ public class GateSymbol extends Label {
         if (movable) {
             setContextMenu(buildContextMenu());
         }
+        prepareDrag();
+    }
 
-        setOnDragDetected(e -> {
+    void prepareDrag() {
+          setOnDragDetected(e -> {
             System.getProperties().put(DRAGGABLE_GATE, this);
 
           //  Dragboard db = this.startDragAndDrop(  isMovable()? TransferMode.MOVE: TransferMode.COPY);
             Dragboard db = this.startDragAndDrop(TransferMode.ANY);
             db.setDragView(this.snapshot(null, null));
             ClipboardContent content = new ClipboardContent();
-            content.putString(gate.getName());
+            content.putString(getName());
             content.put(DRAGGABLE_GATE, "");
             db.setContent(content);
             e.consume();
@@ -183,9 +188,23 @@ public class GateSymbol extends Label {
         
         this.setOnDragDropped(e -> {
         });
-
     }
-
+    
+    GateSymbol(ControlQubit ctrl) {
+        this.gate = null;
+        this.movable = false;
+        setDot();
+        prepareDrag();
+    }
+    
+    public String getName() {
+        return (gate == null ? "NOT" : gate.getName());
+    }
+    
+    public boolean isIdentity() {
+        return (this.gate instanceof Identity);
+    }
+    
     private String getStyle(String group ) {
         return group.toLowerCase().replaceAll("_", "");
     }
@@ -208,6 +227,7 @@ public class GateSymbol extends Label {
 
     public void removeFromParent() {
         Pane parent = (Pane) getParent();
+        System.err.println("PANE: "+parent);
         if (parent != null) {
             parent.getChildren().remove(this);
         }
@@ -237,6 +257,19 @@ public class GateSymbol extends Label {
         answer.getChildren().addAll(con, c, l);
         answer.setPrefWidth(40);
         return answer;
+    }
+
+    void setDot() {
+        setGraphic(createDotGroup());
+        setText("");
+    }
+
+    Group createDotGroup() {
+        Group g = new Group();
+        Circle c = new Circle(0, 0, 5, Color.DARKGREY);
+        g.getChildren().add(c);
+        setContentDisplay(ContentDisplay.CENTER);
+        return g;
     }
 
     @Override 

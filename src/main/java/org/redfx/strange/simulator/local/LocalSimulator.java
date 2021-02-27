@@ -52,6 +52,8 @@ import org.redfx.strange.local.SimpleQuantumExecutionEnvironment;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.ObservableList;
+import org.redfx.strange.gate.Identity;
+import org.redfx.strangefx.ui.PartialGate;
 
 /**
  *
@@ -60,10 +62,10 @@ import javafx.collections.ObservableList;
 public class LocalSimulator implements Simulator {
 
     private final int LOCAL_TRESHOLD = 1;
-    private final RenderModel model;
+    private final RenderModel renderModel;
     CloudSimulator cloudSimulator = new CloudSimulator();
     public LocalSimulator(RenderModel model) {
-        this.model = model;
+        this.renderModel = model;
         model.refreshRequest().addListener((obs, oldv, newv) -> {
             if (newv) {
                 calculate();
@@ -73,23 +75,44 @@ public class LocalSimulator implements Simulator {
     }
     
     private void calculate() {
-        int nq = model.getNQubits();
+        int nq = renderModel.getNQubits();
         Program p = new Program(nq);
-        int nsteps = model.getNumberOfSteps();
-        for (Step step : model.getSteps()) { 
+        int nsteps = renderModel.getNumberOfSteps();
+        for (Step step : convertRenderSteps(renderModel.getSteps())) { 
             p.addStep(step);
             SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
             Result res = sqee.runProgram(p);
             Qubit[] qubits = res.getQubits();
             List<Double> probability = new ArrayList<>();
 
-            
             for (Qubit qubit: qubits) {
                 probability.add(qubit.getProbability());
             }
-            ObservableList<Double> endStates = model.getEndStates();
+            ObservableList<Double> endStates = renderModel.getEndStates();
             endStates.setAll(probability);
         }
+    }
+    
+    /**
+     * Replace partial gates from the renderModel with identity gates
+     * @param renderSteps
+     * @return 
+     */
+    public List<Step> convertRenderSteps(List<Step> renderSteps) {
+        List<Step> answer = new ArrayList<>(renderSteps.size());
+        for (Step renderStep : renderSteps) {
+            Step s = new Step();
+            answer.add(s);
+            for (Gate gate : renderStep.getGates()) {
+                if (PartialGate.GROUP_PARTIAL.equals(gate.getGroup())) {
+                    s.addGate(new Identity(gate.getMainQubitIndex()));
+                } else {
+                    s.addGate(gate);
+                }
+            }
+        }
+        System.err.println("converted steps: "+answer);
+        return answer;
     }
     
 

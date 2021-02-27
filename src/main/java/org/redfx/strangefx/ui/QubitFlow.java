@@ -2,7 +2,7 @@
  * #%L
  * StrangeFX
  * %%
- * Copyright (C) 2020 Johan Vos
+ * Copyright (C) 2020, 2021 Johan Vos
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -32,11 +32,8 @@
  */
 package org.redfx.strangefx.ui;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.redfx.strange.gate.*;
 import org.redfx.strangefx.simulator.RenderModel;
 import org.redfx.strange.Gate;
@@ -78,6 +75,11 @@ public class QubitFlow extends Region {
     private final int idx; // the number of the qubit
 
     private Region oldParent = null;
+    
+    // This list is the authoritive list for all gates in this wire.
+    // the gateRow with allGates is rendered from this list.
+    // elements are added to this list by drag&drop or when the board is 
+    // created from an existing program.
     private ArrayList<Gate> gateList = new ArrayList<>();
     private final RenderModel model;
     private InvalidationListener endStateListener;
@@ -178,11 +180,14 @@ public class QubitFlow extends Region {
                     e.setDropCompleted(true);
                 } else {
                     // re-create gate symbol which was dragged from the toolbar
-                    symbol = GateSymbol.of(symbol.getGate().getClass(), idx);
+                    if (symbol.getGate() == null) {
+                        symbol = GateSymbol.of(GateSymbol.ControlQubit.OFF);
+                    } else {
+                        symbol = GateSymbol.of(symbol.getGate().getClass(), idx);
+                    }
                     symbol.setTranslateX(spacerIndex * STEP_WIDTH);
                     gateRow.getChildren().add(symbol);
                     insert(symbol,spacerIndex);
-
                     e.setDropCompleted(true);
                 }
             }
@@ -334,6 +339,10 @@ public class QubitFlow extends Region {
      */
     private void insert(GateSymbol gs, int locationIndex) {
         Gate g = gs.getGate();
+//        if (g == null) {
+//            System.err.println("not a real gate yet: " + gs+", ignore");
+//            return;
+//        }
         g.setMainQubitIndex(idx);
         while (gateList.size() < locationIndex ) gateList.add(gateList.size(), null);
         // now gateList.size is at least idx. Are we adding at the end?

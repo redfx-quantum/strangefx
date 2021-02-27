@@ -40,9 +40,9 @@ package org.redfx.strangefx.simulator;
 import org.redfx.strange.Gate;
 import org.redfx.strange.gate.Identity;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import java.util.List;
+import java.util.Optional;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -52,6 +52,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.redfx.strange.Program;
 import org.redfx.strange.Step;
+import org.redfx.strange.gate.Cnot;
+import org.redfx.strange.gate.X;
+import org.redfx.strangefx.ui.PartialGate;
 
 /**
  *
@@ -231,7 +234,14 @@ public class RenderModel {
 //            System.out.println("step "+i+": "+getGatesByStep(i));
 //        }
 //    }
-
+/**
+ * Update the gates for the qubit at the specified index. The provided 
+ * <code>gateList</code> should contain a gate for every step (no null values allowed).
+ * This function will check if partial gates match with other gates in the same
+ * step, and if so, replace them (e.g. NOT and X -> CNOT).
+ * @param idx
+ * @param gateList 
+ */
     public void updateGatesForQubit(int idx, ArrayList<Gate> gateList) {
         System.err.println("[RenderModel] update qubit "+idx+" with gates: "+gateList);
         int length = gateList.size();
@@ -253,6 +263,24 @@ public class RenderModel {
                     step.removeGate(removeMe);
                 }
                 step.addGate(g);
+                // now that the gates in this step are complete, check if we can
+                // replace a controlGate + something
+                List<Gate> allGates = step.getGates();
+                Optional<Gate> ctrlGate = allGates.stream().filter(c -> c.getGroup().equals(PartialGate.GROUP_PARTIAL)).findFirst();
+                if (ctrlGate.isPresent()) {
+                    Optional<Gate> xGate = allGates.stream().filter(c -> c.getClass().equals(X.class)).findFirst();
+                    if (xGate.isPresent()) {
+                        int cidx = ctrlGate.get().getMainQubitIndex();
+                        int xidx = xGate.get().getMainQubitIndex();
+                        System.err.println("CNOT!!");
+                        Gate cnotGate = new Cnot(cidx, xidx);
+                        Gate iGate = new Identity(xidx);
+                        step.removeGate(ctrlGate.get());
+                        step.removeGate(xGate.get());
+                        step.addGate(cnotGate);
+                       
+                    }
+                }
             }
         }
         
