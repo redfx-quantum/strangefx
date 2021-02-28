@@ -243,7 +243,6 @@ public class RenderModel {
  * @param gateList 
  */
     public void updateGatesForQubit(int idx, ArrayList<Gate> gateList) {
-        System.err.println("[RenderModel] update qubit "+idx+" with gates: "+gateList);
         int length = gateList.size();
         for (int i = 0; i < length; i++) {
             Gate g = gateList.get(i);
