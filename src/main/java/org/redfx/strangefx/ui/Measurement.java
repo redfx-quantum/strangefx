@@ -94,9 +94,10 @@ public class Measurement extends Region {
     private final DoubleProperty measuredChanceProperty = new SimpleDoubleProperty(this, "measured chance", 0) {
         @Override
         public void set(double newValue) {
-            if (newValue >= 0 && newValue <= 1) {
-                super.set(newValue);
-            }
+            double fval = newValue;
+            if (fval < 0) fval = 0;
+            if (fval > 1) fval = 1;
+            super.set(fval);
         }
     };
 
