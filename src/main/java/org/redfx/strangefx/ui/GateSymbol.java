@@ -32,8 +32,8 @@
  */
 package org.redfx.strangefx.ui;
 
+import java.util.List;
 import org.redfx.strange.gate.*;
-import org.redfx.strangefx.simulator.GateGroup;
 import org.redfx.strange.Gate;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -53,8 +53,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javafx.scene.shape.Rectangle;
+import org.redfx.strange.BlockGate;
 
 public class GateSymbol extends Label {
 
@@ -128,7 +128,9 @@ public class GateSymbol extends Label {
         this.gate = Objects.requireNonNull(gate);
         this.movable = movable;
         if (!(gate instanceof Identity)) {
-            if (gate instanceof Cnot) {
+            if (gate instanceof BlockGate) {
+                setGraphic(createBlockNode( (BlockGate) gate));
+            } else if (gate instanceof Cnot) {
                 setGraphic(createCNotNode((Cnot)gate));
             } else if (gate instanceof Toffoli) {
                 if (idx == 0 || idx == 1) {
@@ -241,6 +243,22 @@ public class GateSymbol extends Label {
         if (this.wire != null) {
             this.wire.gateSymbolRemoved(this);
         }
+    }
+
+    private Parent createBlockNode(BlockGate gate) {
+        AnchorPane answer = new AnchorPane();
+        List<Integer> qidxs = gate.getAffectedQubitIndexes();
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        for (int qidx : qidxs) {
+            if (qidx > max) max = qidx;
+            if (qidx < min) min = qidx;
+        }
+        int span = max - min+1;
+        Rectangle rect = new Rectangle(0,0, HEIGHT, (HEIGHT) +(span-1) * SEP );
+        rect.setFill(Color.LIGHTGREEN);
+        answer.getChildren().add(rect);
+        return answer;
     }
 
     private Parent createCNotNode(Cnot cnot) {
