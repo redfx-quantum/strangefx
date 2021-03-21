@@ -42,12 +42,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 
-public class Measurement extends Region {
+public class MeasurementUI extends Region {
 
     private Label label = new Label();
     private Pane  progress = new Pane();
 
-    public Measurement() {
+    public MeasurementUI() {
 
         getStyleClass().add("measurement");
 
@@ -79,7 +79,7 @@ public class Measurement extends Region {
 
 
     private void updateMeasuredChance() {
-        label.setText( measuredChanceAsString());
+        label.setText(measuredChanceAsString());
         progress.setPrefHeight( getHeight() * getMeasuredChance() );
     }
 

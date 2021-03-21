@@ -33,12 +33,15 @@
 package org.redfx.strangefx.ui;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.redfx.strange.gate.*;
 import org.redfx.strangefx.simulator.RenderModel;
 import org.redfx.strange.Gate;
 
 import javafx.beans.*;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.control.Label;
@@ -48,6 +51,7 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.*;
 
 import javafx.geometry.Insets;
+import org.redfx.strange.Qubit;
 import org.redfx.strange.Step;
 
 public class QubitFlow extends Region {
@@ -68,8 +72,9 @@ public class QubitFlow extends Region {
     private Line measuredLine = new Line();
 
     private Label title = new Label();
-    private Measurement measurement = new Measurement();
-
+    private MeasurementUI measurement = new MeasurementUI();
+    private List<MeasurementUI> intermediates = new ArrayList<>();
+    
     private Pane gateRow = new Pane();
     private HBox allGates = new HBox();
     private final int idx; // the number of the qubit
@@ -80,7 +85,7 @@ public class QubitFlow extends Region {
     // the gateRow with allGates is rendered from this list.
     // elements are added to this list by drag&drop or when the board is 
     // created from an existing program.
-    private ArrayList<Gate> gateList = new ArrayList<>();
+    private final ArrayList<Gate> gateList = new ArrayList<>();
     private final RenderModel model;
     private InvalidationListener endStateListener;
 
@@ -132,17 +137,6 @@ public class QubitFlow extends Region {
         stack.prefHeightProperty().bind(heightProperty());
 
         getChildren().add(stack);
-
-        //ensure all updates from the skin go back to control
-//        gateRow.getChildren().addListener((Observable observable) -> {
-//            getGateSymbols().setAll(
-//                    gateRow.getChildren()
-//                            .stream()
-//                            .filter(g -> g != SPACER)
-//                            .filter(g -> g instanceof GateSymbol)
-//                            .map(n -> (GateSymbol) n).collect(Collectors.toList())
-//            );
-//        });
 
         this.setOnDragOver(event -> {
 
@@ -233,19 +227,6 @@ public class QubitFlow extends Region {
         GateSymbol symbol = GateSymbol.of(gate);;
         if (gate instanceof Oracle) {
             this.askOnTop = true;
-//            // we need to span more wires
-//            Oracle oracle = (Oracle)gate;
-//            int span = oracle.getQubits();
-//            Rectangle r = new Rectangle(0,0,40,160);
-//            r.setFill(Color.GREEN);
-//            symbol = new Group();
-//            Group group = (Group)symbol;
-//            group.toFront();
-//            r.toFront();
-//            symbol.setManaged(false);
-//            symbol.toFront();
-//            group.setTranslateX(50 * gateRow.getChildren().size());
-//            group.getChildren().add(r);
         }
         //  GateSymbol symbol = GateSymbol.of(gate);
         int spacerIndex = gateRow.getChildren().indexOf(SPACER);
@@ -326,7 +307,7 @@ public class QubitFlow extends Region {
         gateRow.getChildren().clear();
     }
 
-    public Measurement getOutput() {
+    public MeasurementUI getOutput() {
         return measurement;
     }
     
@@ -338,11 +319,8 @@ public class QubitFlow extends Region {
      * @param locationIndex 
      */
     private void insert(GateSymbol gs, int locationIndex) {
+        System.err.println("[QF] insert "+gs);
         Gate g = gs.getGate();
-//        if (g == null) {
-//            System.err.println("not a real gate yet: " + gs+", ignore");
-//            return;
-//        }
         g.setMainQubitIndex(idx);
         while (gateList.size() < locationIndex ) gateList.add(gateList.size(), new Identity(idx));
         // now gateList.size is at least idx. Are we adding at the end?
@@ -363,18 +341,37 @@ public class QubitFlow extends Region {
     /*
      * use the <code>gateList</code> list to recreate the gateRow
     */
-    private void redraw() {
+    public void redraw() {
         gateRow.getChildren().clear();
+        intermediates.clear();
+        Map<Integer, Qubit> intermediateValues = model.getIntermediateStatesByQubit(idx);
         double deltax = 0;
+        int iv = 0;
         for (Gate gate : gateList) {
             if (gate != null) {
-                GateSymbol symbol = GateSymbol.of(gate);
-                symbol.setWire(this);
+                Region symbol = null;
+                if (gate instanceof Measurement) {
+                    MeasurementUI mui = new MeasurementUI();
+                    mui.setPrefHeight(STEP_WIDTH);
+                    Qubit q = intermediateValues.get(iv-1);
+                    if (q == null) {
+                       // System.err.println("ERROR: No intermediate state possible for step "+iv);
+                    } else {
+                        mui.setMeasuredChance(q.getProbability());
+                    }
+                    intermediates.add(mui);
+                    symbol = mui;
+                } else {
+                    GateSymbol gs = GateSymbol.of(gate);
+                    gs.setWire(this);
+                    symbol = gs;
+                }
                 symbol.setTranslateX(deltax);
                 symbol.translateYProperty().bind(gateRow.heightProperty().add(-1 * GateSymbol.HEIGHT).divide(2));
                 gateRow.getChildren().add(symbol);
                 BorderPane.setAlignment(symbol, Pos.CENTER);
             }
+            iv++;
             deltax += STEP_WIDTH;
         }
     }
@@ -395,39 +392,9 @@ public class QubitFlow extends Region {
         model.updateGatesForQubit(idx, gateList);
         model.refreshRequest().set(true);
     }
-//
-//    private void updateModel() {
-//        ArrayList<Gate> qgates = new ArrayList();
-//        for (GateSymbol gs : gateList) {
-//            Gate gate = null;
-//            if (gs != null) {
-//                Class gateClass = gs.getGate().getClass();
-//                try {
-//                    Constructor<Gate> c = gateClass.getConstructor(int.class);
-//                    gate = c.newInstance(idx);
-//                } catch (Throwable ex) {
-//                    Logger.getLogger(QubitFlow.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//                gate.setMainQubitIndex(idx);
-//            }
-//            qgates.add(gate);
-//        }
-//        model.setGatesForCircuit(idx, qgates);
-//        ArrayList<Step> steps = model.getSteps();
-//    }
-//    
+   
     private Gate createGate(Gate g) {
         return g;
-//        Class<? extends Gate> gateClass = g.getClass();
-//        try {
-//            Constructor<? extends Gate> constructor = gateClass.getConstructor(int.class);
-//            Gate copyGate = constructor.newInstance(g.getAffectedQubitIndex().get(0));
-//            return copyGate;
-//
-//        } catch (Exception ex) {
-//            Logger.getLogger(LocalSimulator.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
     }
 
     /**
@@ -438,11 +405,15 @@ public class QubitFlow extends Region {
     private void fillGatesFromModel(RenderModel model) {
         gateList.clear();
         for (Step s : model.getSteps()) {
-            Optional<Gate> hasGate = s.getGates().stream().filter(g -> g.getMainQubitIndex() == this.idx).findFirst();
-            if (hasGate.isPresent()) {
-                this.gateList.add(hasGate.get());
+            if (s.getType() == Step.Type.PSEUDO) {
+                this.gateList.add(new Measurement(this.idx));
             } else {
-                this.gateList.add(new Identity(this.idx));
+                Optional<Gate> hasGate = s.getGates().stream().filter(g -> g.getMainQubitIndex() == this.idx).findFirst();
+                if (hasGate.isPresent()) {
+                    this.gateList.add(hasGate.get());
+                } else {
+                    this.gateList.add(new Identity(this.idx));
+                }
             }
         }
     }
