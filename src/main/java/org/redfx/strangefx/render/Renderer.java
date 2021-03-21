@@ -62,6 +62,8 @@ import javafx.stage.Stage;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import org.redfx.strange.gate.X;
 
 public class Renderer {
 
@@ -83,7 +85,11 @@ public class Renderer {
     }
 
     public static void renderProgram(Program p) {
-        Platform.runLater(() -> showProgram(p));
+        renderProgram(p, 0);
+    }
+    
+    public static void renderProgram(Program p, final int level) {
+        Platform.runLater(() -> showProgram(p, level));
     }
 
     public static void showProbabilities(Program p, int count) {
@@ -98,12 +104,16 @@ public class Renderer {
         Platform.runLater(() -> renderMeasuredProbabilities(counter));
     }
 
-    public static QubitBoard getRenderGroup(Program program) {
+    public static QubitBoard getRenderGroup(Program program, int level) {
         Renderer renderer = new Renderer();
-        return renderer.getQubitBoard(program);
+        return renderer.getQubitBoard(program, level);
     }
     
     QubitBoard getQubitBoard(Program program) {
+      return getQubitBoard(program, 0);
+    }
+    
+    QubitBoard getQubitBoard(Program program, int level) {
         this.model = new RenderModel(program);
         int nQubits = program.getNumberQubits();
         QubitBoard board = new QubitBoard(model);
@@ -111,7 +121,10 @@ public class Renderer {
         List<GateSymbol> probabilities = new LinkedList();
         List<BoardOverlay> boardOverlays = new LinkedList<>();
         ObservableList<QubitFlow> wires = board.getWires();
-        for (Step s : program.getSteps()) {
+        List<Step> steps = (level > 0) ? program.getDecomposedSteps() : 
+                program.getSteps();
+        System.err.println("level = "+level+" and steps = "+steps);
+        for (Step s : steps) {
             boolean[] gotit = new boolean[nQubits];
             for (Gate gate : s.getGates()) {
                 int qb = gate.getMainQubitIndex();
@@ -119,33 +132,6 @@ public class Renderer {
                 QubitFlow wire = wires.get(qb);
                 wire.setMinWidth(480);
                 GateSymbol symbol = wire.addGate(gate);
-//                if (symbol.spanWires > 1) {
-//                    if (gate instanceof Oracle) {
-//                        multiWires.add(symbol);
-//                        BoardOverlay overlay = new BoardOverlay(s, symbol);
-//                        boardOverlays.add(overlay);
-//                        board.addOverlay(overlay);
-//                    } else {
-//                        int idx = 0;
-//                        List<Integer> aff = gate.getAffectedQubitIndexes().stream()
-//                                .filter(e -> e != qb).collect(Collectors.toList());
-//                        for (int a : aff) {
-//                            QubitFlow q = wires.get(a);
-//                            GateSymbol symbol2 = q.addAdditonalGateSymbol(gate, ++idx);
-//                            gotit[a] = true;
-//                            BoardOverlay overlay = new BoardOverlay(s, symbol, symbol2);
-//                            boardOverlays.add(overlay);
-//                            board.addOverlay(overlay);
-//                        };
-//                    }
-//
-//                }
-//                if (symbol.probability) {
-//                    probabilities.add(symbol);
-//                    BoardOverlay overlay = new BoardOverlay(s, symbol);
-//                    boardOverlays.add(overlay);
-//                    board.addOverlay(overlay);
-//                }
             }
             for (int i = 0; i < nQubits; i++) {
                 if (!gotit[i]) {
@@ -154,26 +140,33 @@ public class Renderer {
                 }
             }
         }
+        Result result = program.getResult();
+        
         ObservableList<Double> endStates = model.getEndStates();
-        Qubit[] qubits = program.getResult().getQubits();
-        Complex[] probability = program.getResult().getProbability();
+        Complex[] probability = result.getProbability();
         Double[] endValues = new Double[probability.length];
+        
+        Qubit[] qubits = result.getQubits();
         int idx = 0;
         for (Qubit qubit : qubits) {
             endValues[idx++] = qubit.getProbability();
         }
         endStates.setAll(endValues);
+        Map<Integer, Qubit[]> intermediateProbabilities = result.getIntermediateQubits();
+        model.setIntermediateProbabilities(intermediateProbabilities);
+        board.redraw();
         return board;
     }
+    
     public static void disable(QubitBoard board) {
         board.getWires().stream().forEach(flow -> flow.cleanup());
     }
 
-    public static void showProgram(Program program) {
+    public static void showProgram(Program program,int level) {
         Stage stage = new Stage();
         myStage = stage;
         stage.setTitle("StrangeFX");
-        Group board = getRenderGroup(program);
+        Group board = getRenderGroup(program, level);
         VBox vbox = new VBox(40);
         vbox.getChildren().add(board);
         Scene scene = new Scene(vbox);

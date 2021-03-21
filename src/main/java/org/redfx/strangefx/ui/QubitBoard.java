@@ -147,4 +147,8 @@ public class QubitBoard extends Group {
         };
         qee.runProgram(p, resultConsumer);
     }
+    
+    public void redraw() {
+        wires.forEach(w -> w.redraw());
+    }
 }

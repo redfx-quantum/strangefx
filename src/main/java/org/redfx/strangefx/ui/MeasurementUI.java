@@ -42,12 +42,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 
-public class Measurement extends Region {
+public class MeasurementUI extends Region {
 
     private Label label = new Label();
     private Pane  progress = new Pane();
 
-    public Measurement() {
+    public MeasurementUI() {
 
         getStyleClass().add("measurement");
 
@@ -79,7 +79,8 @@ public class Measurement extends Region {
 
 
     private void updateMeasuredChance() {
-        label.setText( measuredChanceAsString());
+        System.err.println("UMC to "+measuredChanceAsString());
+        label.setText(measuredChanceAsString());
         progress.setPrefHeight( getHeight() * getMeasuredChance() );
     }
 
@@ -94,6 +95,7 @@ public class Measurement extends Region {
     private final DoubleProperty measuredChanceProperty = new SimpleDoubleProperty(this, "measured chance", 0) {
         @Override
         public void set(double newValue) {
+            System.err.println("set mc to "+newValue);
             double fval = newValue;
             if (fval < 0) fval = 0;
             if (fval > 1) fval = 1;
