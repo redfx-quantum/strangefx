@@ -94,11 +94,13 @@ public class RenderModel {
         this.nqubits = p.getNumberQubits();
         this.steps = new ArrayList(p.getNumberQubits());
         this.steps.addAll(p.getSteps());
-//        for (int i = 0; i < this.nqubits; i++) {
-//            this.intermediateStates.add(FXCollections.observableArrayList());
-//        }
     }
-
+    
+    @Deprecated
+    public static RenderModel getInstance() {
+        return instance;
+    }
+    
     public BooleanProperty refreshRequest() {
         return refreshRequest;
     }
@@ -108,17 +110,7 @@ public class RenderModel {
     }
     
     public void setIntermediateProbabilities(Map<Integer, Qubit[]> intqubits) {
-        System.err.println("SIP!!!! from "+intqubits);
         this.intermediateStates = intqubits;
-//        System.err.println("SIP, probssize = "+probs.length);
-//        for (int i = 0 ; i < probs.length; i++) {
-//            Qubit[] inter = probs[i];
-//            System.err.println("SIP, s2 = "+inter.length);
-//            for (int j = 0; j < inter.length; j++) {
-//                System.err.println("Need to get q "+j+", "+i);
-//                intermediateStates.get(j).add(probs[j][i].getProbability());
-//            }
-//        }
     }
     
     public Qubit[] getIntermediaStates(int idx) {
@@ -126,7 +118,6 @@ public class RenderModel {
     }
     
     public Map<Integer, Qubit> getIntermediateStatesByQubit(int qubitIndex) {
-        System.err.println("Model, gisbq asked, map = "+intermediateStates);
         Map<Integer, Qubit> answer = new HashMap<>();
         for (Integer idx : intermediateStates.keySet()) {
             Qubit[] row = intermediateStates.get(idx);
@@ -140,7 +131,6 @@ public class RenderModel {
      * @param n 
      */
     public void setNQubits(int n) {
-        System.err.println("RENDERMODEL, set n to "+n);
         this.nqubits = n;
         this.beginState = new double[n];
         this.steps = new ArrayList(n);

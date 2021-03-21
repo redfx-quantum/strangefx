@@ -355,7 +355,7 @@ public class QubitFlow extends Region {
                     mui.setPrefHeight(STEP_WIDTH);
                     Qubit q = intermediateValues.get(iv-1);
                     if (q == null) {
-                        System.err.println("iv = " + iv + ", intv = " + intermediateValues);
+                       // System.err.println("ERROR: No intermediate state possible for step "+iv);
                     } else {
                         mui.setMeasuredChance(q.getProbability());
                     }

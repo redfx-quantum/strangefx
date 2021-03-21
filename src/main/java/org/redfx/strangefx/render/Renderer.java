@@ -85,11 +85,7 @@ public class Renderer {
     }
 
     public static void renderProgram(Program p) {
-        renderProgram(p, 0);
-    }
-    
-    public static void renderProgram(Program p, final int level) {
-        Platform.runLater(() -> showProgram(p, level));
+        Platform.runLater(() -> showProgram(p));
     }
 
     public static void showProbabilities(Program p, int count) {
@@ -104,16 +100,12 @@ public class Renderer {
         Platform.runLater(() -> renderMeasuredProbabilities(counter));
     }
 
-    public static QubitBoard getRenderGroup(Program program, int level) {
+    public static QubitBoard getRenderGroup(Program program) {
         Renderer renderer = new Renderer();
-        return renderer.getQubitBoard(program, level);
+        return renderer.getQubitBoard(program);
     }
-    
+
     QubitBoard getQubitBoard(Program program) {
-      return getQubitBoard(program, 0);
-    }
-    
-    QubitBoard getQubitBoard(Program program, int level) {
         this.model = new RenderModel(program);
         int nQubits = program.getNumberQubits();
         QubitBoard board = new QubitBoard(model);
@@ -121,9 +113,7 @@ public class Renderer {
         List<GateSymbol> probabilities = new LinkedList();
         List<BoardOverlay> boardOverlays = new LinkedList<>();
         ObservableList<QubitFlow> wires = board.getWires();
-        List<Step> steps = (level > 0) ? program.getDecomposedSteps() : 
-                program.getSteps();
-        System.err.println("level = "+level+" and steps = "+steps);
+        List<Step> steps = program.getSteps();
         for (Step s : steps) {
             boolean[] gotit = new boolean[nQubits];
             for (Gate gate : s.getGates()) {
@@ -162,11 +152,11 @@ public class Renderer {
         board.getWires().stream().forEach(flow -> flow.cleanup());
     }
 
-    public static void showProgram(Program program,int level) {
+    public static void showProgram(Program program) {
         Stage stage = new Stage();
         myStage = stage;
         stage.setTitle("StrangeFX");
-        Group board = getRenderGroup(program, level);
+        Group board = getRenderGroup(program);
         VBox vbox = new VBox(40);
         vbox.getChildren().add(board);
         Scene scene = new Scene(vbox);
