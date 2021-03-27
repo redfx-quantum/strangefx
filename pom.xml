@@ -33,7 +33,7 @@
     <dependency>
       <groupId>org.redfx</groupId>
       <artifactId>strange</artifactId>
-      <version>0.0.20-SNAPSHOT</version>
+      <version>0.0.20</version>
     </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
