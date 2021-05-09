@@ -157,7 +157,7 @@ public class RenderModel {
      * Update the gates for the qubit at the specified index. The provided
      * <code>gateList</code> should contain a gate for every step (no null
      * values allowed). This function will check if partial gates match with
-     * other gates in the same step, and if so, replace them (e.g. NOT and X ->
+     * other gates in the same step, and if so, replace them (e.g. NOT and X 
      * CNOT).
      *
      * @param idx
