@@ -21,6 +21,7 @@
     </repository>
   </repositories>
 
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>11</maven.compiler.source>
@@ -33,18 +34,20 @@
     <dependency>
       <groupId>org.redfx</groupId>
       <artifactId>strange</artifactId>
-      <version>0.0.20</version>
+      <version>0.1.0</version>
     </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
       <version>15.0.1</version>
     </dependency>
+<!--
     <dependency>
       <groupId>org.fxyz3d</groupId>
       <artifactId>fxyz3d</artifactId>
-      <version>0.5.2</version>
+      <version>0.5.3</version>
     </dependency>
+-->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>

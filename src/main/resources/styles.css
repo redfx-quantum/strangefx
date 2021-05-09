@@ -2,7 +2,7 @@
  * #%L
  * StrangeFX
  * %%
- * Copyright (C) 2020 Johan Vos
+ * Copyright (C) 2020, 2021 Johan Vos
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -34,7 +34,9 @@
     rootColor: #7b7d7b;
     qubitColor: white;
     icon-color: #636563;
+    -fx-background-color: qubitColor;
 }
+
 .tool-bar {
     -fx-background-color: #f1f1f1;
 }
@@ -57,8 +59,8 @@
 }
 
 .qubit {
-    -fx-background-color: qubitColor;
     -fx-pref-height: 77;
+    -fx-background-color: transparent;
 }
 
 .qubit .wire{

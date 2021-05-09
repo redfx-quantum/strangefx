@@ -42,6 +42,7 @@ import org.redfx.strange.Gate;
 
 import javafx.beans.*;
 import javafx.collections.ObservableList;
+import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.control.Label;
@@ -51,8 +52,15 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.*;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
+import org.redfx.strange.Complex;
+import org.redfx.strange.Program;
 import org.redfx.strange.Qubit;
+import org.redfx.strange.Result;
 import org.redfx.strange.Step;
+import org.redfx.strange.Step.Type;
+import org.redfx.strange.ui.render.BoardOverlay;
 
 public class QubitFlow extends Region {
 
@@ -96,7 +104,7 @@ public class QubitFlow extends Region {
         title.setText(String.format("q[%d] I0>", idx));
         gateRow.getChildren().add(SPACER);
         getStyleClass().add("qubit");
-        this.setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
+      //   this.setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
 
         gateRow.getStyleClass().add("gate-row");
         title.getStyleClass().add("title");
@@ -319,7 +327,6 @@ public class QubitFlow extends Region {
      * @param locationIndex 
      */
     private void insert(GateSymbol gs, int locationIndex) {
-        System.err.println("[QF] insert "+gs);
         Gate g = gs.getGate();
         g.setMainQubitIndex(idx);
         while (gateList.size() < locationIndex ) gateList.add(gateList.size(), new Identity(idx));
@@ -361,6 +368,9 @@ public class QubitFlow extends Region {
                     }
                     intermediates.add(mui);
                     symbol = mui;
+                } else if (gate instanceof ProbabilitiesGate) {
+                    ProbabilitiesGate pg = (ProbabilitiesGate)gate;
+                    symbol = pg.createUI();
                 } else {
                     GateSymbol gs = GateSymbol.of(gate);
                     gs.setWire(this);
@@ -407,6 +417,12 @@ public class QubitFlow extends Region {
         for (Step s : model.getSteps()) {
             if (s.getType() == Step.Type.PSEUDO) {
                 this.gateList.add(new Measurement(this.idx));
+            } else if (s.getType() == Step.Type.PROBABILITY) {
+                if (this.idx ==0) {
+                    this.gateList.add(new ProbabilitiesGate(s));
+                } else {
+                    this.gateList.add(new Identity(this.idx));
+                }
             } else {
                 Optional<Gate> hasGate = s.getGates().stream().filter(g -> g.getMainQubitIndex() == this.idx).findFirst();
                 if (hasGate.isPresent()) {
@@ -417,4 +433,33 @@ public class QubitFlow extends Region {
             }
         }
     }
+    
+     private Group createProbability(Step s) {
+        Program program = s.getProgram();
+        Result result = program.getResult();
+        Complex[] ip = result.getIntermediateProbability(s.getIndex());
+        int nq = program.getNumberQubits();
+        int N = 1 << nq;
+        double deltaY = (66. * nq - 10 + 38) / N;
+        Group answer = new Group();
+
+        Rectangle rect2 = new Rectangle(0, 0, 40, 66 * nq - 10 + 38);
+        rect2.setFill(Color.WHITE);
+        rect2.setStroke(Color.BLUE);
+        rect2.setStrokeWidth(1);
+        answer.getChildren().add(rect2);
+
+        for (int i = 0; i < N; i++) {
+            double startY = i * deltaY;
+            Rectangle minibar = new Rectangle(1, i * deltaY, 38 * ip[i].abssqr(), deltaY - 1);
+            minibar.setFill(Color.GREEN);
+            Line l = new Line(1, startY, 39, startY);
+            l.setFill(Color.LIGHTGRAY);
+            l.setStrokeWidth(1);
+            answer.getChildren().add(l);
+            answer.getChildren().add(minibar);
+        }
+        return answer;
+    }
+
 }

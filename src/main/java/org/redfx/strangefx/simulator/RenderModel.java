@@ -2,7 +2,7 @@
  * #%L
  * StrangeFX
  * %%
- * Copyright (C) 2020 Johan Vos
+ * Copyright (C) 2020, 2021 Johan Vos
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
