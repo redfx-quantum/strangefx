@@ -61,7 +61,7 @@ public class GateSymbol extends Label {
     static final DataFormat DRAGGABLE_GATE = new DataFormat("draggable-gate");
 
     public static final int HEIGHT = 40;
-    public static final int SEP = 77;
+    public static final int SEP = QubitBoard.WIRE_HEIGHT;
     private final Gate gate;
     private final boolean movable;
     public int spanWires = 1;
@@ -247,7 +247,13 @@ public class GateSymbol extends Label {
 
     private Parent createBlockNode(BlockGate gate) {
         AnchorPane answer = new AnchorPane();
+//        answer.getStyleClass().setAll("gate-block-text");
+        Label l = new Label(gate.getCaption());
+        l.setTranslateX(2);
+        l.setTranslateY(2);
+        l.getStyleClass().setAll("gate-block-text");
         List<Integer> qidxs = gate.getAffectedQubitIndexes();
+        int mqi = gate.getMainQubitIndex();
         int min = Integer.MAX_VALUE;
         int max = Integer.MIN_VALUE;
         for (int qidx : qidxs) {
@@ -257,7 +263,12 @@ public class GateSymbol extends Label {
         int span = max - min+1;
         Rectangle rect = new Rectangle(0,0, HEIGHT, (HEIGHT) +(span-1) * SEP );
         rect.setFill(Color.LIGHTGREEN);
+        if (min < mqi) {
+            // block doesn't start at main qubit, translate to start
+            rect.setLayoutY(SEP*(min-mqi));
+        }
         answer.getChildren().add(rect);
+        answer.getChildren().add(l);
         return answer;
     }
 

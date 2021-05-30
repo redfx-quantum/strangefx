@@ -44,6 +44,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
+import javafx.scene.shape.Line;
 import org.redfx.strange.Gate;
 import org.redfx.strange.Program;
 import org.redfx.strange.QuantumExecutionEnvironment;
@@ -54,22 +55,25 @@ import org.redfx.strange.local.SimpleQuantumExecutionEnvironment;
 
 public class QubitBoard extends Group {
     
-    private RenderModel model;
+    public static final int WIRE_HEIGHT = 77; // the vertical distance between 2 wires
+    private final RenderModel model;
     private ObservableList<QubitFlow> wires = FXCollections.observableArrayList();
 
     private final int nQubits;
-
-    private final VBox wiresBox = new VBox();
-    private final List<Node> overlays = new LinkedList<>();
+    private Line[] line;
 
     public QubitBoard(RenderModel model) {
         this.model = model;
         this.nQubits = model.getNQubits();
-            
-        wiresBox.getChildren().setAll(wires);
+        line = new Line[nQubits];
+        for (int i = 0; i < nQubits; i++) {
+            line[i] = new Line();
+            line[i].setTranslateY(WIRE_HEIGHT * i + WIRE_HEIGHT / 2);
+            line[i].getStyleClass().add("wire");
+            getChildren().add(line[i]);
+        }
 
         wires.addListener((Observable o) -> {
-            wiresBox.getChildren().setAll(wires);
             model.refreshRequest().set(true);
         });
 
@@ -80,8 +84,12 @@ public class QubitBoard extends Group {
 
         for (int i = 0; i < nQubits; i++) {
             appendQubit();
+            QubitFlow q = wires.get(i);
+            q.setTranslateY(i * GateSymbol.SEP);
+            getChildren().add(q);
+            line[i].endXProperty().bind(q.widthProperty());
+
         }
-        getChildren().add(wiresBox);
     }
 
 

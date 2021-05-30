@@ -76,7 +76,7 @@ public class QubitFlow extends Region {
         }
     };
 
-    private Line line = new Line();
+//    private Line line = new Line();
     private Line measuredLine = new Line();
 
     private Label title = new Label();
@@ -110,8 +110,8 @@ public class QubitFlow extends Region {
         title.getStyleClass().add("title");
         title.setPrefWidth(85);
 
-        line.endXProperty().bind(widthProperty());
-        line.getStyleClass().add("wire");
+//        line.endXProperty().bind(widthProperty());
+//        line.getStyleClass().add("wire");
         measuredLine.endXProperty().bind(widthProperty());
         measuredLine.getStyleClass().add("wire");
         measuredLine.setVisible(false);
@@ -129,7 +129,7 @@ public class QubitFlow extends Region {
         BorderPane.setAlignment(measurement, Pos.CENTER);
 
         measuredLine.setTranslateY(10);
-        StackPane stack = new StackPane(line, measuredLine, base);
+        StackPane stack = new StackPane(measuredLine, base);
         this.sceneProperty().addListener(
                 new InvalidationListener() {
             @Override
