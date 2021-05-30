@@ -61,6 +61,7 @@ public class ProbabilitiesGate extends PseudoGate {
         Program program = step.getProgram();
         Result result = program.getResult();
         Complex[] ip = result.getIntermediateProbability(step.getIndex());
+        if (ip == null) throw new IllegalArgumentException ("Can not retrieve probabilities for step "+step.getIndex());
         int nq = program.getNumberQubits();
         int N = 1 << nq;
         double deltaY = (66. * nq - 10 + 38) / N;

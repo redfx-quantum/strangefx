@@ -80,7 +80,7 @@ public class MeasurementUI extends Region {
 
     private void updateMeasuredChance() {
         label.setText(measuredChanceAsString());
-        progress.setPrefHeight( getHeight() * getMeasuredChance() );
+        progress.prefHeightProperty().bind(heightProperty().multiply(getMeasuredChance()));
     }
 
     private String measuredChanceAsString() {

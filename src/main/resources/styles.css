@@ -109,6 +109,23 @@
     -fx-stroke-width: 0;
 }
 
+.nogate-block {
+    -fx-padding: 2;
+    -fx-background-color: #17C0EE;
+    -fx-border-width: 0;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 1.4em;
+}
+
+.gate-block-text {
+    -fx-border-insets: 2;
+    -fx-background-color: #17C0EE;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 1.4em;
+}
+
 .gate-symbol {
     -fx-padding: 7;
     -fx-background-color: #17C0EE;
