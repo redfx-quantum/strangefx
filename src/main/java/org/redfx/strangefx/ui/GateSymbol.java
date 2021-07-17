@@ -133,6 +133,8 @@ public class GateSymbol extends Label {
             } else if (gate instanceof Cnot) {
                 setGraphic(createCNotNode((Cnot)gate));
             } else if (gate instanceof Toffoli) {
+                System.err.println("TOFFOLI!");
+                setGraphic(createToffoliNode((Toffoli)gate));
                 if (idx == 0 || idx == 1) {
                     // first symbol of Cnot is dot
                     setDot();
@@ -295,6 +297,35 @@ public class GateSymbol extends Label {
         AnchorPane.setLeftAnchor(c, div2-10);
         answer.getChildren().addAll(con, c, l);
         answer.setPrefWidth(40);
+        return answer;
+    }
+
+    private Parent createToffoliNode(Toffoli toffoli) {
+        Thread.dumpStack();
+        double div2 =  HEIGHT/2;
+        int midx = toffoli.getMainQubitIndex();
+        int idx2 = toffoli.getSecondQubit();
+        int idx3 = toffoli.getThirdQubit();
+        AnchorPane answer = new AnchorPane();
+        Circle con = new Circle(0, 0, 50, Color.DARKGREY);
+        con.setTranslateY(-5);
+        Circle c = new Circle(0, 0, 100, Color.TRANSPARENT);
+        c.setTranslateY(-10);
+        c.setLayoutY(SEP * (idx2 - midx));
+        c.setStroke(Color.DARKGRAY);
+        c.setStrokeWidth(2);
+        Line l = new Line(0,0, 0, SEP* (idx2-midx) + 10);
+        l.setStrokeWidth(2);
+        l.setStroke(Color.DARKGRAY);
+        AnchorPane.setTopAnchor(con, (double)HEIGHT/2);
+        AnchorPane.setTopAnchor(l, (double)HEIGHT/2);
+        AnchorPane.setTopAnchor(c, (double)(SEP * (idx2-midx)+HEIGHT/2));
+        AnchorPane.setLeftAnchor(con, div2-5);
+        AnchorPane.setLeftAnchor(l, div2);
+        AnchorPane.setLeftAnchor(c, div2-10);
+        answer.getChildren().addAll(con, c, l);
+        answer.setPrefWidth(40);
+        System.err.println("TOFFOLI created: "+answer);
         return answer;
     }
 
