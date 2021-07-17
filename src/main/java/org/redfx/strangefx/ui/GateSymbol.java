@@ -2,7 +2,7 @@
  * #%L
  * StrangeFX
  * %%
- * Copyright (C) 2020 Johan Vos
+ * Copyright (C) 2020, 2021 Johan Vos
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -67,14 +67,15 @@ public class GateSymbol extends Label {
     public int spanWires = 1;
     public boolean probability = false;
 
-    private int index = -1;
     private QubitFlow wire;
     
+    private int index;
+
     /**
-     * Create a new GateSymbol instance, and a new instance of the provided Gate class.
-     * No parameters are set on this gate.
-     * @param clazz
-     * @return 
+     * Create a new GateSymbol instance, and a new instance of the provided Gate class.No parameters are set on this gate.
+     * @param clazz the class of the Gate
+     * @param idx the index this Gate occupies
+     * @return the created GateSymbol
      */
     public static GateSymbol of( Class<? extends Gate> clazz, int idx) {
         return GateSymbol.of(clazz, idx, true);
@@ -133,22 +134,7 @@ public class GateSymbol extends Label {
             } else if (gate instanceof Cnot) {
                 setGraphic(createCNotNode((Cnot)gate));
             } else if (gate instanceof Toffoli) {
-                if (idx == 0 || idx == 1) {
-                    // first symbol of Cnot is dot
-                    setDot();
-                } else {
-                    Group g = new Group();
-                    Circle c = new Circle(0, 0, 10, Color.TRANSPARENT);
-                    c.setStroke(Color.DARKGRAY);
-                    c.setStrokeWidth(2);
-                    Line l = new Line(0, -10, 0, 10);
-                    l.setStrokeWidth(2);
-                    l.setStroke(Color.DARKGRAY);
-                    g.getChildren().addAll(c, l);
-                    setContentDisplay(ContentDisplay.CENTER);
-                    setGraphic(g);
-                    setText(""); 
-                }
+                setGraphic(createToffoliNode((Toffoli)gate));
             } 
             else if (idx == 0 && gate instanceof Cz) {
                 setDot();
@@ -272,6 +258,7 @@ public class GateSymbol extends Label {
         return answer;
     }
 
+    static double LINE_WIDTH = 2;
     private Parent createCNotNode(Cnot cnot) {
         double div2 =  HEIGHT/2;
         int midx = cnot.getMainQubitIndex();
@@ -285,15 +272,49 @@ public class GateSymbol extends Label {
         c.setStroke(Color.DARKGRAY);
         c.setStrokeWidth(2);
         Line l = new Line(0,0, 0, SEP* (sidx-midx) + 10);
-        l.setStrokeWidth(2);
+        l.setStrokeWidth(LINE_WIDTH);
         l.setStroke(Color.DARKGRAY);
         AnchorPane.setTopAnchor(con, (double)HEIGHT/2);
         AnchorPane.setTopAnchor(l, (double)HEIGHT/2);
         AnchorPane.setTopAnchor(c, (double)(SEP * (sidx-midx)+HEIGHT/2));
         AnchorPane.setLeftAnchor(con, div2-5);
-        AnchorPane.setLeftAnchor(l, div2);
+        AnchorPane.setLeftAnchor(l, div2-LINE_WIDTH/2);
         AnchorPane.setLeftAnchor(c, div2-10);
         answer.getChildren().addAll(con, c, l);
+        answer.setPrefWidth(40);
+        return answer;
+    }
+
+    private Parent createToffoliNode(Toffoli toffoli) {
+        double div2 =  HEIGHT/2;
+        int midx = toffoli.getMainQubitIndex();
+        int idx2 = toffoli.getSecondQubit();
+        int idx3 = toffoli.getThirdQubit();
+        AnchorPane answer = new AnchorPane();
+        Circle con = new Circle(0, 0, 5, Color.DARKGREY);
+        con.setTranslateY(-5);
+
+        Circle con2 = new Circle(0, 0, 5, Color.DARKGRAY);
+        con2.setTranslateY(-5);
+
+        Circle c = new Circle(0, 0, 10, Color.TRANSPARENT);
+        c.setTranslateY(-10);
+
+        c.setStroke(Color.DARKGRAY);
+        c.setStrokeWidth(2);
+        Line l = new Line(0,0, 0, SEP * (idx3-midx) + 10);
+        l.setStrokeWidth(LINE_WIDTH);
+        l.setStroke(Color.DARKGRAY);
+
+        AnchorPane.setTopAnchor(con, (double)HEIGHT/2);
+        AnchorPane.setTopAnchor(l, (double)HEIGHT/2);
+        AnchorPane.setTopAnchor(c, (double)(SEP * (idx3-midx)+HEIGHT/2));
+        AnchorPane.setTopAnchor(con2, (double)(SEP * (idx2-midx)+HEIGHT/2));
+        AnchorPane.setLeftAnchor(con2, div2-5);
+        AnchorPane.setLeftAnchor(con, div2-5);
+        AnchorPane.setLeftAnchor(l, div2-LINE_WIDTH/2);
+        AnchorPane.setLeftAnchor(c, div2-10);
+        answer.getChildren().addAll(con, con2, c, l);
         answer.setPrefWidth(40);
         return answer;
     }
