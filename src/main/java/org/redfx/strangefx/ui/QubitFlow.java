@@ -52,15 +52,12 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.*;
 
 import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import org.redfx.strange.Complex;
 import org.redfx.strange.Program;
 import org.redfx.strange.Qubit;
 import org.redfx.strange.Result;
 import org.redfx.strange.Step;
-import org.redfx.strange.Step.Type;
-import org.redfx.strange.ui.render.BoardOverlay;
 
 public class QubitFlow extends Region {
 
@@ -75,9 +72,6 @@ public class QubitFlow extends Region {
             setText(null);
         }
     };
-
-//    private Line line = new Line();
-    private Line measuredLine = new Line();
 
     private Label title = new Label();
     private MeasurementUI measurement = new MeasurementUI();
@@ -110,11 +104,6 @@ public class QubitFlow extends Region {
         title.getStyleClass().add("title");
         title.setPrefWidth(85);
 
-//        line.endXProperty().bind(widthProperty());
-//        line.getStyleClass().add("wire");
-        measuredLine.endXProperty().bind(widthProperty());
-        measuredLine.getStyleClass().add("wire");
-        measuredLine.setVisible(false);
 
         BorderPane base = new BorderPane();
         base.getStyleClass().add("base");
@@ -128,8 +117,7 @@ public class QubitFlow extends Region {
         BorderPane.setAlignment(title, Pos.CENTER);
         BorderPane.setAlignment(measurement, Pos.CENTER);
 
-        measuredLine.setTranslateY(10);
-        StackPane stack = new StackPane(measuredLine, base);
+        StackPane stack = new StackPane(base);
         this.sceneProperty().addListener(
                 new InvalidationListener() {
             @Override
@@ -225,27 +213,20 @@ public class QubitFlow extends Region {
     public boolean wantsOnTop() {
         return askOnTop;
     }
-
-   // private int stepIndex = 0;
     
     public GateSymbol addGate(Gate gate) {
         if (gateRow.getChildren().isEmpty()) {
             gateRow.getChildren().add(SPACER);
         }
-        GateSymbol symbol = GateSymbol.of(gate);;
+        GateSymbol symbol = GateSymbol.of(gate);
         if (gate instanceof Oracle) {
             this.askOnTop = true;
         }
-        //  GateSymbol symbol = GateSymbol.of(gate);
         int spacerIndex = gateRow.getChildren().indexOf(SPACER);
         if (spacerIndex < 0) {
             gateRow.getChildren().add(symbol);
         } else {
             gateRow.getChildren().set(spacerIndex, symbol);
-        }
-        if (gate instanceof org.redfx.strange.gate.Measurement) {
-            measuredLine.translateXProperty().bind(symbol.layoutXProperty().add(allGates.layoutXProperty()));
-            measuredLine.setVisible(true);
         }
         redraw();
         return symbol;
@@ -305,10 +286,7 @@ public class QubitFlow extends Region {
     public int getIndex() {
         return this.idx;
     }
-//
-//    public ObservableList<GateSymbol> getGateSymbols() {
-//        return this.gates;
-//    }
+
 
     public void clear() {
         model.getEndStates().removeListener(endStateListener);
@@ -358,16 +336,7 @@ public class QubitFlow extends Region {
             if (gate != null) {
                 Region symbol = null;
                 if (gate instanceof Measurement) {
-                    MeasurementUI mui = new MeasurementUI();
-                    mui.setPrefHeight(STEP_WIDTH);
-                    Qubit q = intermediateValues.get(iv-1);
-                    if (q == null) {
-                       // System.err.println("ERROR: No intermediate state possible for step "+iv);
-                    } else {
-                        mui.setMeasuredChance(q.getProbability());
-                    }
-                    intermediates.add(mui);
-                    symbol = mui;
+                    symbol = createMeasurementLine(gate);
                 } else if (gate instanceof ProbabilitiesGate) {
                     ProbabilitiesGate pg = (ProbabilitiesGate)gate;
                     symbol = pg.createUI();
@@ -433,7 +402,18 @@ public class QubitFlow extends Region {
             }
         }
     }
-    
+
+    private Region createMeasurementLine(Gate gate) {
+        GateSymbol gs = GateSymbol.of(gate);
+        gs.setWire(this);
+        Line l = new Line(STEP_WIDTH/2, STEP_WIDTH/2 + 8, 100, STEP_WIDTH/2 + 8);
+        l.getStyleClass().add("wire");
+        l.endXProperty().bind(widthProperty());
+        Pane canvas = new Pane();
+        canvas.getChildren().addAll(l, gs);
+        return canvas;
+    }
+
      private Group createProbability(Step s) {
         Program program = s.getProgram();
         Result result = program.getResult();
