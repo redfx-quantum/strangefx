@@ -61,6 +61,7 @@ public class GateSymbol extends Label {
     static final DataFormat DRAGGABLE_GATE = new DataFormat("draggable-gate");
 
     public static final int HEIGHT = 40;
+    public static final int WIDTH = 40;
     public static final int SEP = QubitBoard.WIRE_HEIGHT;
     private final Gate gate;
     private final boolean movable;
@@ -137,13 +138,13 @@ public class GateSymbol extends Label {
                 setGraphic(createToffoliNode((Toffoli)gate));
             } 
             else if (idx == 0 && gate instanceof Cz) {
-                setDot();
+                setGraphic(createCZNode((Cz)gate));
             } else {
                 getStyleClass().setAll("gate-symbol", getStyle(gate.getGroup()));
                 setText(gate.getCaption());
             }
         }
-        setMinWidth(40);
+        setMinWidth(WIDTH);
         setMinHeight(HEIGHT);
         setAlignment(Pos.CENTER);
         if (gate instanceof Oracle) {
@@ -281,6 +282,33 @@ public class GateSymbol extends Label {
         AnchorPane.setLeftAnchor(l, div2-LINE_WIDTH/2);
         AnchorPane.setLeftAnchor(c, div2-10);
         answer.getChildren().addAll(con, c, l);
+        answer.setPrefWidth(40);
+        return answer;
+    }
+    private Parent createCZNode(Cz cnot) {
+        double div2 =  HEIGHT/2;
+        int midx = cnot.getMainQubitIndex();
+        int sidx = cnot.getSecondQubitIndex();
+        AnchorPane answer = new AnchorPane();
+        Circle con = new Circle(0, 0, 5, Color.DARKGREY);
+        con.setTranslateY(-5);
+        Label z = new Label("Z");
+        z.getStyleClass().setAll("gate-symbol", getStyle(gate.getGroup()));
+        z.setTranslateY(-HEIGHT/2);
+        z.setLayoutY(SEP * (sidx - midx));
+        z.setMinWidth(WIDTH);
+        z.setMinHeight(HEIGHT);
+        z.setAlignment(Pos.CENTER);
+        Line l = new Line(0,0, 0, SEP* (sidx-midx) - HEIGHT/2);
+        l.setStrokeWidth(LINE_WIDTH);
+        l.setStroke(Color.DARKGRAY);
+        AnchorPane.setTopAnchor(con, (double)HEIGHT/2);
+        AnchorPane.setTopAnchor(l, (double)HEIGHT/2);
+        AnchorPane.setTopAnchor(z, (double)(SEP * (sidx-midx)+HEIGHT/2));
+        AnchorPane.setLeftAnchor(con, div2-5);
+        AnchorPane.setLeftAnchor(l, div2-LINE_WIDTH/2);
+        AnchorPane.setLeftAnchor(z, div2-HEIGHT/2);
+        answer.getChildren().addAll(con, z, l);
         answer.setPrefWidth(40);
         return answer;
     }
