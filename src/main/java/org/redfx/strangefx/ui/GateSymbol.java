@@ -272,7 +272,10 @@ public class GateSymbol extends Label {
         c.setLayoutY(SEP * (sidx - midx));
         c.setStroke(Color.DARKGRAY);
         c.setStrokeWidth(2);
-        Line l = new Line(0,0, 0, SEP* (sidx-midx) + 10);
+        Line l = new Line(0,0, 0, SEP* Math.abs(sidx-midx) + 10);
+        if (midx > sidx) {
+            l.setTranslateY(-l.getEndY());
+        }
         l.setStrokeWidth(LINE_WIDTH);
         l.setStroke(Color.DARKGRAY);
         AnchorPane.setTopAnchor(con, (double)HEIGHT/2);
