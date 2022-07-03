@@ -126,6 +126,15 @@
     -fx-font-size: 1.4em;
 }
 
+.gate-oracle-text {
+    -fx-border-insets: 2;
+    -fx-border-color: red;
+    -fx-background-color: #17C01E;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 1.4em;
+}
+
 .gate-symbol {
     -fx-padding: 7;
     -fx-background-color: #17C0EE;
