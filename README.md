@@ -6,6 +6,6 @@ It leverages the Quantum computer simulator software exported by the [Strange](h
 Have a look at Strange to get started with the concepts.
 The samples at [QuantumJava](https://github.com/johanvos/quantumjava) leverage Strange and StrangeFX to visualise circuits that are created programmatically.
 
-StrangeFX also has a UI editor that allows users to create quantum circuits with a drag and drop interface. This editor is undergoing a major refactory, and will be available in Q3 2021.
+StrangeFX also has a UI editor that allows users to create quantum circuits with a drag and drop interface. 
 
 
