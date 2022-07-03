@@ -32,8 +32,10 @@
  */
 package org.redfx.strangefx.ui;
 
+import java.util.Arrays;
 import java.util.List;
 import org.redfx.strange.gate.*;
+import org.redfx.strange.gate.ProbabilitiesGate;
 import org.redfx.strange.Gate;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -55,6 +57,7 @@ import javafx.scene.shape.Line;
 import java.util.Objects;
 import javafx.scene.shape.Rectangle;
 import org.redfx.strange.BlockGate;
+import org.redfx.strange.Complex;
 
 public class GateSymbol extends Label {
 
@@ -132,10 +135,14 @@ public class GateSymbol extends Label {
         if (!(gate instanceof Identity)) {
             if (gate instanceof BlockGate) {
                 setGraphic(createBlockNode( (BlockGate) gate));
+            } else if (gate instanceof Oracle) {
+                setGraphic(createOracleNode( (Oracle) gate));
             } else if (gate instanceof Cnot) {
                 setGraphic(createCNotNode((Cnot)gate));
             } else if (gate instanceof Toffoli) {
                 setGraphic(createToffoliNode((Toffoli)gate));
+            } else if (gate instanceof ProbabilitiesGate) {
+                setGraphic(createProbabilitiesNode((ProbabilitiesGate)gate));
             } 
             else if (idx == 0 && gate instanceof Cz) {
                 setGraphic(createCZNode((Cz)gate));
@@ -230,6 +237,67 @@ public class GateSymbol extends Label {
         if (this.wire != null) {
             this.wire.gateSymbolRemoved(this);
         }
+    }
+
+    private Parent createProbabilitiesNode(ProbabilitiesGate gate) {
+        AnchorPane anchor = new AnchorPane();
+        Complex[] ip = gate.getProbabilities();
+        int N = ip.length;
+        int nq = (int) (Math.log(N)/Math.log(2));
+        double deltaY = (66. * nq - 10 + 38) / N;
+        Group answer = new Group();
+
+        Rectangle rect2 = new Rectangle(0, 0, 40, 66 * nq - 10 + 38);
+        rect2.setFill(Color.WHITE);
+        rect2.setStroke(Color.BLUE);
+        rect2.setStrokeWidth(1);
+        answer.getChildren().add(rect2);
+
+        for (int i = 0; i < N; i++) {
+            double startY = i * deltaY;
+            Rectangle minibar = new Rectangle(1, i * deltaY, 38 * ip[i].abssqr(), deltaY - 1);
+            minibar.setFill(Color.GREEN);
+            Line l = new Line(1, startY, 39, startY);
+            l.setFill(Color.LIGHTGRAY);
+            l.setStrokeWidth(1);
+            answer.getChildren().add(l);
+            answer.getChildren().add(minibar);
+        }
+        
+        anchor.getChildren().add(answer);
+        return anchor;
+    }
+
+    private Parent createOracleNode(Oracle gate) {
+        AnchorPane answer = new AnchorPane();
+        Label l = new Label(gate.getCaption());
+        l.setTranslateX(2);
+        l.setTranslateY(2);
+        l.getStyleClass().setAll("gate-block-text");
+        List<Integer> qidxs = gate.getAffectedQubitIndexes();
+        int mqi = gate.getMainQubitIndex();
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        for (int qidx : qidxs) {
+            if (qidx > max) {
+                max = qidx;
+            }
+            if (qidx < min) {
+                min = qidx;
+            }
+        }
+        int span = max - min + 1;
+        Rectangle rect = new Rectangle(0, 0, HEIGHT, (HEIGHT) + (span - 1) * SEP);
+        rect.setFill(Color.YELLOWGREEN);
+        rect.setStroke(Color.GREEN);
+        rect.setStrokeWidth(2);
+        if (min < mqi) {
+            // block doesn't start at main qubit, translate to start
+            rect.setLayoutY(SEP * (min - mqi));
+        }
+        answer.getChildren().add(rect);
+        answer.getChildren().add(l);
+        return answer;
     }
 
     private Parent createBlockNode(BlockGate gate) {
