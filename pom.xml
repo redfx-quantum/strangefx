@@ -4,7 +4,7 @@
   <groupId>org.redfx</groupId>
   <artifactId>strangefx</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.3-SNAPSHOT</version>
+  <version>0.1.4-SNAPSHOT</version>
   <name>StrangeFX</name>
   <description>StrangeFX Quantum Visualisation</description>
   <url>https://github.com/redfx-quantum/strangefx</url>
@@ -28,18 +28,20 @@
     <maven.compiler.target>11</maven.compiler.target>
     <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
     <gpg.plugin.version>1.6</gpg.plugin.version>
+    <javafx-maven-plugin-version>0.0.8</javafx-maven-plugin-version>
+    <javafxVersion>18.0.1</javafxVersion>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.redfx</groupId>
       <artifactId>strange</artifactId>
-      <version>0.1.2-SNAPSHOT</version>
+      <version>0.1.3</version>
     </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
-      <version>16</version>
+      <version>${javafxVersion}</version>
     </dependency>
 <!--
     <dependency>
@@ -71,7 +73,7 @@
       <plugin>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-maven-plugin</artifactId>
-        <version>0.0.5</version>
+        <version>${javafx-maven-plugin-version}</version>
         <configuration>
             <mainClass>org.redfx.strangefx.ui.Main</mainClass>
         </configuration>
@@ -127,7 +129,7 @@
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.7</version>
+        <version>1.6.13</version>
         <extensions>true</extensions>
         <configuration>
           <serverId>ossrh</serverId>
