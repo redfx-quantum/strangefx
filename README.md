@@ -1,5 +1,5 @@
 # strangefx 
-[![Java CI with Maven](https://github.com/redfx-quantum/strangefx/actions/workflows/maven.yml/badge.svg)](https://github.com/redfx-quantum/strangefx/actions/workflows/maven.yml)
+[![Build](https://github.com/redfx-quantum/strangefx/actions/workflows/build.yml/badge.svg)](https://github.com/redfx-quantum/strangefx/actions/workflows/build.yml)
 
 StrangeFX is a Java(FX) based Quantum computer visual editor.
 It leverages the Quantum computer simulator software exported by the [Strange](https://github.com/redfx-quantum/strange) project.
