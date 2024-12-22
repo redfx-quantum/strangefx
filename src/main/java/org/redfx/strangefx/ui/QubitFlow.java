@@ -78,6 +78,7 @@ public class QubitFlow extends Region {
     private List<MeasurementUI> intermediates = new ArrayList<>();
     
     private Pane gateRow = new Pane();
+    private StackPane centerPane = new StackPane();
     private HBox allGates = new HBox();
     private final int idx; // the number of the qubit
 
@@ -109,7 +110,15 @@ public class QubitFlow extends Region {
         base.getStyleClass().add("base");
         base.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         base.setLeft(title);
-        base.setCenter(allGates);
+
+        Line line = new Line();
+        line.getStyleClass().add("wire");
+        line.setStartX(0);
+        line.endXProperty().bind(allGates.widthProperty());
+        centerPane.getChildren().addAll(line, allGates);
+
+        base.setCenter(centerPane);
+
         allGates.getChildren().addAll(gateRow);
         HBox.setHgrow(gateRow, Priority.ALWAYS);
         base.setRight(measurement);
